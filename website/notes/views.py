@@ -1,19 +1,17 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 
 
 def index(request):
-    return HttpResponse('you decide what you put in the index')
+    return render(request, 'notes/index.html', {'title': 'Public Notes'})
 
 
 def my(request):
-    return HttpResponse('<h1>your notes show up here :)</h1>')
+    return render(request, 'notes/my.html', {'title': 'My Notes'})
 
 
 def view(request, note_id):
-    # XXX: XSS vuln
-    return HttpResponse(f'you are viewing note <em>{note_id}</em>')
+    return render(request, 'notes/view.html', {'title': note_id, 'note_id': note_id})
+
 
 def edit(request, note_id):
-    # XXX: XSS vuln
-    return HttpResponse(f'you are editing note <em>{note_id}</em>')
+    return render(request, 'notes/edit.html', {'title': note_id, 'note_id': note_id})
