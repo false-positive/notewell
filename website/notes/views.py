@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 
-from .models import Note
+from .models import Comment, Note
 
 
 def index(request):
@@ -14,7 +14,8 @@ def my(request):
 
 def view(request, note_id):
     note: Note = get_object_or_404(Note, uuid=note_id)
-    return render(request, 'notes/view.html', {'title': note.title, 'note': note})
+    comments = Comment.objects.filter(note=note.id)
+    return render(request, 'notes/view.html', {'title': note.title, 'note': note, 'comments': comments})
 
 
 def edit(request, note_id):

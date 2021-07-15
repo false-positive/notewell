@@ -1,5 +1,9 @@
-{% extends 'notes/base.html' %}
-
-{% block content %}
+{% extends 'notes/base.html' %} {% block content %}
 <h2>you are currently <strong>viewing</strong> note <em>{{ note.title }}</em></h2>
-{% endblock content %}
+
+<h3>Comments:</h3>
+
+{% for comment in comments %}
+<p>{{ comment.content }}</p>
+<hr />
+{% endfor %} {% endblock content %}
