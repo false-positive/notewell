@@ -1,18 +1,24 @@
-{% extends 'notes/base.html' %} {% block content %}
-<h2>you are currently <strong>viewing</strong> note <em>{{ note.title }}</em></h2>
+{% extends 'notes/base.html' %}
+
+{% block content %}
+<h2>
+  you are currently <strong>viewing</strong> note <em>{{ note.title }}</em>
+</h2>
+<h3>Author: {{ note.author.username }}</h3>
+<a href="{% url 'notes:edit' note.uuid %}">edit</a>
 
 <h3>Comments:</h3>
-{% comment %} {% url 'view' note.uuid %} {% endcomment %}
 <form action="" method="POST">
-    {% csrf_token %}
-    <ul>
+  {% csrf_token %}
+  <ul>
     {{ create_comment_form.as_ul }}
-    </ul>
-    <button>Post Comment</button>
+  </ul>
+  <button>Post Comment</button>
 </form>
-
 
 {% for comment in comments %}
 <p>{{ comment.content }}</p>
 <hr />
-{% endfor %} {% endblock content %}
+{% endfor %}
+
+{% endblock content %}

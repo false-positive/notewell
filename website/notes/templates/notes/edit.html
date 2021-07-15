@@ -2,4 +2,7 @@
 
 {% block content %}
 <h2>you are currently <strong>editing</strong> note <em>{{ note.title }}</em></h2>
+
+<h3>Author: {{ note.author.username }}</h3>
+<a href="{% url 'notes:view' note.uuid %}">view</a>
 {% endblock content %}
