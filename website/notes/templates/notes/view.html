@@ -2,6 +2,15 @@
 <h2>you are currently <strong>viewing</strong> note <em>{{ note.title }}</em></h2>
 
 <h3>Comments:</h3>
+{% comment %} {% url 'view' note.uuid %} {% endcomment %}
+<form action="" method="POST">
+    {% csrf_token %}
+    <ul>
+    {{ create_comment_form.as_ul }}
+    </ul>
+    <button>Post Comment</button>
+</form>
+
 
 {% for comment in comments %}
 <p>{{ comment.content }}</p>

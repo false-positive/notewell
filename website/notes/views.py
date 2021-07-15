@@ -1,6 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 
 from .models import Comment, Note
+from .forms import CreateCommentForm
 
 
 def index(request):
@@ -14,8 +15,26 @@ def my(request):
 
 def view(request, note_id):
     note: Note = get_object_or_404(Note, uuid=note_id)
+
     comments = Comment.objects.filter(note=note.id)
-    return render(request, 'notes/view.html', {'title': note.title, 'note': note, 'comments': comments})
+
+    create_comment_form = CreateCommentForm()
+    if request.method == "POST":
+        create_comment_form = CreateCommentForm(request.POST)
+        if create_comment_form.is_valid():
+            # Save comment to db
+            instance = create_comment_form.save(commit=False)
+            instance.note = note
+            instance.save()
+
+            # Empty form fields
+            create_comment_form = CreateCommentForm()
+
+    return render(request, 'notes/view.html', {
+        'note': note,
+        'comments': comments,
+        'create_comment_form': create_comment_form
+    })
 
 
 def edit(request, note_id):
