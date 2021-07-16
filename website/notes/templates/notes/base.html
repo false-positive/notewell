@@ -12,6 +12,17 @@
     {% endif %}
 </head>
 <body>
+    <header>
+        <ul>
+            {% if not user.is_authenticated %}
+            <li><a href="{% url 'accounts:register' %}">Sign up</a></li>
+            <li><a href="{% url 'accounts:login' %}">Log in</a></li>
+            {% else %}
+            <li>{{ user.username }}</li>
+            <li><a href="{% url 'accounts:logout' %}">Log out</a></li>
+            {% endif %}
+        </ul>
+    </header>
     <h1>Notes</h1>
     <ul>
         <li><a href="{% url 'notes:index' %}">Public (or whatever)</a></li>
