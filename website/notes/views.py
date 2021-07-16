@@ -23,7 +23,6 @@ def my(request):
 def read(request, note_id):
     note: Note = get_object_or_404(Note, uuid=note_id)
 
-    comments = Comment.objects.filter(note=note.id)
     categories = Category.objects.all()
 
     create_comment_form = CreateCommentForm()
@@ -38,11 +37,10 @@ def read(request, note_id):
             # Empty form fields
             create_comment_form = CreateCommentForm()
 
-    return render(request, 'notes/view.html', {
+    return render(request, 'notes/read.html', {
         'title': note.title,
         'categories': categories,
         'note': note,
-        'comments': comments,
         'create_comment_form': create_comment_form
     })
 

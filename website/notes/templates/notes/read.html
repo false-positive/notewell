@@ -1,6 +1,4 @@
-{% extends 'notes/base.html' %}
-
-{% block content %}
+{% extends 'notes/base.html' %} {% block content %}
 <h2>
   you are currently <strong>viewing</strong> note <em>{{ note.title }}</em>
 </h2>
@@ -16,9 +14,7 @@
   <button>Post Comment</button>
 </form>
 
-{% for comment in comments %}
+{% for comment in note.comment_set.all %}
 <p>{{ comment.content }}</p>
 <hr />
-{% endfor %}
-
-{% endblock content %}
+{% endfor %} {% endblock content %}
