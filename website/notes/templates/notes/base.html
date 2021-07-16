@@ -16,8 +16,6 @@
     <ul>
         <li><a href="{% url 'notes:index' %}">Public (or whatever)</a></li>
         <li><a href="{% url 'notes:my' %}">My</a></li>
-        <li><a href="#">Other (idk)</a></li>
-        {% comment %} <ul>    {% endcomment %}
         {% for category in categories %}
             {% if not category.parent %}
             <li>
@@ -32,7 +30,6 @@
             </li>
             {% endif %}
         {% endfor %}
-        {% comment %} </ul> {% endcomment %}
     </ul>
 
     {% block content %}{% endblock content %}

@@ -4,7 +4,7 @@
 <h2>Notes:</h2>
 
 {% for note in notes %}
-    <h3>{{ note.title }}</h3>
+    <li><a href="{% url 'notes:read' note.uuid %}">{{ note.title }}</a> by {{ note.author.username }}</li>
 {% endfor %}
 
 {% endblock content %}

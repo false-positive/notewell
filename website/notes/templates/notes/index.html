@@ -10,7 +10,7 @@
 
 <ul>
   {% for note in notes %}
-  <li><a href="{% url 'notes:read' note.uuid %}">{{ note.title }}</a></li>
+  <li><a href="{% url 'notes:read' note.uuid %}">{{ note.title }}</a> by {{ note.author.username }}</li>
   {% endfor %}
 </ul>
 {% endblock content %}
