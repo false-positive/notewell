@@ -127,5 +127,8 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Default URLs
+LOGIN_REDIRECT_URL = 'notes:index'  # TODO: change
+
 # Unit Tests
 TEST_RUNNER = 'notewell_web.runner.PytestTestRunner'
