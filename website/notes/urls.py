@@ -9,4 +9,5 @@ urlpatterns = [
     path('my/', views.my, name='my'),
     path('<uuid:note_id>/view/', views.view, name='view'),
     path('<uuid:note_id>/edit/', views.edit, name='edit'),
+    path('<path:cat_path>/', views.category, name='category'),
 ]

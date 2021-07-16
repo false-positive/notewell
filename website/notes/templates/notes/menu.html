@@ -1,0 +1,13 @@
+{% for category in categories %}
+    <li>
+        <a href="{% url "notes:category" category.get_full_path %}">
+            {{ category.name }}
+            {% if category.children.all %}
+                <ul>
+                    {% include "notes/menu.html" with categories=category.children.all %}
+                </ul>
+            {% endif %} 
+        </a>
+    </li>
+{% endfor %}
+

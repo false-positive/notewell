@@ -17,6 +17,22 @@
         <li><a href="{% url 'notes:index' %}">Public (or whatever)</a></li>
         <li><a href="{% url 'notes:my' %}">My</a></li>
         <li><a href="#">Other (idk)</a></li>
+        {% comment %} <ul>    {% endcomment %}
+        {% for category in categories %}
+            {% if not category.parent %}
+            <li>
+                <a href="{% url "notes:category" category.get_full_path %}">
+                    {{ category.name }}
+                    {% if category.children.all %}
+                        <ul>
+                            {% include "notes/menu.html" with categories=category.children.all %}
+                        </ul>
+                    {% endif %}
+                </a>
+            </li>
+            {% endif %}
+        {% endfor %}
+        {% comment %} </ul> {% endcomment %}
     </ul>
 
     {% block content %}{% endblock content %}

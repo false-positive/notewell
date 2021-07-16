@@ -1,0 +1,10 @@
+{% extends 'notes/base.html' %} {% block content %}
+<h2>you are currently <strong>viewing</strong> category <em>{{ title }}</em></h2>
+
+<h2>Notes:</h2>
+
+{% for note in notes %}
+    <h3>{{ note.title }}</h3>
+{% endfor %}
+
+{% endblock content %}
