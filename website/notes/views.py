@@ -20,7 +20,7 @@ def my(request):
     })
 
 
-def view(request, note_id):
+def read(request, note_id):
     note: Note = get_object_or_404(Note, uuid=note_id)
 
     comments = Comment.objects.filter(note=note.id)
