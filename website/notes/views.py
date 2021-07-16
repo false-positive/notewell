@@ -1,4 +1,5 @@
 from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 
 from .models import Category, Comment, Note
 from .forms import CreateCommentForm
@@ -20,8 +21,9 @@ def my(request):
     })
 
 
+@login_required
 def read(request, note_id):
-    note: Note = get_object_or_404(Note, uuid=note_id)
+    note: Note = get_object_or_404(Note, uuid=note_id, author=request.user)
 
     categories = Category.objects.all()
 
@@ -45,8 +47,9 @@ def read(request, note_id):
     })
 
 
+@login_required
 def edit(request, note_id):
-    note: Note = get_object_or_404(Note, uuid=note_id)
+    note: Note = get_object_or_404(Note, uuid=note_id, author=request.user)
     return render(request, 'notes/edit.html', {'title': note.title, 'note': note})
 
 
