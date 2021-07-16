@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
-from .models import Category, Comment, Note
+from .models import BulletPoint, Category, Comment, Note
 from .forms import CreateCommentForm
 
 
@@ -25,7 +25,16 @@ def my(request):
 def read(request, note_id):
     note: Note = get_object_or_404(Note, uuid=note_id, author=request.user)
 
-    categories = Category.objects.all()
+    bulletPoints = BulletPoint.objects.filter(
+        note=note.id).order_by('order_id')
+
+    # Sort bulletpoints
+    bulletPoints = sorted(bulletPoints, key=lambda x: x.order_id)
+
+    for bp in bulletPoints:
+        print(bp.order_id)
+
+    print(note.bulletpoint_set.all())
 
     create_comment_form = CreateCommentForm()
     if request.method == "POST":
@@ -36,12 +45,11 @@ def read(request, note_id):
             instance.note = note
             instance.save()
 
-            # Empty form fields
-            create_comment_form = CreateCommentForm()
+            return redirect(request.path_info)
 
     return render(request, 'notes/read.html', {
         'title': note.title,
-        'categories': categories,
+        'categories': Category.objects.all(),
         'note': note,
         'create_comment_form': create_comment_form
     })

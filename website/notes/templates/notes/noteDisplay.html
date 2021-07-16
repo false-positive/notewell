@@ -1,0 +1,11 @@
+{% for bulletPoint in bulletPoints %}
+    <li>
+        {{ bulletPoint.content }}
+        {% if bulletPoint.children.all %}
+            <ul>
+                {% include "notes/noteDisplay.html" with bulletPoints=bulletPoint.children.all %}
+            </ul>
+        {% endif %} 
+    </li>
+{% endfor %}
+

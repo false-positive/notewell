@@ -2,6 +2,26 @@
 <h2>
   you are currently <strong>viewing</strong> note <em>{{ note.title }}</em>
 </h2>
+
+<hr>
+
+<ul>
+    {% for bulletPoint in note.bulletpoint_set.all %}
+        {% if not bulletPoint.parent %}
+        <li>
+            {{ bulletPoint.content }}
+            {% if bulletPoint.children.all %}
+                <ul>
+                    {% include "notes/noteDisplay.html" with bulletPoints=bulletPoint.children.all %}
+                </ul>
+            {% endif %}
+        </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+<hr>
+
 <h3>Author: {{ note.author.username }}</h3>
 <a href="{% url 'notes:edit' note.uuid %}">edit</a>
 
