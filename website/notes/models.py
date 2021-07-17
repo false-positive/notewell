@@ -63,3 +63,23 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.content
+
+
+# class Quiz(models.Model):
+#     creation_date = models.DateField()
+#     note = models.ForeignKey(Note, on_delete=models.CASCADE)
+
+#     def __str__(self):
+#         return 'Quiz'
+
+
+# class Choice(models.Model):
+#     choice = models.CharField(_("Choice"), max_length=256)
+#     question = models.ForeignKey('Question', on_delete=models.CASCADE)
+
+
+# class Question(models.Model):
+#     question_text = models.CharField(_("Question"), max_length=256)
+#     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+#     correct_answer = models.OneToOneField(
+#         Choice, on_delete=models.CASCADE, blank=True, null=True)
