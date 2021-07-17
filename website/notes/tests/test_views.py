@@ -2,6 +2,7 @@ import pytest
 from django.urls import reverse
 
 from ..models import Note
+from ..forms import CreateCommentForm
 
 
 @pytest.mark.django_db
@@ -34,6 +35,8 @@ class TestRead:
         assert response.status_code == 200
         assert response.context['title'] == note1.title
         assert response.context['note'] == note1
+        assert isinstance(response.context['create_comment_form'], CreateCommentForm)  # noqa
+        # TODO: test if the categories are properly selected
 
     def test_nonexistent_note(self, client, current_user):
         response = client.get(reverse('notes:read', kwargs={

@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 
 from .models import BulletPoint, Category, Comment, Note
 from .forms import CreateCommentForm
@@ -25,22 +26,10 @@ def my(request):
 def read(request, note_id):
     note: Note = get_object_or_404(Note, uuid=note_id, author=request.user)
 
-    bulletPoints = BulletPoint.objects.filter(
-        note=note.id).order_by('order_id')
-
-    # Sort bulletpoints
-    bulletPoints = sorted(bulletPoints, key=lambda x: x.order_id)
-
-    for bp in bulletPoints:
-        print(bp.order_id)
-
-    print(note.bulletpoint_set.all())
-
     create_comment_form = CreateCommentForm()
     if request.method == "POST":
         create_comment_form = CreateCommentForm(request.POST)
         if create_comment_form.is_valid():
-            # Save comment to db
             instance = create_comment_form.save(commit=False)
             instance.note = note
             instance.save()
@@ -62,19 +51,19 @@ def edit(request, note_id):
 
 
 def category(request, cat_path):
-    pathExist = False
+    path_exists = False
     for cat in Category.objects.all():
         if cat.get_full_path() == cat_path:
-            pathExist = True
+            path_exists = True
 
-    if not pathExist:
-        # TODO: Add a 404 page
-        return redirect('/notes/')
+    if not path_exists:
+        raise Http404('Category not found')
 
     cat_slug = cat_path.split('/')[-1]
     category: Category = get_object_or_404(Category, slug=cat_slug)
     categories = Category.objects.all()
 
+    # TODO: figure out how to make a join or something here
     notes = []
 
     def get_all_child_notes(category):
