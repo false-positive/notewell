@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,9 +12,11 @@
     {% else %}
     <title>Notewell</title>
     {% endif %}
+    <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet" />
+    <link href="{% static 'notes/css/base.css' %}" rel="stylesheet" />
 </head>
 <body>
-    <header>
+    {% comment %} <header>
         <ul>
             {% if not user.is_authenticated %}
             <li><a href="{% url 'accounts:register' %}">Sign up</a></li>
@@ -24,25 +28,109 @@
         </ul>
     </header>
     <h1>Notes</h1>
-    <ul>
-        <li><a href="{% url 'notes:index' %}">Public (or whatever)</a></li>
-        <li><a href="{% url 'notes:my' %}">My</a></li>
-        {% for category in categories %}
-            {% if not category.parent %}
-            <li>
-                <a href="{% url "notes:category" category.get_full_path %}">
-                    {{ category.name }}
-                    {% if category.children.all %}
-                        <ul>
-                            {% include "notes/menu.html" with categories=category.children.all %}
-                        </ul>
-                    {% endif %}
-                </a>
-            </li>
-            {% endif %}
-        {% endfor %}
-    </ul>
+     {% endcomment %}
+
+    <header>
+            <div class="container">
+                <nav>
+                    <div class="menu-icons">
+                        <i class="icon ion-md-menu"></i>
+                        <i class="icon ion-md-close"></i>
+                    </div>
+
+                    <img src="" alt="Logo" class="logo">
+
+
+                    <ul class="nav-list">
+                        <li><a href="{% url 'notes:index' %}">Public</a></li>
+                        <li><a href="{% url 'notes:my' %}">My</a></li>
+                        <li>
+                            <a href="#">
+                                Subjects
+                                <i class="icon ion-md-arrow-dropdown"></i>
+                            </a>
+                            <ul class="sub-menu">
+                                {% for category in categories %}
+                                    {% if not category.parent %}
+                                    <li>
+                                        <a href="{% url "notes:category" category.get_full_path %}">
+                                            {{ category.name }}
+                                            {% if category.children.all %}
+                                                <i class="icon ion-md-arrow-dropdown"></i> 
+                                            {% endif %}
+                                        </a>
+                                            {% if category.children.all %}
+                                                <ul class="sub-menu">
+                                                    {% include "notes/menu.html" with categories=category.children.all %}
+                                                </ul>
+                                            {% endif %}
+                                    </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        {% if not user.is_authenticated %}
+                        <li class="move-right"><a href="{% url 'accounts:register' %}">Sign up</a></li>
+                        <li><a href="{% url 'accounts:login' %}">Log in</a></li>
+                        {% else %}
+                        <li class="move-right">
+                            <a href="#">
+                                {{ user.username }}
+                                <i class="icon ion-md-arrow-dropdown"></i> 
+                            </a>
+                            <ul class="sub-menu">
+                                <li><a href="{% url 'accounts:logout' %}">Log out</a></li>
+                            </ul>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    {% comment %} <ul class="nav-list">
+                        <li><a href="#">Home</a></li>
+                        <li>
+                            <a href="#">
+                                Menu
+                                <i class="icon ion-md-arrow-dropdown"></i>
+                            </a>
+                            <ul class="sub-menu">
+                                <li><a href="#">Breakfast</a></li>
+                                <li>
+                                    <a href="#">
+                                        Lunch
+                                        <i class="icon ion-md-arrow-dropdown"></i>
+                                    </a>
+                                    <ul class="sub-menu">
+                                        <li><a href="#">Food</a></li>
+                                        <li><a href="#">Food</a></li>
+                                        <li>
+                                            <a href="#">
+                                                More...
+                                                <i class="icon ion-md-arrow-dropdown"></i>
+                                            </a>
+                                            <ul class="sub-menu">
+                                                <li><a href="#">Food</a></li>
+                                                <li><a href="#">Food</a></li>
+                                                <li><a href="#">Food</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li><a href="#">Dinner</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#">Our chefs</a></li>
+                        <li><a href="#">Gallery</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li class="move-right btn">
+                            <a href="#">Book a table</a>
+                        </li>
+                    </ul> {% endcomment %}
+                </nav>
+            </div>
+        </header>
 
     {% block content %}{% endblock content %}
+
+    <script src="{% static 'notes/js/nav.js' %}"></script>
 </body>
 </html>

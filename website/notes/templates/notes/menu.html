@@ -3,11 +3,14 @@
         <a href="{% url "notes:category" category.get_full_path %}">
             {{ category.name }}
             {% if category.children.all %}
-                <ul>
+                <i class="icon ion-md-arrow-dropdown"></i> 
+            {% endif %} 
+        </a>
+            {% if category.children.all %}
+                <ul class="sub-menu">
                     {% include "notes/menu.html" with categories=category.children.all %}
                 </ul>
             {% endif %} 
-        </a>
     </li>
 {% endfor %}
 
