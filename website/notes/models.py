@@ -74,7 +74,7 @@ class SharedItem(models.Model):
     PERM_LEVEL_EDIT = 'W'
     PERM_LEVEL_CHOICES = [
         (PERM_LEVEL_READ, 'Viewer'),
-        (PERM_LEVEL_READ, 'Editor'),
+        (PERM_LEVEL_EDIT, 'Editor'),
     ]
 
     perm_level = models.CharField(
@@ -82,7 +82,7 @@ class SharedItem(models.Model):
         choices=PERM_LEVEL_CHOICES, default=PERM_LEVEL_READ
     )
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.note} - {self.user} ({self.perm_level})'

@@ -48,7 +48,7 @@ def read(request, note_id):
 
 @login_required
 def edit(request, note_id):
-    note: Note = get_object_or_404(Note, uuid=note_id, author=request.user)
+    note: Note = get_object_or_404(Note, uuid=note_id)
     if not note.can_be_edited_by(request.user):
         raise Http404('Note not found')
     return render(request, 'notes/edit.html', {'title': note.title, 'note': note})
