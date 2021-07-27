@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 
@@ -50,6 +50,9 @@ def read(request, note_id):
 def edit(request, note_id):
     note: Note = get_object_or_404(Note, uuid=note_id)
     if not note.can_be_edited_by(request.user):
+        if note.can_be_read_by(request.user):
+            read_url = reverse('notes:read', kwargs={'note_id': note_id})
+            return redirect(read_url)
         raise Http404('Note not found')
     return render(request, 'notes/edit.html', {'title': note.title, 'note': note})
 
