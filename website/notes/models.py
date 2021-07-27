@@ -42,8 +42,50 @@ class Note(models.Model):
     title = models.CharField(_('Name of Note'), max_length=64)
     categories = models.ManyToManyField(Category, blank=True)
 
+    def can_be_read_by(self, user: User) -> bool:
+        if user == self.author:
+            return True
+        if self.shareditem_set \
+                .filter(
+                    user=user,
+                    perm_level__in=(SharedItem.PERM_LEVEL_READ,
+                                    SharedItem.PERM_LEVEL_EDIT),
+                ).first():
+            return True
+        return False
+
+    def can_be_edited_by(self, user: User) -> bool:
+        if user == self.author:
+            return True
+        if self.shareditem_set \
+                .filter(
+                    user=user,
+                    perm_level=SharedItem.PERM_LEVEL_EDIT,
+                ).first():
+            return True
+        return False
+
     def __str__(self):
         return self.title
+
+
+class SharedItem(models.Model):
+    PERM_LEVEL_READ = 'R'
+    PERM_LEVEL_EDIT = 'W'
+    PERM_LEVEL_CHOICES = [
+        (PERM_LEVEL_READ, 'Viewer'),
+        (PERM_LEVEL_READ, 'Editor'),
+    ]
+
+    perm_level = models.CharField(
+        _('Permission Level'), max_length=1,
+        choices=PERM_LEVEL_CHOICES, default=PERM_LEVEL_READ
+    )
+    note = models.ForeignKey(Note, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.note} - {self.user} ({self.perm_level})'
 
 
 class BulletPoint(models.Model):
