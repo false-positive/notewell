@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 
-from .models import BulletPoint, Category, Comment, Note
+from .models import Category, Note
 from .forms import CreateCommentForm
 
 
@@ -28,7 +28,7 @@ def my(request):
 def read(request, note_id):
     note: Note = get_object_or_404(Note, uuid=note_id)
     if not note.can_be_read_by(request.user):
-        raise Http404('Note not found')
+        raise Http404('No Note matches the given query.')
 
     create_comment_form = CreateCommentForm()
     if request.method == "POST":
@@ -44,7 +44,7 @@ def read(request, note_id):
         'title': note.title,
         'categories': Category.objects.all(),
         'note': note,
-        'create_comment_form': create_comment_form
+        'create_comment_form': create_comment_form,
     })
 
 
@@ -55,8 +55,11 @@ def edit(request, note_id):
         if note.can_be_read_by(request.user):
             read_url = reverse('notes:read', kwargs={'note_id': note_id})
             return redirect(read_url)
-        raise Http404('Note not found')
-    return render(request, 'notes/edit.html', {'title': note.title, 'note': note})
+        raise Http404('No Note matches the given query.')
+    return render(request, 'notes/edit.html', {
+        'title': note.title,
+        'note': note,
+    })
 
 
 def category(request, cat_path):
@@ -87,5 +90,5 @@ def category(request, cat_path):
     return render(request, 'notes/category.html', {
         'title': category.name,
         'categories': categories,
-        'notes': notes
+        'notes': notes,
     })
