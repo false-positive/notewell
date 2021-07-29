@@ -7,18 +7,20 @@ from .forms import CreateCommentForm
 
 
 def index(request):
-    notes = Note.objects.all()
+    notes = Note.objects.select_related('author')
+    categories = Category.objects.all()
     return render(request, 'notes/index.html', {
         'title': 'Public Notes',
         'notes': notes,
-        'categories': Category.objects.all(),
+        'categories': categories,
     })
 
 
 def my(request):
+    categories = Category.objects.all()
     return render(request, 'notes/my.html', {
         'title': 'My Notes',
-        'categories': Category.objects.all(),
+        'categories': categories,
     })
 
 
