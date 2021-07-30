@@ -2,16 +2,5 @@
   "python.pythonPath": "/home/bobi/.local/share/virtualenvs/website-SQyXdbn1/bin/python3.9",
   "python.linting.pylintEnabled": false,
   "python.linting.flake8Enabled": true,
-  "python.linting.enabled": true,
-
-  // Fix prettier's formatting
-  "files.assosiations": {
-    "**/*.html": "html",
-    "**/templates/*/*.html": "django.html",
-    "**/templates/*": "django.html"
-  },
-  "unibeautify.enabled": "true",
-  "[django-html]": {
-    "editor.defaultFormatter": "Glavin001.unibeautify-vscode"
-  }
+  "python.linting.enabled": true
 }

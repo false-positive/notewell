@@ -1,42 +1,40 @@
 {% extends 'notes/base.html' %}
 
 {% block content %}
-  <h1>{{ note.title }}</h1>
+<h1>{{ note.title }}</h1>
 
-  <h2>Author:
-    {{ note.author.username }}</h2>
-  <a href="{% url 'notes:edit' note.uuid %}">edit</a>
+<h2>Author: {{ note.author.username }}</h2>
+<a href="{% url 'notes:edit' note.uuid %}">edit</a>
 
-  <hr>
+<hr>
 
-  <ul>
+<ul>
     {% for bullet_point in note.bulletpoint_set.all %}
-      {% if not bullet_point.parent %}
+        {% if not bullet_point.parent %}
         <li>
-          {{ bullet_point.content }}
-          {% if bullet_point.children.all %}
-            <ul>
-              {% include "notes/note_display.html" with bullet_points = bullet_point.children.all %}
-            </ul>
-          {% endif %}
+            {{ bullet_point.content }}
+            {% if bullet_point.children.all %}
+                <ul>
+                    {% include "notes/note_display.html" with bullet_points=bullet_point.children.all %}
+                </ul>
+            {% endif %}
         </li>
-      {% endif %}
+        {% endif %}
     {% endfor %}
+</ul>
+
+<hr>
+
+<h3>Comments:</h3>
+<form action="" method="POST">
+  {% csrf_token %}
+  <ul>
+    {{ create_comment_form.as_ul }}
   </ul>
+  <button>Post Comment</button>
+</form>
 
-  <hr>
-
-  <h3>Comments:</h3>
-  <form action="" method="POST">
-    {% csrf_token %}
-    <ul>
-      {{ create_comment_form.as_ul }}
-    </ul>
-    <button>Post Comment</button>
-  </form>
-
-  {% for comment in note.comment_set.all %}
-    <p>{{ comment.content }}</p>
-    <hr/>
-  {% endfor %}
-{% endblock content %}
+{% for comment in note.comment_set.all %}
+<p>{{ comment.content }}</p>
+<hr />
+{% endfor %} {% endblock content %}
