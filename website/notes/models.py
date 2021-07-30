@@ -1,21 +1,27 @@
-from typing import Text
 import uuid
 
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 
-# Just a friendly reminder to makemigrations and migrate after changing this file :)
+# Just a friendly reminder to makemigrations and migrate after changing this :)
 
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField()
     parent = models.ForeignKey(
-        'self', blank=True, null=True, related_name='children', on_delete=models.CASCADE)
+        'self',
+        blank=True,
+        null=True,
+        related_name='children',
+        on_delete=models.CASCADE
+    )
 
     class Meta:
-        # enforcing that there can not be two categories under a parent with same slug
+        # enforcing that there can not be two categories under a parent with
+        # same slug
         unique_together = ('slug', 'parent',)
         verbose_name_plural = "categories"
 
@@ -36,11 +42,20 @@ class Category(models.Model):
         return ' / '.join(full_path[::-1])
 
 
+class NoteQuerySet(models.QuerySet):
+    def filter_accessible_notes_by(self, user_pk):
+        return self.filter(
+            Q(author__pk=user_pk) | Q(shareditem__user__pk=user_pk)
+        ).distinct()  # For some reason, notes in the QS were repeating
+
+
 class Note(models.Model):
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(_('Name of Note'), max_length=64)
     categories = models.ManyToManyField(Category, blank=True)
+
+    objects = NoteQuerySet.as_manager()
 
     def can_be_read_by(self, user: User) -> bool:
         if user == self.author:
@@ -91,7 +106,12 @@ class SharedItem(models.Model):
 class BulletPoint(models.Model):
     content = models.TextField()
     parent = models.ForeignKey(
-        'self', blank=True, null=True, related_name='children', on_delete=models.CASCADE)
+        'self',
+        blank=True,
+        null=True,
+        related_name='children',
+        on_delete=models.CASCADE
+    )
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
     order_id = models.IntegerField()
 

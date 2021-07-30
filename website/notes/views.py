@@ -4,6 +4,7 @@ from django.http import Http404
 
 from .models import Category, Note
 from .forms import CreateCommentForm
+from .shortcuts import get_accessible_note_or_404
 
 
 def index(request):
@@ -26,9 +27,7 @@ def my(request):
 
 @login_required
 def read(request, note_id):
-    note: Note = get_object_or_404(Note, uuid=note_id)
-    if not note.can_be_read_by(request.user):
-        raise Http404('No Note matches the given query.')
+    note: Note = get_accessible_note_or_404(request.user.pk, uuid=note_id)
 
     create_comment_form = CreateCommentForm()
     if request.method == "POST":
@@ -42,7 +41,6 @@ def read(request, note_id):
 
     return render(request, 'notes/read.html', {
         'title': note.title,
-        'categories': Category.objects.all(),
         'note': note,
         'create_comment_form': create_comment_form,
     })
@@ -50,12 +48,11 @@ def read(request, note_id):
 
 @login_required
 def edit(request, note_id):
-    note: Note = get_object_or_404(Note, uuid=note_id)
+    note: Note = get_accessible_note_or_404(request.user.pk, uuid=note_id)
     if not note.can_be_edited_by(request.user):
-        if note.can_be_read_by(request.user):
-            read_url = reverse('notes:read', kwargs={'note_id': note_id})
-            return redirect(read_url)
-        raise Http404('No Note matches the given query.')
+        read_url = reverse('notes:read', kwargs={'note_id': note_id})
+        return redirect(read_url)
+
     return render(request, 'notes/edit.html', {
         'title': note.title,
         'note': note,
