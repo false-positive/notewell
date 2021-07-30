@@ -1,12 +1,13 @@
 {% extends 'notes/base.html' %}
 
 {% block content %}
-<h1>{{ note.title }}</h1>
+  <h1>{{ note.title }}</h1>
 
-<h2>Author: {{ note.author.username }}</h2>
-<a href="{% url 'notes:read' note.uuid %}">view</a>
+  <h2>Author:
+    {{ note.author.username }}</h2>
+  <a href="{% url 'notes:read' note.uuid %}">view</a>
 
-<hr />
+  <hr/>
 
-<p>This is where you would edit this note...</p>
+  <p>This is where you would edit this note...</p>
 {% endblock content %}
