@@ -1,5 +1,5 @@
 # notewell
-The notewell `note app` project.
+The notewell project.
 
 Here's how y'all can run the Django project (in `website/`). _(Works everywhere)_
 
