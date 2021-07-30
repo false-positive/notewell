@@ -1,18 +1,21 @@
-{% extends 'notes/base.html' %} {% block content %}
-<h2>
-  you are currently <strong>viewing</strong> note <em>{{ note.title }}</em>
-</h2>
+{% extends 'notes/base.html' %}
+
+{% block content %}
+<h1>{{ note.title }}</h1>
+
+<h2>Author: {{ note.author.username }}</h2>
+<a href="{% url 'notes:edit' note.uuid %}">edit</a>
 
 <hr>
 
 <ul>
-    {% for bulletPoint in note.bulletpoint_set.all %}
-        {% if not bulletPoint.parent %}
+    {% for bullet_point in note.bulletpoint_set.all %}
+        {% if not bullet_point.parent %}
         <li>
-            {{ bulletPoint.content }}
-            {% if bulletPoint.children.all %}
+            {{ bullet_point.content }}
+            {% if bullet_point.children.all %}
                 <ul>
-                    {% include "notes/noteDisplay.html" with bulletPoints=bulletPoint.children.all %}
+                    {% include "notes/note_display.html" with bullet_points=bullet_point.children.all %}
                 </ul>
             {% endif %}
         </li>
@@ -21,9 +24,6 @@
 </ul>
 
 <hr>
-
-<h3>Author: {{ note.author.username }}</h3>
-<a href="{% url 'notes:edit' note.uuid %}">edit</a>
 
 <h3>Comments:</h3>
 <form action="" method="POST">

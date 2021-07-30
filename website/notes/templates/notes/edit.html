@@ -1,21 +1,12 @@
 {% extends 'notes/base.html' %}
 
 {% block content %}
-<h2>you are currently <strong>editing</strong> note <em>{{ note.title }}</em></h2>
+<h1>{{ note.title }}</h1>
 
-
-<textarea rows="40" cols="40">
-<ul>
-    <li>hello</li>
-    <li>hello</li>
-    <li>hello</li>
-    <li>hello</li>
-</ul>
-
-</textarea>
-
-
-
-<h3>Author: {{ note.author.username }}</h3>
+<h2>Author: {{ note.author.username }}</h2>
 <a href="{% url 'notes:read' note.uuid %}">view</a>
+
+<hr />
+
+<p>This is where you would edit this note...</p>
 {% endblock content %}
