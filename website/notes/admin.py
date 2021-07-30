@@ -1,8 +1,10 @@
 from django.contrib import admin
 from django.forms import Textarea
 from django.db import models
+from django.shortcuts import reverse
+from django.utils.html import format_html
 
-from .models import Comment, BulletPoint, Note, Comment, Category, SharedItem
+from .models import Comment, BulletPoint, Note, Category, SharedItem
 
 
 class CommentInline(admin.TabularInline):
@@ -85,4 +87,11 @@ class SharedItemInline(admin.TabularInline):
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
     inlines = [BulletPointInline, CommentInline, SharedItemInline]
-    list_display = ('title',)
+    list_display = ['title', 'author', 'uuid_link']
+
+    @admin.display(ordering='uuid', description='UUID')
+    def uuid_link(self, note):
+        url = reverse('notes:read', kwargs={'note_id': note.uuid})
+
+        fmt = '<a href="{}" target="_blank">{}</a>'
+        return format_html(fmt, url, note.uuid)
