@@ -1,18 +1,16 @@
-{% extends 'notes/list_page.html' %} {% load static %} {% block head %}
+{% extends 'notes/list_page.html' %} 
+{% load static %} 
+
+{% block head %}
 <link rel="stylesheet" href="{% static 'notes/css/note_list.css' %}" />
-{% endblock head %} {% block content %}
+{% endblock head %} 
 
-<!-- <h2>
-  you are currently <strong>viewing</strong> category <em>{{ title }}</em>
-</h2>
-
-<h2>Notes:</h2> -->
+{% block content %}
 
 <section class="section-notes">
-    <ul class="note-list">
-        {% for note in notes %}
-        <li>{% include 'notes/components/note.html' %}</li>
-        {% endfor %}
-    </ul>
+    {% for note in notes %} 
+        {% include 'notes/components/note.html' %}
+    {% endfor %}
 </section>
+
 {% endblock content %}
