@@ -9,5 +9,9 @@
       "path": "website"
     }
   ],
-  "settings": {}
+  "settings": {
+      "prettier.singleQuote": true,
+      "prettier.tabWidth": 4,
+      "editor.tabSize": 2
+  }
 }
