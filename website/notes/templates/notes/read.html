@@ -9,29 +9,29 @@
 <hr>
 
 <ul>
-  {% for bullet_point in note.bulletpoint_set.all %}
-    {% if not bullet_point.parent %}
-    <li>
-      {{ bullet_point.content }}
-      {% if bullet_point.children.all %}
-        <ul>
-          {% include "notes/note_display.html" with bullet_points=bullet_point.children.all %}
-        </ul>
-      {% endif %}
-    </li>
-    {% endif %}
-  {% endfor %}
+    {% for bullet_point in note.bulletpoint_set.all %}
+        {% if not bullet_point.parent %}
+        <li>
+            {{ bullet_point.content }}
+            {% if bullet_point.children.all %}
+                <ul>
+                    {% include "notes/note_display.html" with bullet_points=bullet_point.children.all %}
+                </ul>
+            {% endif %}
+        </li>
+        {% endif %}
+    {% endfor %}
 </ul>
 
 <hr>
 
 <h3>Comments:</h3>
 <form action="" method="POST">
-  {% csrf_token %}
-  <ul>
-  {{ create_comment_form.as_ul }}
-  </ul>
-  <button>Post Comment</button>
+    {% csrf_token %}
+    <ul>
+    {{ create_comment_form.as_ul }}
+    </ul>
+    <button>Post Comment</button>
 </form>
 
 {% for comment in note.comment_set.all %}
