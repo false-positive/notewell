@@ -1,14 +1,18 @@
-{% extends 'notes/list_page.html' %}
+{% extends 'notes/list_page.html' %} {% load static %} {% block head %}
+<link rel="stylesheet" href="{% static 'notes/css/note_list.css' %}" />
+{% endblock head %} {% block content %}
 
-{% block content %}
-<h2>
+<!-- <h2>
   you are currently <strong>viewing</strong> category <em>{{ title }}</em>
 </h2>
 
-<h2>Notes:</h2>
+<h2>Notes:</h2> -->
 
-{% for note in notes %}
-<li>
-  <a href="{% url 'notes:read' note.uuid %}">{{ note.title }}</a> by {{ note.author.username }}
-</li>
-{% endfor %} {% endblock content %}
+<section class="section-notes">
+    <ul class="note-list">
+        {% for note in notes %}
+        <li>{% include 'notes/components/note.html' %}</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock content %}

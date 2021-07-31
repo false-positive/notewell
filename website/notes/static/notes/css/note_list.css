@@ -1,0 +1,71 @@
+.note-list {
+    list-style: none;
+}
+
+.note-list li {
+    display: inline;
+}
+
+.note {
+    margin: 3rem auto;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    /* justify-content: center; */
+    width: 40%;
+    padding: 1rem 1.5rem;
+    border-radius: 2rem;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5), inset 0px 4px 4px rgba(0, 0, 0, 0.5);
+}
+
+.note > a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.3s;
+}
+
+.note > a:hover {
+    color: #3c89d2;
+}
+
+.note h2 {
+    text-transform: capitalize;
+
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.note-extra-info {
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-bottom: 0.6rem;
+    /* border-bottom: 1px solid black; */
+}
+
+.note-extra-info .author {
+    margin-right: 2rem;
+}
+
+.note-extra-info .date {
+    margin-left: auto;
+}
+
+.note-tags {
+    font-size: 1.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    /* justify-content: space-between; */
+}
+
+.tag {
+    text-transform: capitalize;
+    color: #000;
+    padding: 0.3rem 0.6rem;
+    background: #d3d3d3;
+    border-radius: 0.5rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.3rem;
+}

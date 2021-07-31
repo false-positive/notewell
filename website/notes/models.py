@@ -54,6 +54,7 @@ class Note(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(_('Name of Note'), max_length=64)
     categories = models.ManyToManyField(Category, blank=True)
+    creation_date = models.DateField()
 
     objects = NoteQuerySet.as_manager()
 

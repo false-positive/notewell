@@ -1,14 +1,14 @@
 *,
 *::before,
 *::after {
-    /* margin: 0; */
-    /* padding: 0; */
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
 html {
     font-family: "Lato", sans-serif;
-    /* font-size: 10px; */
+    font-size: 10px;
 }
 
 body {
@@ -20,7 +20,7 @@ a {
     text-decoration: none;
 }
 
-ul {
+nav ul {
     list-style: none;
 }
 
@@ -38,7 +38,8 @@ header {
 
 .container {
     width: 100%;
-    max-width: 117rem;
+    max-width: 50%;
+    /* max-width: 117rem; */
     margin: 0 auto;
     padding: 0 1.5rem;
 }
@@ -82,7 +83,7 @@ nav {
     font-weight: 400;
 
     padding: 0 1.5rem;
-    font-size: 1.7rem;
+    font-size: 2rem;
     text-transform: uppercase;
     transition: color 0.3s;
 }
@@ -105,7 +106,7 @@ nav {
     top: 16rem;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.65s ease;
+    /* transition: all 0.65s ease; */
     border-radius: 0 0 1rem 1rem;
 }
 
@@ -151,6 +152,13 @@ nav {
 li.move-right {
     margin: auto 0 auto auto;
     align-self: 10;
+}
+
+.title {
+    text-align: center;
+    text-transform: capitalize;
+    font-size: 4rem;
+    padding: 3rem 0;
 }
 
 @media screen and (max-width: 850px) {
