@@ -1,25 +1,32 @@
 from django.shortcuts import redirect, render, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
+from django.views.generic import ListView
 
 from .models import Category, Note
 from .forms import CreateCommentForm
 from .shortcuts import get_accessible_note_or_404
 
 
-def index(request):
-    notes = Note.objects.select_related('author')
-    categories = Category.objects.all()
-    return render(request, 'notes/index.html', {
-        'title': 'Public Notes',
-        'notes': notes,
-        'categories': categories,
-    })
+class NoteListView(ListView):
+    model = Note
+
+    def get_queryset(self):
+        user_pk = self.request.user.pk
+        return super().get_queryset() \
+            .select_related('author') \
+            .filter_accessible_notes_by(user_pk=user_pk)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'All Notes'
+        context['categories'] = Category.objects.all()
+        return context
 
 
 def my(request):
     categories = Category.objects.all()
-    return render(request, 'notes/my.html', {
+    return render(request, 'notes/note_list.html', {
         'title': 'My Notes',
         'categories': categories,
     })
@@ -84,8 +91,8 @@ def category(request, cat_path):
 
     get_all_child_notes(category)
 
-    return render(request, 'notes/category.html', {
+    return render(request, 'notes/note_list.html', {
         'title': category.name,
         'categories': categories,
-        'notes': notes,
+        'object_list': notes,
     })

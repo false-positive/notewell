@@ -9,7 +9,7 @@ from ..forms import CreateCommentForm
 def test_index(client):
     response = client.get(reverse('notes:index'))
     assert response.status_code == 200
-    assert response.context['title'] == 'Public Notes'
+    assert response.context['title'] == 'All Notes'
 
 
 @pytest.mark.django_db

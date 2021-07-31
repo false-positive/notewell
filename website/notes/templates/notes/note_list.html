@@ -1,6 +1,11 @@
 {% extends 'notes/base.html' %}
+{% load static %}
 
-{% block header %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'notes/css/note_list.css' %}" />
+{% endblock head %} 
+
+{% block content %}
     <header>
         <div class="container">
             <nav>
@@ -12,7 +17,7 @@
                 <img src="" alt="Logo" class="logo" />
 
                 <ul class="nav-list">
-                    <li><a href="{% url 'notes:index' %}">Public</a></li>
+                    <li><a href="{% url 'notes:index' %}">All</a></li>
                     <li><a href="{% url 'notes:my' %}">My</a></li>
                     <li>
                         <a href="#">
@@ -63,4 +68,10 @@
     <div class="space-block"></div>
 
     <h1 class="title">{{ title }}</h1>
-{% endblock header %}
+    
+    <section class="section-notes">
+        {% for object in object_list %} 
+            {% include 'notes/components/note.html' with note=object %}
+        {% endfor %}
+    </section>
+{% endblock content %}
