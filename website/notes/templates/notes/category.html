@@ -2,15 +2,13 @@
 {% load static %} 
 
 {% block head %}
-<link rel="stylesheet" href="{% static 'notes/css/note_list.css' %}" />
+  <link rel="stylesheet" href="{% static 'notes/css/note_list.css' %}" />
 {% endblock head %} 
 
 {% block content %}
-
-<section class="section-notes">
+  <section class="section-notes">
     {% for note in notes %} 
-        {% include 'notes/components/note.html' %}
+      {% include 'notes/components/note.html' %}
     {% endfor %}
-</section>
-
+  </section>
 {% endblock content %}

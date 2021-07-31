@@ -2,20 +2,13 @@
 {% load static %} 
 
 {% block head %}
-<link rel="stylesheet" href="{% static 'notes/css/note_list.css' %}" />
+  <link rel="stylesheet" href="{% static 'notes/css/note_list.css' %}" />
 {% endblock head %} 
 
 {% block content %}
-{% comment %} <h2>put whatever you want here :)</h2> {% endcomment %}
-
-{% comment %} <h3>
-  here are all the notes that exist (you probably won't have access to all of
-  them ):
-</h3> {% endcomment %}
-
-<section class="section-notes">
+  <section class="section-notes">
     {% for note in notes %} 
-        {% include 'notes/components/note.html' %}
+      {% include 'notes/components/note.html' %}
     {% endfor %}
-</section>
+  </section>
 {% endblock content %}
