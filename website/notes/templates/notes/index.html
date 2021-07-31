@@ -1,16 +1,21 @@
 {% extends 'notes/list_page.html' %}
+{% load static %} 
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'notes/css/note_list.css' %}" />
+{% endblock head %} 
 
 {% block content %}
-<h2>put whatever you want here :)</h2>
+{% comment %} <h2>put whatever you want here :)</h2> {% endcomment %}
 
-<h3>
+{% comment %} <h3>
   here are all the notes that exist (you probably won't have access to all of
   them ):
-</h3>
+</h3> {% endcomment %}
 
-<ul>
-  {% for note in notes %}
-  <li><a href="{% url 'notes:read' note.uuid %}">{{ note.title }}</a> by {{ note.author.username }}</li>
-  {% endfor %}
-</ul>
+<section class="section-notes">
+    {% for note in notes %} 
+        {% include 'notes/components/note.html' %}
+    {% endfor %}
+</section>
 {% endblock content %}
