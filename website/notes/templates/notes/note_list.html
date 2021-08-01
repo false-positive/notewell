@@ -56,7 +56,14 @@
                                 <i class="icon ion-md-arrow-dropdown"></i>
                             </a>
                             <ul class="sub-menu">
-                                <li><a href="{% url 'accounts:logout' %}">Log out</a></li>
+                                {% if user.is_staff %}
+                                    <li>
+                                      <a href="{% url 'admin:index' %}">Admin</a>
+                                    </li>
+                                {% endif %}
+                                <li>
+                                  <a href="{% url 'accounts:logout' %}">Log out</a>
+                                </li>
                             </ul>
                         </li>
                     {% endif %}
