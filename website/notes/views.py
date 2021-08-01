@@ -21,10 +21,12 @@ def index(request):
 
 
 def my(request):
+    notes = Note.objects.filter(author=request.user)
     categories = Category.objects.all()
     return render(request, 'notes/note_list.html', {
         'title': 'My Notes',
         'categories': categories,
+        'object_list': notes,
     })
 
 
@@ -79,7 +81,10 @@ def category(request, cat_path):
     notes = []
 
     def get_all_child_notes(category):
-        for note in Note.objects.filter(categories=category):
+        queryset = Note.objects \
+            .filter(categories=category) \
+            .filter_accessible_notes_by(user_pk=request.user.pk)
+        for note in queryset:
             notes.append(note)
 
         for cat in category.children.all():
