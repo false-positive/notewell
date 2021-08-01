@@ -1,27 +1,23 @@
 from django.shortcuts import redirect, render, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from django.views.generic import ListView
 
 from .models import Category, Note
 from .forms import CreateCommentForm
 from .shortcuts import get_accessible_note_or_404
 
 
-class NoteListView(ListView):
-    model = Note
-
-    def get_queryset(self):
-        user_pk = self.request.user.pk
-        return super().get_queryset() \
-            .select_related('author') \
-            .filter_accessible_notes_by(user_pk=user_pk)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'All Notes'
-        context['categories'] = Category.objects.all()
-        return context
+def index(request):
+    user_pk = request.user.pk
+    notes = Note.objects \
+        .select_related('author') \
+        .filter_accessible_notes_by(user_pk=user_pk)
+    categories = Category.objects.all()
+    return render(request, 'notes/note_list.html', {
+        'title': 'Public Notes',
+        'object_list': notes,
+        'categories': categories,
+    })
 
 
 def my(request):
