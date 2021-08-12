@@ -101,7 +101,8 @@ class SharedItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.note} - {self.user} ({self.perm_level})'
+        noun = dict(self.PERM_LEVEL_CHOICES)[self.perm_level].lower()
+        return f'{self.user} is a/an {noun} of {self.note}'
 
 
 class BulletPoint(models.Model):
