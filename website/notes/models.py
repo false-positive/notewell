@@ -9,8 +9,9 @@ from django.contrib.auth.models import User
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=256)
     slug = models.SlugField()
+    full_path = models.CharField(max_length=255)
     parent = models.ForeignKey(
         'self',
         blank=True,
@@ -24,6 +25,17 @@ class Category(models.Model):
         # same slug
         unique_together = ('slug', 'parent',)
         verbose_name_plural = "categories"
+
+    def save(self, *args, **kwargs):
+        full_path = [self.slug]
+        k = self.parent
+        while k is not None:
+            full_path.append(k.slug)
+            k = k.parent
+
+        self.full_path = '/'.join(full_path[::-1])
+
+        super(Category, self).save(*args, **kwargs)
 
     def get_full_path(self):
         full_path = [self.slug]
@@ -54,7 +66,7 @@ class Note(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(_('Name of Note'), max_length=64)
     categories = models.ManyToManyField(Category, blank=True)
-    creation_date = models.DateField()
+    creation_date = models.DateField(auto_now_add=True)
 
     objects = NoteQuerySet.as_manager()
 
@@ -101,8 +113,7 @@ class SharedItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        noun = dict(self.PERM_LEVEL_CHOICES)[self.perm_level].lower()
-        return f'{self.user} is a/an {noun} of {self.note}'
+        return f'{self.note} - {self.user} ({self.perm_level})'
 
 
 class BulletPoint(models.Model):

@@ -25,7 +25,10 @@ class CommentAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
+    exclude = ('full_path',)
+    list_display = ('name', 'slug', 'full_path')
     prepopulated_fields = {'slug': ("name",)}
+    ordering = ('full_path',)
 
 
 class BulletPointInline(admin.TabularInline):
