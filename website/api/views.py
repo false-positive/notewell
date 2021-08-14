@@ -1,10 +1,17 @@
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
+from django.http.response import Http404
 from django.shortcuts import get_object_or_404
-from notes.models import Category, Note
 
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from .serializers import CategorySerializer, NoteSerializer
+from rest_framework.permissions import IsAuthenticated
+
+from .serializers import CategorySerializer, NoteSerializer, UserSerializer
+from notes.models import Category, Note
+from notes.shortcuts import get_accessible_note_or_404
 
 
 @api_view(['GET'])
@@ -30,7 +37,12 @@ def view_notes(request, cat_path=None):
         notes = []
 
         def get_all_child_notes(category):
-            for note in Note.objects.select_related('author').prefetch_related('categories').filter(categories=category):
+            current_notes = Note.objects \
+                .select_related('author') \
+                .prefetch_related('categories') \
+                .filter(categories=category)
+
+            for note in current_notes:
                 notes.append(note)
 
             for cat in category.children.all():
@@ -39,6 +51,7 @@ def view_notes(request, cat_path=None):
         get_all_child_notes(category)
 
     else:
+
         notes = Note.objects.select_related(
             'author').prefetch_related('categories').all()
 
@@ -47,11 +60,21 @@ def view_notes(request, cat_path=None):
 
 
 @api_view(['GET'])
-def view_note(request, note_id=None):
+@permission_classes((IsAuthenticated,))
+def view_note(request, note_id):
     # TODO check if note is public or private
     # and if private ask for username and password
 
-    note: Note = get_object_or_404(Note, uuid=note_id)
+    user = request.user
+
+    try:
+        note = get_accessible_note_or_404(user.pk, uuid=note_id)
+    except Http404:
+        return Response(
+            {"detail": "You do not have permission to view this note"},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
     serializer = NoteSerializer(note)
     return Response(serializer.data)
 
@@ -81,3 +104,32 @@ def view_categories(request, cat_path=None):
 
     serializer = CategorySerializer(categories, many=True)
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+def view_users(request):
+    users = User.objects.all()
+
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+def register(request):
+    serializer = UserSerializer(data=request.data)
+
+    data = {}
+    if serializer.is_valid():
+        serializer.validated_data['password'] = make_password(
+            serializer.validated_data['password']
+        )
+        user = serializer.save()
+
+        data['message'] = 'User registered successfully'
+        data['email'] = user.email
+        data['username'] = user.username
+        data['token'] = Token.objects.get(user=user).key
+    else:
+        data = serializer.errors
+
+    return Response(data)

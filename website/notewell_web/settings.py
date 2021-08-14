@@ -40,10 +40,17 @@ INSTALLED_APPS = [
 
     'debug_toolbar',
     'rest_framework',
+    'rest_framework.authtoken',
 
     'accounts',
     'notes',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
