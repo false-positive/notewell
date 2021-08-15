@@ -12,10 +12,10 @@ urlpatterns = [
 
     path('notes/', views.view_notes, name='note-list-all'),
     path('notes/<path:cat_path>/', views.view_notes, name='note-list-detail'),
-    path('note/<uuid:note_id>/', views.view_note, name='note-detail'),
-    path('note/<uuid:note_id>/update/', views.update_note, name='note-update'),
-    path('note/<uuid:note_id>/delete/', views.delete_note, name='note-delete'),
-    path('note/create/', views.create_note, name='note-create'),
+    path('note/', views.note_crud, name='note-create'),
+    path('note/<uuid:note_id>/', views.note_crud, name='note-detail'),
+    path('note/<uuid:note_id>/', views.note_crud, name='note-update'),
+    path('note/<uuid:note_id>/', views.note_crud, name='note-delete'),
 
     path('categories/', views.view_categories, name='category-list-all'),
     path('categories/<path:cat_path>/',
