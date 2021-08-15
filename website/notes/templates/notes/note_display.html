@@ -3,7 +3,7 @@
         {{ bullet_point.content }}
             {% if bullet_point.children.all %}
                 <ul>
-                    {% include "notes/noteDisplay.html" with bullet_points=bullet_point.children.all %}
+                    {% include "notes/note_display.html" with bullet_points=bullet_point.children.all %}
                 </ul>
             {% endif %} 
     </li>
