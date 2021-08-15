@@ -18,7 +18,7 @@
                 "previewLimit": 50,
                 "driver": "SQLite",
                 "name": "Notewell SQLite",
-                "database": "${workspaceDir}/website/db.sqlite3",
+                "database": "${workspaceFolder:website}/db.sqlite3",
                 "group": "Notewell"
             }
         ]
