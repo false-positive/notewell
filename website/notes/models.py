@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 
 # Just a friendly reminder to makemigrations and migrate after changing this :)
 
@@ -24,6 +25,21 @@ class Category(models.Model):
         # same slug
         unique_together = ('slug', 'parent',)
         verbose_name_plural = "categories"
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name, allow_unicode=False)
+        if not self.slug:
+            raise ValueError('Name cannot be slugified')
+
+        full_path = [self.slug]
+        k = self.parent
+        while k is not None:
+            full_path.append(k.slug)
+            k = k.parent
+
+        self.full_path = '/'.join(full_path[::-1])
+
+        super(Category, self).save(*args, **kwargs)
 
     def get_full_path(self):
         full_path = [self.slug]
