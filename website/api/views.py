@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from .serializers import CategorySerializer, NoteSerializer, UserSerializer
+from .serializers import CategorySerializer, NoteSerializer, ViewNoteSerializer, UserSerializer
 from notes.models import Category, Note
 from notes.shortcuts import get_accessible_note_or_404
 
@@ -55,7 +55,7 @@ def view_notes(request, cat_path=None):
         notes = Note.objects.select_related(
             'author').prefetch_related('categories').all()
 
-    serializer = NoteSerializer(notes, many=True)
+    serializer = ViewNoteSerializer(notes, many=True)
     return Response(serializer.data)
 
 
@@ -75,11 +75,79 @@ def view_note(request, note_id):
             status=status.HTTP_404_NOT_FOUND
         )
 
-    serializer = NoteSerializer(note)
+    serializer = ViewNoteSerializer(note)
     return Response(serializer.data)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def create_note(request):
+    serializer = NoteSerializer(data=request.data)
+    data = {}
+
+    user = request.user
+
+    # TODO maybe make category not optional or smth
+    if serializer.is_valid():
+        note = Note()
+        note.title = serializer.validated_data['title']
+        note.author = user
+        note.save()
+        if serializer.validated_data.get('categories'):
+            note.categories.set(serializer.validated_data['categories'])
+
+        data = ViewNoteSerializer(note).data
+        data['detail'] = 'Note created successfully'
+    else:
+        data = serializer.errors
+
+    return Response(data)
+
+
+@api_view(['PUT'])
+@permission_classes((IsAuthenticated,))
+def update_note(request, note_id):
+    note = Note.objects.get(uuid=note_id)
+    serializer = NoteSerializer(instance=note, data=request.data)
+    data = {}
+
+    user = request.user
+
+    if user != note.author:
+        return Response({'detail': 'You do not have permissions to update this note'})
+
+    # TODO maybe make category not optional or smth
+    if serializer.is_valid():
+        note.title = serializer.validated_data['title']
+        note.save()
+        if serializer.validated_data.get('categories'):
+            note.categories.set(serializer.validated_data['categories'])
+
+        data = ViewNoteSerializer(note).data
+        data['detail'] = 'Note updated successfully'
+    else:
+        data = serializer.errors
+
+    return Response(data)
+
+
+@api_view(['DELETE'])
+@permission_classes((IsAuthenticated,))
+def delete_note(request, note_id):
+    user = request.user
+    note = Note.objects.get(uuid=note_id)
+    data = {}
+
+    if user == note.author:
+        note.delete()
+        data['detail'] = 'Note deleted successfully'
+    else:
+        data['detail'] = 'You do not have permissions to delete this note'
+
+    return Response(data)
+
+
+@ api_view(['GET'])
 def view_categories(request, cat_path=None):
     if cat_path:
         path_exists = False
@@ -106,7 +174,7 @@ def view_categories(request, cat_path=None):
     return Response(serializer.data)
 
 
-@api_view(['GET'])
+@ api_view(['GET'])
 def view_users(request):
     users = User.objects.all()
 
@@ -114,7 +182,7 @@ def view_users(request):
     return Response(serializer.data)
 
 
-@api_view(['POST'])
+@ api_view(['POST'])
 def register(request):
     serializer = UserSerializer(data=request.data)
 

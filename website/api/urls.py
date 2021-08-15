@@ -5,17 +5,19 @@ from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
     path('users/', views.view_users, name='user-list'),
+    #     path('user/', views.view_notes, name='note-list-all'),
 
     path('login/', obtain_auth_token, name='login'),
     path('register/', views.register, name='register'),
-    #     path('user/', views.view_notes, name='note-list-all'),
 
     path('notes/', views.view_notes, name='note-list-all'),
     path('notes/<path:cat_path>/', views.view_notes, name='note-list-detail'),
     path('note/<uuid:note_id>/', views.view_note, name='note-detail'),
+    path('note/<uuid:note_id>/update/', views.update_note, name='note-update'),
+    path('note/<uuid:note_id>/delete/', views.delete_note, name='note-delete'),
+    path('note/create/', views.create_note, name='note-create'),
 
-    path('categories/',
-         views.view_categories, name='category-list-all'),
+    path('categories/', views.view_categories, name='category-list-all'),
     path('categories/<path:cat_path>/',
          views.view_categories, name='category-detail')
 ]

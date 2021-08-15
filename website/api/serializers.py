@@ -1,4 +1,6 @@
 from django.contrib.auth.models import User
+from django.http.response import Http404
+from django.shortcuts import get_object_or_404
 from notes.models import Category, Note
 from rest_framework import serializers
 
@@ -13,13 +15,28 @@ class MyStringRelatedField(serializers.StringRelatedField):
 
     def to_representation(self, value):
         # TODO not exactly todo, but
-        # if join is changed in category model in __str__
-        # split argument must match it
-
+        # if return value is changed,
+        # to_interval_value must be changed
+        # in order to match category name
         return f'{value.name}'.capitalize()
+
+    def to_internal_value(self, data):
+        try:
+            return get_object_or_404(Category, name__iexact=data)
+        except Http404:
+            return
 
 
 class NoteSerializer(serializers.ModelSerializer):
+    categories = MyStringRelatedField(
+        many=True, allow_null=True, required=False)
+
+    class Meta:
+        model = Note
+        fields = ('title', 'categories')
+
+
+class ViewNoteSerializer(serializers.ModelSerializer):
     title = serializers.StringRelatedField()
     categories = MyStringRelatedField(many=True)
     author = serializers.StringRelatedField()
