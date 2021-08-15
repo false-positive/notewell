@@ -13,6 +13,7 @@ pytest = "*"
 pytest-django = "*"
 flake8 = "*"
 autopep8 = "*"
+faker = "*"
 
 [requires]
 python_version = "3.9"
