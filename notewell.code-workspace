@@ -1,17 +1,26 @@
 {
-  "folders": [
-    {
-      "name": "notewell",
-      "path": "notewell"
-    },
-    {
-      "name": "website",
-      "path": "website"
+    "folders": [
+        {
+            "name": "notewell",
+            "path": "notewell"
+        },
+        {
+            "name": "website",
+            "path": "website"
+        }
+    ],
+    "settings": {
+        "prettier.singleQuote": true,
+        "prettier.tabWidth": 4,
+        "editor.tabSize": 2,
+        "sqltools.connections": [
+            {
+                "previewLimit": 50,
+                "driver": "SQLite",
+                "name": "Notewell SQLite",
+                "database": "${workspaceDir}/website/db.sqlite3",
+                "group": "Notewell"
+            }
+        ]
     }
-  ],
-  "settings": {
-      "prettier.singleQuote": true,
-      "prettier.tabWidth": 4,
-      "editor.tabSize": 2
-  }
 }
