@@ -64,6 +64,22 @@ def view_notes(request, cat_path=None):
     return Response(serializer.data)
 
 
+@api_view(['POST', 'GET', 'PUT', 'PATCH', 'DELETE'])
+@permission_classes((IsAuthenticated,))
+def note_crud(request, note_id=None):
+    # crud = create, read, update, delete
+    request = request._request
+
+    if request.method == 'POST':
+        return create_note(request)
+    elif request.method == 'GET':
+        return view_note(request, note_id)
+    elif request.method == 'PUT' or request.method == 'PATCH':
+        return update_note(request, note_id)
+    elif request.method == 'DELETE':
+        return delete_note(request, note_id)
+
+
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def view_note(request, note_id):
@@ -109,7 +125,7 @@ def create_note(request):
     return Response(data)
 
 
-@api_view(['PUT'])
+@api_view(['PUT', 'PATCH'])
 @permission_classes((IsAuthenticated,))
 def update_note(request, note_id):
     note = Note.objects.get(uuid=note_id)
