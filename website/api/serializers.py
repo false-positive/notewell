@@ -8,7 +8,7 @@ from rest_framework import serializers
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ('username', 'email', 'first_name', 'last_name')
 
 
 class MyStringRelatedField(serializers.StringRelatedField):
@@ -42,25 +42,13 @@ class ViewNoteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Note
-        fields = ['uuid', 'title', 'categories', 'author', 'creation_date']
-
-
-# class CategorySerializer(serializers.ModelSerializer):
-#     parent = serializers.PrimaryKeyRelatedField(read_only=True)
-
-#     class Meta:
-#         model = Category
-#         fields = ('parent', 'name', 'children')
-
-#         def get_related_field(self, model_field):
-#             # Handles initializing the `subcategories` field
-#             return CategorySerializer()
+        fields = ('uuid', 'title', 'categories', 'author', 'creation_date')
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('id', 'name', 'slug', 'children')
+        fields = ('name', 'slug', 'children')
 
     def get_fields(self):
         fields = super(CategorySerializer, self).get_fields()

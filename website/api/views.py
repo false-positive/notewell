@@ -9,7 +9,12 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from .serializers import CategorySerializer, NoteSerializer, ViewNoteSerializer, UserSerializer
+from .serializers import (
+    CategorySerializer,
+    NoteSerializer,
+    ViewNoteSerializer,
+    UserSerializer,
+)
 from notes.models import Category, Note
 from notes.shortcuts import get_accessible_note_or_404
 
@@ -114,7 +119,9 @@ def update_note(request, note_id):
     user = request.user
 
     if user != note.author:
-        return Response({'detail': 'You do not have permissions to update this note'})
+        return Response(
+            {'detail': 'You do not have permissions to update this note'}
+        )
 
     # TODO maybe make category not optional or smth
     if serializer.is_valid():
@@ -147,7 +154,7 @@ def delete_note(request, note_id):
     return Response(data)
 
 
-@ api_view(['GET'])
+@api_view(['GET'])
 def view_categories(request, cat_path=None):
     if cat_path:
         path_exists = False
@@ -174,15 +181,15 @@ def view_categories(request, cat_path=None):
     return Response(serializer.data)
 
 
-@ api_view(['GET'])
+@api_view(['GET'])
 def view_users(request):
-    users = User.objects.all()
+    users = User.objects.filter(is_active=True)
 
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
 
 
-@ api_view(['POST'])
+@api_view(['POST'])
 def register(request):
     serializer = UserSerializer(data=request.data)
 
