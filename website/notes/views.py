@@ -1,5 +1,7 @@
+from django.views import generic
 from django.shortcuts import redirect, render, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 
 from .models import Category, Note
@@ -30,6 +32,15 @@ def my(request):
         'categories': categories,
         'object_list': notes,
     })
+
+
+class NoteCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Note
+    fields = ['title']  # TODO: categories
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
 
 @login_required

@@ -31,7 +31,14 @@
                             <i class="icon ion-md-close"></i>
                         </div>
 
-                        <img src="" alt="Logo" class="logo" />
+                        <a href="{% url 'notes:index' %}">
+                            <!--
+                                so the logo is taken from freepik and they
+                                insist that I attribute them, but
+                                this is a placehoder, sooo...
+                            -->
+                            <img src="{% static 'notes/img/logo.png' %}" alt="Logo" class="logo" />
+                        </a>
 
                         <ul class="nav-list">
                             {% block nav_list %}{% endblock nav_list %}
@@ -64,7 +71,7 @@
             </header>
 
             <div class="space-block"></div>
-        {% endblock header %}
+        {% endblock %}
         
         {% block content %}{% endblock content %}
 

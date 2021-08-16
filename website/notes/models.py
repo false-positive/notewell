@@ -70,7 +70,7 @@ class NoteQuerySet(models.QuerySet):
 class Note(models.Model):
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(_('Name of Note'), max_length=64)
+    title = models.CharField(_('Title'), max_length=64)
     categories = models.ManyToManyField(Category, blank=True)
     creation_date = models.DateField(auto_now_add=True)
 
