@@ -1,4 +1,4 @@
-<a href="{% url 'notes:read' note.uuid %}" class="note">
+<a href="{{ note.get_absolute_url }}" class="note">
     <h2>{{ note.title }}</h2>
     <div class="note-extra-info">
         <h3 class="author">By {{ note.author.username }}</h3>

@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from django.utils.text import slugify
+from django.urls import reverse
 
 # Just a friendly reminder to makemigrations and migrate after changing this :)
 
@@ -74,6 +75,9 @@ class Note(models.Model):
     creation_date = models.DateField(auto_now_add=True)
 
     objects = NoteQuerySet.as_manager()
+
+    def get_absolute_url(self):
+        return reverse("notes:read", kwargs={"note_id": self.uuid})
 
     def can_be_read_by(self, user: User) -> bool:
         if user == self.author:

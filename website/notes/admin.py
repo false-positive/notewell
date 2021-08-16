@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.forms import Textarea
 from django.db import models
-from django.shortcuts import reverse
 from django.utils.html import format_html
 
 from .models import Comment, BulletPoint, Note, Category, SharedItem
@@ -94,7 +93,7 @@ class NoteAdmin(admin.ModelAdmin):
 
     @admin.display(ordering='uuid', description='UUID')
     def uuid_link(self, note):
-        url = reverse('notes:read', kwargs={'note_id': note.uuid})
+        url = note.get_absolute_url()
 
         fmt = '<a href="{}" target="_blank">{}</a>'
         return format_html(fmt, url, note.uuid)
