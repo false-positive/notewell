@@ -90,6 +90,12 @@ class SharedItemInline(admin.TabularInline):
 class NoteAdmin(admin.ModelAdmin):
     inlines = [BulletPointInline, CommentInline, SharedItemInline]
     list_display = ['title', 'author', 'uuid_link']
+    actions = ['share_with_admin']
+
+    def get_queryset(self, request):
+        return super().get_queryset(request) \
+            .prefetch_related('bulletpoint_set') \
+            .prefetch_related('categories')
 
     @admin.display(ordering='uuid', description='UUID')
     def uuid_link(self, note):
