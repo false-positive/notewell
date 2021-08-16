@@ -103,3 +103,14 @@ class NoteAdmin(admin.ModelAdmin):
 
         fmt = '<a href="{}" target="_blank">{}</a>'
         return format_html(fmt, url, note.uuid)
+
+    @admin.action(description='Give me read access')
+    def share_with_admin(self, request, queryset):
+        # XXX: kinda creepy...
+        for note in queryset:
+            if note.can_be_read_by(request.user):
+                continue
+            note.shareditem_set.create(
+                perm_level=SharedItem.PERM_LEVEL_READ,
+                user=request.user,
+            )
