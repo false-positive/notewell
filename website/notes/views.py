@@ -7,6 +7,7 @@ from .forms import CreateCommentForm
 from .shortcuts import get_accessible_note_or_404
 
 
+@login_required
 def index(request):
     user_pk = request.user.pk
     notes = Note.objects \
@@ -20,6 +21,7 @@ def index(request):
     })
 
 
+@login_required
 def my(request):
     notes = Note.objects.filter(author=request.user)
     categories = Category.objects.all()
@@ -64,6 +66,7 @@ def edit(request, note_id):
     })
 
 
+@login_required
 def category(request, cat_path):
     path_exists = False
     for cat in Category.objects.all():
