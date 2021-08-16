@@ -9,6 +9,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
+from .distilbart import sum_text
+
 from .serializers import (
     CategorySerializer,
     NoteSerializer,
@@ -224,3 +226,12 @@ def register(request):
         data = serializer.errors
 
     return Response(data)
+
+
+@api_view(['POST'])
+def summarize(request):
+    return Response(sum_text(request.data['text']))
+
+@api_view(['GET'])
+def dummythick(request):
+    return Response("test")

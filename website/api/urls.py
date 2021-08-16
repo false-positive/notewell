@@ -11,6 +11,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
 
     path('notes/', views.view_notes, name='note-list-all'),
+    path('notes/summarize/', views.summarize, name='summarize'),
     path('notes/<path:cat_path>/', views.view_notes, name='note-list-detail'),
     path('note/', views.note_crud, name='note-create'),
     path('note/<uuid:note_id>/', views.note_crud, name='note-detail'),
@@ -20,4 +21,5 @@ urlpatterns = [
     path('categories/', views.view_categories, name='category-list-all'),
     path('categories/<path:cat_path>/',
          views.view_categories, name='category-detail')
+
 ]
