@@ -5,75 +5,36 @@
     <link rel="stylesheet" href="{% static 'notes/css/note_list.css' %}" />
 {% endblock head %} 
 
-{% block content %}
-    <header>
-        <div class="container">
-            <nav>
-                <div class="menu-icons">
-                    <i class="icon ion-md-menu"></i>
-                    <i class="icon ion-md-close"></i>
-                </div>
-
-                <img src="" alt="Logo" class="logo" />
-
-                <ul class="nav-list">
-                    <li><a href="{% url 'notes:index' %}">All</a></li>
-                    <li><a href="{% url 'notes:my' %}">My</a></li>
+{% block nav_list %}
+    <li><a href="{% url 'notes:index' %}">All</a></li>
+    <li><a href="{% url 'notes:my' %}">My</a></li>
+    <li>
+        <a href="#">
+            Subjects
+            <i class="icon ion-md-arrow-dropdown"></i>
+        </a>
+        <ul class="sub-menu">
+            {% for category in categories %}
+                {% if not category.parent %}
                     <li>
-                        <a href="#">
-                            Subjects
-                            <i class="icon ion-md-arrow-dropdown"></i>
-                        </a>
-                        <ul class="sub-menu">
-                            {% for category in categories %}
-                                {% if not category.parent %}
-                                    <li>
-                                        <a href="{% url 'notes:category' category.get_full_path %}">
-                                            {{ category.name }}
-                                            {% if category.children.all %}
-                                                <i class="icon ion-md-arrow-dropdown"></i>
-                                            {% endif %}
-                                        </a>
-                                        {% if category.children.all %}
-                                            <ul class="sub-menu">
-                                                {% include "notes/menu.html" with categories=category.children.all %}
-                                            </ul>
-                                        {% endif %}
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </li>
-                    {% if not user.is_authenticated %}
-                        <li class="move-right">
-                            <a href="{% url 'accounts:register' %}">Sign up</a>
-                        </li>
-                        <li><a href="{% url 'accounts:login' %}">Log in</a></li>
-                    {% else %}
-                        <li class="move-right">
-                            <a href="#">
-                                {{ user.username }}
+                        <a href="{% url 'notes:category' category.get_full_path %}">
+                            {{ category.name }}
+                            {% if category.children.all %}
                                 <i class="icon ion-md-arrow-dropdown"></i>
-                            </a>
+                            {% endif %}
+                        </a>
+                        {% if category.children.all %}
                             <ul class="sub-menu">
-                                {% if user.is_staff %}
-                                    <li>
-                                      <a href="{% url 'admin:index' %}">Admin</a>
-                                    </li>
-                                {% endif %}
-                                <li>
-                                  <a href="{% url 'accounts:logout' %}">Log out</a>
-                                </li>
+                                {% include "notes/menu.html" with categories=category.children.all %}
                             </ul>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-    </header>
+                        {% endif %}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+{% endblock nav_list %}
 
-    <div class="space-block"></div>
-
+{% block content %}
     <h1 class="title">{{ title }}</h1>
     
     <section class="section-notes">

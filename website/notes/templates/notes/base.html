@@ -22,6 +22,49 @@
         {% block head %}{% endblock head %}
     </head>
     <body>
+        {% block header %}
+            <header>
+                <div class="container">
+                    <nav>
+                        <div class="menu-icons">
+                            <i class="icon ion-md-menu"></i>
+                            <i class="icon ion-md-close"></i>
+                        </div>
+
+                        <img src="" alt="Logo" class="logo" />
+
+                        <ul class="nav-list">
+                            {% block nav_list %}{% endblock nav_list %}
+                            {% if not user.is_authenticated %}
+                                <li class="move-right">
+                                    <a href="{% url 'accounts:register' %}">Sign up</a>
+                                </li>
+                                <li><a href="{% url 'accounts:login' %}">Log in</a></li>
+                            {% else %}
+                                <li class="move-right">
+                                    <a href="#">
+                                        {{ user.username }}
+                                        <i class="icon ion-md-arrow-dropdown"></i>
+                                    </a>
+                                    <ul class="sub-menu">
+                                        {% if user.is_staff %}
+                                            <li>
+                                              <a href="{% url 'admin:index' %}">Admin</a>
+                                            </li>
+                                        {% endif %}
+                                        <li>
+                                          <a href="{% url 'accounts:logout' %}">Log out</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </header>
+
+            <div class="space-block"></div>
+        {% endblock header %}
         
         {% block content %}{% endblock content %}
 
