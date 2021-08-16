@@ -37,13 +37,12 @@ class NoteSerializer(serializers.ModelSerializer):
 
 
 class ViewNoteSerializer(serializers.ModelSerializer):
-    title = serializers.StringRelatedField()
     categories = MyStringRelatedField(many=True)
     author = serializers.StringRelatedField()
 
     class Meta:
         model = Note
-        fields = '__all__'
+        fields = ['uuid', 'title', 'categories', 'author', 'creation_date']
 
 
 # class CategorySerializer(serializers.ModelSerializer):
