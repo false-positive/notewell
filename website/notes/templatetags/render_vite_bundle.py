@@ -1,7 +1,6 @@
 # This template tag is needed for production
 # Add it to one of your django apps (/appdir/templatetags/render_vite_bundle.py, for example)
 
-import os
 import json
 
 from django import template
@@ -20,17 +19,19 @@ def render_vite_bundle():
     """
 
     try:
-        fd = open(f"{settings.VITE_APP_DIR}/dist/manifest.json", "r")
-        manifest = json.load(fd)
-    except:
+        with open(f'{settings.VITE_APP_DIR}/dist/manifest.json', 'r') as file:
+            manifest = json.load(file)
+    except (IOError, json.JSONDecodeError) as err:
         raise Exception(
-            f"Vite manifest file not found or invalid. Maybe your {settings.VITE_APP_DIR}/dist/manifest.json file is empty?"
-        )
+            'Vite manifest file not found or invalid. '
+            f'Maybe your {settings.VITE_APP_DIR}/dist/manifest.json file is '
+            'empty?'
+        ) from err
 
-    imports_files = "".join(
+    imports_files = ''.join(
         [
             f'<script type="module" src="/static/{manifest[file]["file"]}"></script>'
-            for file in manifest["index.html"]["imports"]
+            for file in manifest['index.html']['imports']
         ]
     )
 

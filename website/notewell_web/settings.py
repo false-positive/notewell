@@ -134,28 +134,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 
-# These are the settings you should have for everything to work properly.
-# Add these to your main settings.py file, or modify it accordingly.
-
 # Needed for production. Avoid using '*'.
-# TODO change allowed hosts to domain(your-production-domain.com)
+# TODO: change allowed hosts to actual domain
 ALLOWED_HOSTS = ['*']
 
+# Vite App Dir: the folder where the editor is.
+VITE_APP_DIR = BASE_DIR / '..' / 'editor' / 'src'
 
-# Vite App Dir: point it to the folder your vite app is in.
-VITE_APP_DIR = BASE_DIR / ".." / "editor" / "src"
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.1/howto/static-files/
-
-# You may change these, but it's important that the dist folder is includedself.
+# You may change these, but it's important that the dist folder is included.
 # If it's not, collectstatic won't copy your bundle to production.
 
-STATIC_URL = "/static/"
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    VITE_APP_DIR / "dist",
+    VITE_APP_DIR / 'dist',
 ]
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
