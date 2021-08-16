@@ -1,7 +1,10 @@
-import { defineConfig } from 'vite'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
+import { defineConfig } from 'vite';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [svelte()]
-})
+    build: { manifest: true },
+    base: process.env === 'production' ? '/static/' : '/',
+    root: './src',
+    plugins: [svelte()],
+});

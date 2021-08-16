@@ -1,10 +1,9 @@
 <script>
-  import logo from './assets/svelte.png'
-  import Counter from './lib/Counter.svelte'
+  import Counter from './components/Counter.svelte'
 </script>
 
 <main>
-  <img src={logo} alt="Svelte Logo" />
+  <img src="/static/notes/img/svelte.png" alt="Svelte Logo" />
   <h1>Hello world!</h1>
 
   <Counter />

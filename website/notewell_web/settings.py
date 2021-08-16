@@ -25,8 +25,6 @@ SECRET_KEY = 'django-insecure-2z22^z$v@&%5=fhwybmvy4wgbsna1qbmn9=ra-c2x8ga1u&i=s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -135,7 +133,29 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+
+# These are the settings you should have for everything to work properly.
+# Add these to your main settings.py file, or modify it accordingly.
+
+# Needed for production. Avoid using '*'.
+# TODO change allowed hosts to domain(your-production-domain.com)
+ALLOWED_HOSTS = ['*']
+
+
+# Vite App Dir: point it to the folder your vite app is in.
+VITE_APP_DIR = BASE_DIR / ".." / "editor" / "src"
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.1/howto/static-files/
+
+# You may change these, but it's important that the dist folder is includedself.
+# If it's not, collectstatic won't copy your bundle to production.
+
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    VITE_APP_DIR / "dist",
+]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
