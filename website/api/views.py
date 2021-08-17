@@ -20,6 +20,7 @@ from notes.shortcuts import get_accessible_note_or_404
 
 
 @api_view(['GET'])
+@permission_classes((IsAuthenticated,))
 def view_notes(request, cat_path=None):
     # TODO select only public notes
     if cat_path:
@@ -45,7 +46,8 @@ def view_notes(request, cat_path=None):
             current_notes = Note.objects \
                 .select_related('author') \
                 .prefetch_related('categories') \
-                .filter(categories=category)
+                .filter(categories=category) \
+                .filter_accessible_notes_by(request.user.pk)
 
             for note in current_notes:
                 notes.append(note)
@@ -57,8 +59,10 @@ def view_notes(request, cat_path=None):
 
     else:
 
-        notes = Note.objects.select_related(
-            'author').prefetch_related('categories').all()
+        notes = Note.objects \
+            .select_related('author') \
+            .prefetch_related('categories') \
+            .filter_accessible_notes_by(request.user.pk)
 
     serializer = ViewNoteSerializer(notes, many=True)
     return Response(serializer.data)
