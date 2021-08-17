@@ -1,34 +1,25 @@
+{% extends 'notes/base.html' %}
+
 {% load render_vite_bundle %}
-{% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-  
-<!-- 
-  For this base.html to work in dev and in production,
-  you'll need to set a couple of keys inside your settings.py.
-  Another file in this gist shows which ones you'll really need.
--->
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vite App</title>
+{% block head %}
   {% if debug %}
     <script type="module" src="http://localhost:3000/@vite/client"></script>
   {% endif %}
-</head>
+{% endblock head %}
 
-<body>
+{% block ioniconns %}
+  {% comment %}
+    Not loading ionicons, Svelte does that.
+  {% endcomment %}
+{% endblock ioniconns %}
 
-  <div id="app"></div>
+{% block header %}{% endblock header %}
 
+{% block script %}
   {% if debug %}
-  <!-- This url will be different for each type of app. Point it to your main js file. -->
-  <script type="module" src="http://localhost:3000/main.js"></script>
+    <script type="module" src="http://localhost:3000/main.js"></script>
   {% else %}
     {% render_vite_bundle %}
   {% endif %}
-</body>
-
-</html>
+{% endblock script %}

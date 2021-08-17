@@ -1,7 +1,10 @@
-import App from './App.svelte'
+import App from './App.svelte';
+
+// HACK: clean the contents of #app
+document.getElementById('app').innerHTML = '';
 
 const app = new App({
-  target: document.getElementById('app')
-})
+    target: document.getElementById('app'),
+});
 
-export default app
+export default app;

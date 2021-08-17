@@ -13,68 +13,111 @@
             <title>Notewell</title>
         {% endif %}
 
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap" rel="stylesheet" />
+        {% block fonts %}
+            <link rel="preconnect" href="https://fonts.googleapis.com" />
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+            <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap" rel="stylesheet" />
+        {% endblock fonts %}
 
-        <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet" />
+        {% block ionicons %}
+            <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet" />
+        {% endblock ionicons %}
         <link href="{% static 'notes/css/base.css' %}" rel="stylesheet" />
         {% block head %}{% endblock head %}
     </head>
     <body>
-        {% block header %}
-            <header>
-                <div class="container">
-                    <nav>
-                        <div class="menu-icons">
-                            <i class="icon ion-md-menu"></i>
-                            <i class="icon ion-md-close"></i>
-                        </div>
+        <div id="app">
+            {% block header %}
+                <header>
+                    <div class="container">
+                        <nav>
+                            <div class="menu-icons">
+                                <i class="icon ion-md-menu"></i>
+                                <i class="icon ion-md-close"></i>
+                            </div>
 
-                        <a href="{% url 'notes:index' %}">
-                            <!--
-                                so the logo is taken from freepik and they
-                                insist that I attribute them, but
-                                this is a placehoder, sooo...
-                            -->
-                            <img src="{% static 'notes/img/logo.png' %}" alt="Logo" class="logo" />
-                        </a>
+                            <a href="{% url 'notes:index' %}">
+                                <!--
+                                    so the logo is taken from freepik and they
+                                    insist that I attribute them, but
+                                    this is a placehoder, sooo...
+                                -->
+                                <img src="{% static 'notes/img/logo.png' %}" alt="Logo" class="logo" />
+                            </a>
 
-                        <ul class="nav-list">
-                            {% block nav_list %}{% endblock nav_list %}
-                            {% if not user.is_authenticated %}
-                                <li class="move-right">
-                                    <a href="{% url 'accounts:register' %}">Sign up</a>
-                                </li>
-                                <li><a href="{% url 'accounts:login' %}">Log in</a></li>
-                            {% else %}
-                                <li class="move-right">
-                                    <a href="#">
-                                        {{ user.username }}
-                                        <i class="icon ion-md-arrow-dropdown"></i>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        {% if user.is_staff %}
+                            <ul class="nav-list">
+                                {% block nav_list %}{% endblock nav_list %}
+                                {% if not user.is_authenticated %}
+                                    <li class="move-right">
+                                        <a href="{% url 'accounts:register' %}">Sign up</a>
+                                    </li>
+                                    <li><a href="{% url 'accounts:login' %}">Log in</a></li>
+                                {% else %}
+                                    <li class="move-right">
+                                        <a href="#">
+                                            {{ user.username }}
+                                            <i class="icon ion-md-arrow-dropdown"></i>
+                                        </a>
+                                        <ul class="sub-menu">
+                                            {% if user.is_staff %}
+                                                <li>
+                                                  <a href="{% url 'admin:index' %}">Admin</a>
+                                                </li>
+                                            {% endif %}
                                             <li>
-                                              <a href="{% url 'admin:index' %}">Admin</a>
+                                              <a href="{% url 'accounts:logout' %}">Log out</a>
                                             </li>
-                                        {% endif %}
-                                        <li>
-                                          <a href="{% url 'accounts:logout' %}">Log out</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            {% endif %}
-                        </ul>
-                    </nav>
-                </div>
-            </header>
+                                        </ul>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                </header>
 
-            <div class="space-block"></div>
-        {% endblock %}
+                <div class="space-block"></div>
+            {% endblock header %}
         
-        {% block content %}{% endblock content %}
+            {% block content %}{% endblock content %}
+            
+            {% block footer %}
+                <footer class="footer">
+                    <div class="footer__wrapper">
+                        <div class="footer__row">
+                            <p class="footer__text footer__text--bold">
+                                &copy; 2021 Notewell
+                            </p>
+                        </div>
+                        <div class="footer__row">
+                            {% comment %} TODO: do url tmpl {% endcomment %}
+                            <a
+                                href="https://www.gnu.org/licenses/agpl-3.0.html"
+                                class="footer__text footer__text--link"
+                                target="_blank"
+                            >
+                                AGPL-3.0
+                            </a>
+                            <a
+                                href="https://github.com/false-positive/notewell"
+                                class="footer__text footer__text--link"
+                                target="_blank"
+                            >
+                                Source Code
+                            </a>
+                            <a
+                                href="/weblabels/"
+                                data-jslicense="1"
+                                class="footer__text footer__text--link"
+                            >
+                                JavaScript Licenses
+                            </a> 
+                        </div>
+                    </div>
+                </footer>
+            {% endblock footer %}
+        </div>
 
         <script src="{% static 'notes/js/nav.js' %}"></script>
+        {% block script %}{% endblock script %}
     </body>
 </html>
