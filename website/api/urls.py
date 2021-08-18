@@ -9,8 +9,7 @@ urlpatterns = [
     path('login/', obtain_auth_token, name='login'),
     path('register/', views.register, name='register'),
 
-    path('notes/', views.view_notes, name='note-list-all'),
-    path('notes/', views.note_crud, name='note-create'),
+    path('notes/', views.note_crud, name='note-crud'),
     path('notes/<uuid:note_id>/', views.note_crud, name='note-detail'),
     path('notes/<uuid:note_id>/', views.note_crud, name='note-update'),
     path('notes/<uuid:note_id>/', views.note_crud, name='note-delete'),

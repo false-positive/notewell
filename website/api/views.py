@@ -74,7 +74,9 @@ def note_crud(request, note_id=None):
     # crud = create, read, update, delete
     request = request._request
 
-    if request.method == 'POST':
+    if request.method == 'GET':
+        return view_note(request, note_id)
+    elif request.method == 'POST':
         return create_note(request)
     elif request.method == 'GET':
         return view_note(request, note_id)
