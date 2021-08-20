@@ -18,8 +18,6 @@ from .serializers import (
 from notes.models import Category, Note
 from notes.shortcuts import get_accessible_note_or_404
 
-from api import serializers
-
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
@@ -181,13 +179,8 @@ def delete_note(request, note_id):
 @api_view(['GET'])
 def view_categories(request, cat_path=None):
     if cat_path:
-        path_exists = False
 
-        for path in Category.objects.values('full_path'):
-            if path['full_path'] == cat_path:
-                path_exists = True
-
-        if not path_exists:
+        if not Category.objects.filter(full_path=cat_path).exists():
             return Response(
                 {'message': 'Category not found'},
                 status=status.HTTP_404_NOT_FOUND
