@@ -20,7 +20,7 @@ from notes.shortcuts import get_accessible_note_or_404
 
 
 @api_view(['GET'])
-# @permission_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated,))
 def view_notes(request, cat_path=None):
     # TODO select only public notes
     user = request.user
@@ -208,12 +208,3 @@ def register(request):
         data = serializer.errors
 
     return Response(data)
-
-
-@api_view(['GET'])
-def test(request):
-
-    serializer = CategorySerializer(Category.objects.prefetch_related(
-        'children' + '__children' * 5).filter(parent__isnull=True), many=True)
-
-    return Response(serializer.data)

@@ -17,5 +17,4 @@ urlpatterns = [
          views.view_categories, name='category-detail'),
     path('notes/all/', views.view_notes, name='note-list-detail'),
     path('notes/c/<path:cat_path>/', views.view_notes, name='note-list-detail'),
-    path('test', views.test, name='test'),
 ]
