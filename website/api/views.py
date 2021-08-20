@@ -18,6 +18,8 @@ from .serializers import (
 from notes.models import Category, Note
 from notes.shortcuts import get_accessible_note_or_404
 
+from api import serializers
+
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
@@ -230,3 +232,12 @@ def register(request):
         data = serializer.errors
 
     return Response(data)
+
+
+@api_view(['GET'])
+def test(request):
+
+    serializer = CategorySerializer(Category.objects.prefetch_related(
+        'children' + '__children' * 5).filter(parent__isnull=True), many=True)
+
+    return Response(serializer.data)

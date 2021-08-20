@@ -1,3 +1,4 @@
+from mptt.admin import MPTTModelAdmin
 from django.contrib import admin
 from django.forms import Textarea
 from django.db import models
@@ -23,11 +24,13 @@ class CommentAdmin(admin.ModelAdmin):
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(MPTTModelAdmin):
+    # # specify pixel amount for this ModelAdmin only:
+    mptt_level_indent = 20
     exclude = ('full_path',)
     list_display = ('name', 'slug', 'full_path')
     prepopulated_fields = {'slug': ("name",)}
-    ordering = ('full_path',)
+    # ordering = ('full_path',)
 
 
 class BulletPointInline(admin.TabularInline):
