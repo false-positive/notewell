@@ -20,49 +20,34 @@ from notes.shortcuts import get_accessible_note_or_404
 
 
 @api_view(['GET'])
-@permission_classes((IsAuthenticated,))
+# @permission_classes((IsAuthenticated,))
 def view_notes(request, cat_path=None):
     # TODO select only public notes
+    user = request.user
+
     if cat_path:
-        path_exists = False
-
-        for path in Category.objects.values('full_path'):
-            if path['full_path'] == cat_path:
-                path_exists = True
-
-        if not path_exists:
+        try:
+            category: Category = get_object_or_404(Category, full_path=cat_path)
+        except Http404:
             return Response(
-                {'message': 'No notes were found'},
+                {'detail': 'Category not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        cat_slug = cat_path.split('/')[-1]
-        category: Category = get_object_or_404(Category, slug=cat_slug)
-
-        # TODO: figure out how to make a join or something here
-        notes = []
-
-        def get_all_child_notes(category):
-            current_notes = Note.objects \
-                .select_related('author') \
-                .prefetch_related('categories') \
-                .filter(categories=category) \
-                .filter_accessible_notes_by(request.user.pk)
-
-            for note in current_notes:
-                notes.append(note)
-
-            for cat in category.children.all():
-                get_all_child_notes(cat)
-
-        get_all_child_notes(category)
-
+        notes = Note.objects \
+            .select_related('author') \
+            .prefetch_related('categories')\
+            .filter(
+                categories__in=category.get_descendants(include_self=True)
+            ) \
+            .filter_accessible_notes_by(user.pk) \
+            .distinct()
     else:
 
         notes = Note.objects \
             .select_related('author') \
             .prefetch_related('categories') \
-            .filter_accessible_notes_by(request.user.pk)
+            .filter_accessible_notes_by(user.pk)
 
     serializer = ViewNoteSerializer(notes, many=True)
     return Response(serializer.data)
@@ -179,17 +164,15 @@ def delete_note(request, note_id):
 @api_view(['GET'])
 def view_categories(request, cat_path=None):
     if cat_path:
-
-        if not Category.objects.filter(full_path=cat_path).exists():
-            return Response(
-                {'message': 'Category not found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        cat_slug = cat_path.split('/')[-1]
         categories = Category.objects \
             .prefetch_related('children' + '__children' * 5) \
-            .filter(slug=cat_slug)
+            .filter(full_path=cat_path)
+
+        if not categories:
+            return Response(
+                {'detail': 'Category not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
     else:
         categories = Category.objects.prefetch_related(
             'children' + '__children' * 5).filter(parent__isnull=True)
