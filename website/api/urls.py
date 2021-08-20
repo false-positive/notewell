@@ -9,14 +9,13 @@ urlpatterns = [
     path('login/', obtain_auth_token, name='login'),
     path('register/', views.register, name='register'),
 
-    path('notes/', views.note_crud, name='note-crud'),
-    path('notes/<uuid:note_id>/', views.note_crud, name='note-detail'),
-    path('notes/<uuid:note_id>/', views.note_crud, name='note-update'),
-    path('notes/<uuid:note_id>/', views.note_crud, name='note-delete'),
+    path('notes/', views.note_crud),
+    path('notes/<uuid:note_id>/', views.note_crud),
 
     path('categories/', views.view_categories, name='category-list-all'),
     path('categories/<path:cat_path>/',
          views.view_categories, name='category-detail'),
-    path('notes/<path:cat_path>/notes/', views.view_notes, name='note-list-detail'),
+    path('notes/all/', views.view_notes, name='note-list-detail'),
+    path('notes/c/<path:cat_path>/', views.view_notes, name='note-list-detail'),
     path('test', views.test, name='test'),
 ]
