@@ -68,14 +68,6 @@ class Category(MPTTModel):
 #             k = k.parent
 #         return '/'.join(full_path[::-1])
 
-#     def __str__(self):
-#         full_path = [self.name]
-#         k = self.parent
-#         while k is not None:
-#             full_path.append(k.name)
-#             k = k.parent
-#         return ' / '.join(full_path[::-1])
-
 
 class NoteQuerySet(models.QuerySet):
     def filter_accessible_notes_by(self, user_pk):
@@ -85,11 +77,24 @@ class NoteQuerySet(models.QuerySet):
 
 
 class Note(models.Model):
+
+    PUBLIC = 'public'
+    PRIVATE = 'private'
+
+    NOTE_STATUS_CHOICES = (
+        (PUBLIC, 'Public'),
+        (PRIVATE, 'Private'),
+    )
+
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(_('Title'), max_length=64)
     categories = models.ManyToManyField(Category, blank=True)
     creation_date = models.DateField(auto_now_add=True)
+    status = models.CharField(max_length=10,
+                              choices=NOTE_STATUS_CHOICES,
+                              default=PRIVATE)
+    verified = models.BooleanField(default=False)
 
     objects = NoteQuerySet.as_manager()
 
