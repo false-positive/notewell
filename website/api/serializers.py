@@ -11,6 +11,12 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('username', 'email', 'first_name', 'last_name')
 
 
+class AuthUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'password', 'email')
+
+
 class MyStringRelatedField(serializers.StringRelatedField):
 
     def to_representation(self, value):

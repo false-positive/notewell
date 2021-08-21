@@ -8,6 +8,7 @@ django = "*"
 django-debug-toolbar = "*"
 djangorestframework = "*"
 django-mptt = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 pytest = "*"
