@@ -1,3 +1,4 @@
+from itertools import chain
 from django.views import generic
 from django.shortcuts import redirect, render, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
@@ -106,3 +107,25 @@ def category(request, cat_path):
         'categories': categories,
         'object_list': notes,
     })
+
+
+@login_required
+def search(request):
+    if request.method == "POST":
+        # TODO escape the string
+        # TODO make search bar more advanced
+        searched = request.POST['searched']
+
+        notes_by_title = Note.objects.filter(title__icontains=searched)
+        notes_by_author = Note.objects.filter(author__username__icontains=searched)
+
+        notes = set(chain(notes_by_title, notes_by_author))
+
+        return render(request, 'notes/note_list.html', {
+            'title': f'Search results for "{searched}"',
+            'categories': Category.objects.all(),
+            'object_list': notes,
+        })
+    else:
+        index_url = reverse('notes:index')
+        return redirect(index_url)

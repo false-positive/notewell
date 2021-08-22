@@ -31,7 +31,13 @@
                 </li> 
             {% endrecursetree %}
         </ul>
-        
+    </li>
+    <li>
+        <form method="POST" action="{% url 'notes:search' %}">
+            {% csrf_token %}
+            <input type="search" placehoder="Search Notes" aria-label="Search" name="searched">
+            <button>Search</button>
+        </form>
     </li>
 {% endblock nav_list %}
 
