@@ -79,12 +79,7 @@ def edit(request, note_id):
 
 @login_required
 def category(request, cat_path):
-    path_exists = False
-    for cat in Category.objects.all():
-        if cat.get_full_path() == cat_path:
-            path_exists = True
-
-    if not path_exists:
+    if not Category.objects.filter(full_path=cat_path).exists:
         raise Http404('Category not found')
 
     cat_slug = cat_path.split('/')[-1]
