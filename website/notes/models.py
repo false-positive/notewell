@@ -70,10 +70,13 @@ class Category(MPTTModel):
 
 
 class NoteQuerySet(models.QuerySet):
-    def filter_accessible_notes_by(self, user_pk):
-        return self.filter(
-            Q(author__pk=user_pk) | Q(shareditem__user__pk=user_pk)
-        ).distinct()  # For some reason, notes in the QS were repeating
+    def filter_accessible_notes_by(self, user_pk=None):
+        if not user_pk:
+            return self.filter(status='public')
+        else:
+            return self.filter(
+                Q(author__pk=user_pk) | Q(shareditem__user__pk=user_pk) | Q(status='public')
+            ).distinct()  # For some reason, notes in the QS were repeating
 
 
 class Note(models.Model):

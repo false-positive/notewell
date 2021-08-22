@@ -11,6 +11,7 @@ from .shortcuts import get_accessible_note_or_404
 
 
 def index(request):
+    user_pk = request.user.pk
     if request.method == "GET":
         # TODO escape the string
         # TODO make search bar more advanced
@@ -20,7 +21,7 @@ def index(request):
 
     notes = Note.objects \
         .select_related('author') \
-        .filter(status="public")
+        .filter_accessible_notes_by(user_pk=user_pk)
     categories = Category.objects.all()
     return render(request, 'notes/note_list.html', {
         'title': 'Public Notes',
@@ -49,7 +50,6 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
 
-@login_required
 def read(request, note_id):
     note: Note = get_accessible_note_or_404(request.user.pk, uuid=note_id)
 
@@ -83,7 +83,6 @@ def edit(request, note_id):
     })
 
 
-@login_required
 def category(request, cat_path):
     if not Category.objects.filter(full_path=cat_path).exists:
         raise Http404('Category not found')
@@ -115,9 +114,9 @@ def category(request, cat_path):
 
 
 def search(request, search_query):
-
-    notes_by_title = Note.objects.filter(title__icontains=search_query, status='public')
-    notes_by_author = Note.objects.filter(author__username__icontains=search_query, status='public')
+    user = request.user
+    notes_by_title = Note.objects.filter(title__icontains=search_query).filter_accessible_notes_by(user_pk=user.pk)
+    notes_by_author = Note.objects.filter(author__username__icontains=search_query).filter_accessible_notes_by(user_pk=user.pk)
 
     notes = set(chain(notes_by_title, notes_by_author))
 
