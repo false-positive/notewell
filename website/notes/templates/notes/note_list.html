@@ -43,10 +43,22 @@
 
 {% block content %}
     <h1 class="title">{{ title }}</h1>
+    <h1 class="title">
+        {% for page in page_count_range %}
+        <a href=".?p={{ page  }}">{{ page }}</a>
+        {% endfor %}
+    </h1>
+
 
     <section class="section-notes">
         {% for object in object_list %} 
             {% include 'notes/components/note.html' with note=object %}
         {% endfor %}
     </section>
+
+    <h1 class="title">
+        {% for page in page_count_range %}
+        <a href=".?p={{ page  }}">{{ page }}</a>
+        {% endfor %}
+    </h1>
 {% endblock content %}

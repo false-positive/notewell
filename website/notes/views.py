@@ -1,4 +1,6 @@
+from math import ceil
 from itertools import chain
+
 from django.views import generic
 from django.shortcuts import redirect, render, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
@@ -11,21 +13,27 @@ from .shortcuts import get_accessible_note_or_404
 
 
 def index(request):
-    user_pk = request.user.pk
-    if request.method == "GET":
-        # TODO escape the string
-        # TODO make search bar more advanced
-        search_query = request.GET.get('search_query', None)
-        if search_query:
-            return search(request, search_query)
+    if request.method != "GET":
+        raise "Only GET method is allowed!"
 
-    notes = Note.objects \
-        .select_related('author') \
-        .filter_accessible_notes_by(user_pk=user_pk)
+    # TODO escape the string
+    # TODO make search bar more advanced
+    search_query = request.GET.get('search_query', None)
+    if search_query:
+        return search(request, search_query)
+
+    # notes = Note.objects \
+    #     .select_related('author') \
+    #     .filter_accessible_notes_by(user_pk=user_pk)
+
+    notes_res = get_notes(request)
+
+    notes = notes_res['notes']
     categories = Category.objects.all()
     return render(request, 'notes/note_list.html', {
         'title': 'Public Notes',
         'object_list': notes,
+        'page_count_range': range(1, notes_res['page_count'] + 1),
         'categories': categories,
     })
 
@@ -92,6 +100,7 @@ def category(request, cat_path):
     categories = Category.objects.all()
 
     # TODO: figure out how to make a join or something here
+
     notes = []
 
     def get_all_child_notes(category):
@@ -125,3 +134,23 @@ def search(request, search_query):
         'categories': Category.objects.all(),
         'object_list': notes,
     })
+
+
+def get_notes(request):
+    # TODO maybe fix limit bug
+    notes_on_page = int(request.GET.get('limit', 10))
+    page_num = int(request.GET.get('p', 1))
+
+    start = notes_on_page * (page_num - 1)
+    end = notes_on_page * page_num
+
+    notes = Note.objects \
+        .select_related('author') \
+        .filter_accessible_notes_by(user_pk=request.user.pk)
+
+    # TODO maybe find a better way to return the values
+
+    return {
+        "notes": notes[start:end],
+        "page_count": ceil(notes.count() / notes_on_page)
+    }
