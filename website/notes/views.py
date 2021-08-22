@@ -10,12 +10,17 @@ from .forms import CreateCommentForm
 from .shortcuts import get_accessible_note_or_404
 
 
-@login_required
 def index(request):
-    user_pk = request.user.pk
+    if request.method == "GET":
+        # TODO escape the string
+        # TODO make search bar more advanced
+        search_query = request.GET.get('search_query', None)
+        if search_query:
+            return search(request, search_query)
+
     notes = Note.objects \
         .select_related('author') \
-        .filter_accessible_notes_by(user_pk=user_pk)
+        .filter(status="public")
     categories = Category.objects.all()
     return render(request, 'notes/note_list.html', {
         'title': 'Public Notes',
@@ -109,23 +114,15 @@ def category(request, cat_path):
     })
 
 
-@login_required
-def search(request):
-    if request.method == "POST":
-        # TODO escape the string
-        # TODO make search bar more advanced
-        searched = request.POST['searched']
+def search(request, search_query):
 
-        notes_by_title = Note.objects.filter(title__icontains=searched)
-        notes_by_author = Note.objects.filter(author__username__icontains=searched)
+    notes_by_title = Note.objects.filter(title__icontains=search_query, status='public')
+    notes_by_author = Note.objects.filter(author__username__icontains=search_query, status='public')
 
-        notes = set(chain(notes_by_title, notes_by_author))
+    notes = set(chain(notes_by_title, notes_by_author))
 
-        return render(request, 'notes/note_list.html', {
-            'title': f'Search results for "{searched}"',
-            'categories': Category.objects.all(),
-            'object_list': notes,
-        })
-    else:
-        index_url = reverse('notes:index')
-        return redirect(index_url)
+    return render(request, 'notes/note_list.html', {
+        'title': f'Search results for "{search_query}"',
+        'categories': Category.objects.all(),
+        'object_list': notes,
+    })
