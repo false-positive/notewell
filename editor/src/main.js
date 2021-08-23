@@ -1,4 +1,3 @@
-import { getNote, updateNote } from './api';
 import App from './App.svelte';
 
 // HACK: clean the contents of #app
@@ -8,7 +7,7 @@ document.getElementById('app').innerHTML = '';
 // TODO: use better way of sharing this data...
 const pathComponents = window.location.pathname.split('/');
 const idxId = pathComponents.indexOf('notes') + 1;
-const note_uuid = idxId + 1;
+const note_uuid = pathComponents[idxId];
 
 const app = new App({
     target: document.getElementById('app'),
