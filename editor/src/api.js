@@ -25,7 +25,6 @@ function makeRequest(url, opts) {
     if (!token) {
         throw new Error('API Token is not set!!');
     }
-    console.log(opts.method, `${API_URL}/${url}`);
     return fetch(`${API_URL}/${url}`, {
         ...opts,
         headers: {

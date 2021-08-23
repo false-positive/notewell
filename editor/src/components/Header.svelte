@@ -1,13 +1,8 @@
 <script>
-    import { updateNote } from '../api';
-
     import { note } from '../stores/note';
 
     async function updateTitle(e) {
-        const data = await updateNote($note.uuid, {
-            title: e.target.value,
-        });
-        $note = data;
+        note.update($note.uuid, { title: e.target.value });
     }
 </script>
 
