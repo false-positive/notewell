@@ -3,10 +3,8 @@
 
     import { note } from '../stores/note';
 
-    export let api_token;
-
     async function updateTitle(e) {
-        const data = await updateNote(api_token, $note.uuid, {
+        const data = await updateNote($note.uuid, {
             title: e.target.value,
         });
         $note = data;

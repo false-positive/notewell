@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte';
-    import { getNote } from './api';
+    import { getNote, setToken } from './api';
 
     import Header from './components/Header.svelte';
     import { note } from './stores/note';
@@ -9,11 +9,12 @@
     export let note_uuid;
 
     onMount(async () => {
-        const data = await getNote(api_token, note_uuid);
+        setToken(api_token);
+        const data = await getNote(note_uuid);
         $note = data;
     });
 </script>
 
 <main>
-    <Header {api_token} />
+    <Header />
 </main>

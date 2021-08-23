@@ -6,8 +6,8 @@ document.getElementById('app').innerHTML = '';
 // HACK: expects that the url has /notes/ followed by the uuid
 // TODO: use better way of sharing this data...
 const pathComponents = window.location.pathname.split('/');
-const idxId = pathComponents.indexOf('notes') + 1;
-const note_uuid = pathComponents[idxId];
+const uuidIdx = pathComponents.indexOf('notes') + 1;
+const note_uuid = pathComponents[uuidIdx];
 
 const app = new App({
     target: document.getElementById('app'),
