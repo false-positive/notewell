@@ -6,25 +6,25 @@
 {% endblock head %} 
 
 {% block nav_list %}
-    <li><a href="{% url 'notes:index' %}">All</a></li>
-    <li><a href="{% url 'notes:my' %}">My</a></li>
-    <li>
-        <a href="#">
+    <li class="nav__item"><a class="nav__link" href="{% url 'notes:index' %}">All</a></li>
+    <li class="nav__item"><a class="nav__link" href="{% url 'notes:my' %}">My</a></li>
+    <li class="nav__item">
+        <a class="nav__link" href="#">
             Subjects
             <i class="icon ion-md-arrow-dropdown"></i>
         </a>
-        <ul class="sub-menu">
+        <ul class="nav__sub-menu">
             {% for category in categories %}
                 {% if not category.parent %}
-                    <li>
-                        <a href="{% url 'notes:category' category.get_full_path %}">
+                    <li class="nav__item nav__item--sub">
+                        <a class="nav__link" href="{% url 'notes:category' category.get_full_path %}">
                             {{ category.name }}
                             {% if category.children.all %}
                                 <i class="icon ion-md-arrow-dropdown"></i>
                             {% endif %}
                         </a>
                         {% if category.children.all %}
-                            <ul class="sub-menu">
+                            <ul class="nav__sub-menu">
                                 {% include "notes/menu.html" with categories=category.children.all %}
                             </ul>
                         {% endif %}
