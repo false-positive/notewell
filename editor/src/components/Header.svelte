@@ -1,11 +1,22 @@
 <script>
-    export let title = '';
+    import { updateNote } from '../api';
+
+    import { note } from '../stores/note';
+
+    export let api_token;
+
+    async function updateTitle(e) {
+        const data = await updateNote(api_token, $note.uuid, {
+            title: e.target.value,
+        });
+        $note = data;
+    }
 </script>
 
-<header>
-    <div class="container">
-        <nav>
-            <a href="/notes/">
+<header class="header">
+    <div class="header__container">
+        <nav class="nav">
+            <a class="nav__link" href="/notes/">
                 <!--
                     so the logo is taken from freepik and they
                     insist that I attribute them, but
@@ -13,13 +24,16 @@
                 -->
                 <img src="/static/notes/img/logo.png" alt="Logo" class="logo" />
             </a>
-            <p contenteditable={true}>{title}</p>
+            <input value={$note?.title} on:change={updateTitle} />
+            <p>{$note?.title}</p>
         </nav>
     </div>
 </header>
 
 <style>
-    p {
+    input {
+        background: none;
+        border: none;
         font-size: 2rem;
         padding-left: 0.4rem;
         font-weight: 300;
