@@ -12,24 +12,29 @@ from .forms import CreateCommentForm
 from .shortcuts import get_accessible_note_or_404
 
 
-def index(request):
+def index(request, cat_path=None):
     if request.method != "GET":
         raise "Only GET method is allowed!"
 
     # TODO escape the string
-    # TODO make search bar more advanced
+    # TODO make search bar more advanced and maybe filter from category
     search_query = request.GET.get('search_query', None)
     if search_query:
         return search(request, search_query)
 
-    # notes = Note.objects \
-    #     .select_related('author') \
-    #     .filter_accessible_notes_by(user_pk=user_pk)
+    if cat_path:
+        try:
+            category: Category = get_object_or_404(Category, full_path=cat_path)
+        except Http404:
+            raise Http404('Category not found')
 
-    notes_res = get_notes(request)
+        notes_res = get_notes(request, category)
+    else:
+        notes_res = get_notes(request)
 
     notes = notes_res['notes']
     categories = Category.objects.all()
+
     return render(request, 'notes/note_list.html', {
         'title': 'Public Notes',
         'object_list': notes,
@@ -136,7 +141,8 @@ def search(request, search_query):
     })
 
 
-def get_notes(request):
+def get_notes(request, category=None):
+
     # TODO maybe fix limit bug
     notes_on_page = int(request.GET.get('limit', 10))
     page_num = int(request.GET.get('p', 1))
@@ -144,9 +150,19 @@ def get_notes(request):
     start = notes_on_page * (page_num - 1)
     end = notes_on_page * page_num
 
-    notes = Note.objects \
-        .select_related('author') \
-        .filter_accessible_notes_by(user_pk=request.user.pk)
+    if category:
+        notes = Note.objects \
+            .select_related('author') \
+            .prefetch_related('categories')\
+            .filter(
+                categories__in=category.get_descendants(include_self=True)
+            ) \
+            .filter_accessible_notes_by(user_pk=request.user.pk) \
+            .distinct()
+    else:
+        notes = Note.objects \
+            .select_related('author') \
+            .filter_accessible_notes_by(user_pk=request.user.pk)
 
     # TODO maybe find a better way to return the values
 
