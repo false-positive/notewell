@@ -27,7 +27,7 @@ html {
 [theme='light'] {
     --solid-bg: linear-gradient(135deg, var(--blue-1) 60%, var(--blue-0));
     --icons-fg: var(--white-1);
-    --text-primary: var(--black-0):
+    --text-primary: var(--black-0);
     --text-secondary: var(--black-1);
     --link-fg: var(--white-0);
     --link-fg--hover: var(--blue-3);
