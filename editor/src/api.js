@@ -46,13 +46,26 @@ function makeRequest(url, opts) {
     });
 }
 
+/**
+ * The last response Promise from the `/api/token/refresh/` endpoint
+ *
+ * If not null, it must be awaited to avoid race conditions
+ * and sending requests with outdated, expired access tokens
+ * while the new access token is being generated.
+ *
+ * @type {Promise<Response>}
+ */
+let refreshTokenPairResponse = null;
+
 async function refreshTokenPair() {
-    const response = await makeRequest(`token/refresh/`, {
+    refreshTokenPairResponse = makeRequest(`token/refresh/`, {
         method: 'POST',
         body: JSON.stringify({
             refresh: refreshToken,
         }),
     });
+    const response = await refreshTokenPairResponse;
+    refreshTokenPairResponse = null;
     const { access, refresh } = await response.json();
     if (access && refresh) {
         accessToken = access;
@@ -68,6 +81,9 @@ async function refreshTokenPair() {
  * @returns {Promise<Response>}
  */
 async function makeAuthenticatedRequest(url, opts) {
+    if (refreshTokenPairResponse) {
+        await refreshTokenPairResponse;
+    }
     if (!accessToken) {
         throw new Error('API Token is not set!!');
     }
@@ -82,7 +98,7 @@ async function makeAuthenticatedRequest(url, opts) {
     if (response.status === 401) {
         const isRefreshed = await refreshTokenPair();
         if (isRefreshed) {
-            return await makeRequest(url, requestOpts());
+            return makeRequest(url, requestOpts());
         }
     }
     return response;
