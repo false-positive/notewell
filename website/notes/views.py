@@ -1,4 +1,4 @@
-from math import ceil
+import math
 from itertools import chain
 
 from django.views import generic
@@ -10,6 +10,8 @@ from django.http import Http404
 from .models import Category, Note
 from .forms import CreateCommentForm
 from .shortcuts import get_accessible_note_or_404
+
+from api.shortcuts import generate_jwt_token
 
 
 def index(request, cat_path=None):
@@ -90,9 +92,12 @@ def edit(request, note_id):
         read_url = reverse('notes:read', kwargs={'note_id': note_id})
         return redirect(read_url)
 
+    token_pair = generate_jwt_token(request.user)
+
     return render(request, 'notes/edit.html', {
         'title': note.title,
         'note': note,
+        'token_pair': token_pair,
     })
 
 
@@ -168,5 +173,5 @@ def get_notes(request, category=None):
 
     return {
         "notes": notes[start:end],
-        "page_count": ceil(notes.count() / notes_on_page)
+        "page_count": math.ceil(notes.count() / notes_on_page)
     }
