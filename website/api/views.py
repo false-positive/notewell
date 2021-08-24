@@ -53,7 +53,7 @@ def view_notes(request, cat_path=None):
             .filter_accessible_notes_by(user.pk)
 
     serializer = ViewNoteSerializer(notes, many=True)
-    return Response(serializer.data)
+    return Response({'data': serializer.data})
 
 
 @api_view(['POST', 'GET', 'PUT', 'PATCH', 'DELETE'])
@@ -77,9 +77,6 @@ def note_crud(request, note_id=None):
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def view_note(request, note_id):
-    # TODO check if note is public or private
-    # and if private ask for username and password
-
     user = request.user
 
     try:
@@ -91,7 +88,7 @@ def view_note(request, note_id):
         )
 
     serializer = ViewNoteSerializer(note)
-    return Response(serializer.data)
+    return Response({'data': serializer.data})
 
 
 @api_view(['POST'])
@@ -116,7 +113,7 @@ def create_note(request):
     else:
         data = serializer.errors
 
-    return Response(data)
+    return Response({'data': data})
 
 
 @api_view(['PUT', 'PATCH'])
@@ -145,7 +142,7 @@ def update_note(request, note_id):
     else:
         data = serializer.errors
 
-    return Response(data)
+    return Response({'data': data})
 
 
 @api_view(['DELETE'])
@@ -161,7 +158,7 @@ def delete_note(request, note_id):
     else:
         data['detail'] = 'You do not have permissions to delete this note'
 
-    return Response(data)
+    return Response({'data': data})
 
 
 @api_view(['GET'])
@@ -181,7 +178,7 @@ def view_categories(request, cat_path=None):
             'children' + '__children' * 5).filter(parent__isnull=True)
 
     serializer = CategorySerializer(categories, many=True)
-    return Response(serializer.data)
+    return Response({'data': serializer.data})
 
 
 @api_view(['GET'])
@@ -189,7 +186,7 @@ def view_users(request):
     users = User.objects.filter(is_active=True)
 
     serializer = UserSerializer(users, many=True)
-    return Response(serializer.data)
+    return Response({'data': serializer.data})
 
 
 @api_view(['POST'])
@@ -211,7 +208,7 @@ def register(request):
     else:
         data = serializer.errors
 
-    return Response(data)
+    return Response({'data': data})
 
 
 class UserTokenPairView(TokenObtainPairView):
