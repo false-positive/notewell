@@ -15,6 +15,12 @@
         setTokenPair(access, refresh);
         note.load(noteData.uuid);
     });
+
+    $: {
+        if ($note) {
+            document.title = `${$note.title} // Notewell`;
+        }
+    }
 </script>
 
 <main>
