@@ -34,7 +34,6 @@
     </li>
     <li>
         <form method="GET" action="{% url 'notes:index' %}">
-            {% comment %} {% csrf_token %} {% endcomment %}
             <input type="search" placehoder="Search Notes" aria-label="Search" name="search_query">
             <button>Search</button>
         </form>
