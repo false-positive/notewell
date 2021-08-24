@@ -28,44 +28,54 @@
     <body>
         <div id="app">
             {% block header %}
-                <header>
-                    <div class="container">
-                        <nav>
-                            <div class="menu-icons">
-                                <i class="icon ion-md-menu"></i>
-                                <i class="icon ion-md-close"></i>
+                <header class="header">
+                    <div class="header__container">
+                        <nav class="nav">
+                            <div class="nav__hamburger">
+                                <span class="nav__hamburger-open">
+                                    <i class="icon ion-md-menu"></i>
+                                </span>
+                                <span class="nav__hamburger-close">
+                                    <i class="icon ion-md-close"></i>
+                                </span>
                             </div>
 
-                            <a href="{% url 'notes:index' %}">
+                            <a class="nav__link" href="{% url 'notes:index' %}">
                                 <!--
                                     so the logo is taken from freepik and they
                                     insist that I attribute them, but
                                     this is a placehoder, sooo...
                                 -->
-                                <img src="{% static 'notes/img/logo.png' %}" alt="Logo" class="logo" />
+                                <img
+                                    src="{% static 'notes/img/logo.png' %}"
+                                    alt="Logo"
+                                    class="nav__logo"
+                                />
                             </a>
 
-                            <ul class="nav-list">
+                            <ul class="nav__list">
                                 {% block nav_list %}{% endblock nav_list %}
                                 {% if not user.is_authenticated %}
-                                    <li class="move-right">
-                                        <a href="{% url 'accounts:register' %}">Sign up</a>
+                                    <li class="nav__item nav__item--move-right">
+                                        <a class="nav__link" href="{% url 'accounts:register' %}">Sign up</a>
                                     </li>
-                                    <li><a href="{% url 'accounts:login' %}">Log in</a></li>
+                                    <li class="nav__item">
+                                        <a class="nav__link" href="{% url 'accounts:login' %}">Log in</a>
+                                    </li>
                                 {% else %}
-                                    <li class="move-right">
-                                        <a href="#">
+                                    <li class="nav__item nav__item--move-right">
+                                        <a class="nav__link" href="#">
                                             {{ user.username }}
                                             <i class="icon ion-md-arrow-dropdown"></i>
                                         </a>
-                                        <ul class="sub-menu">
+                                        <ul class="nav__sub-menu">
                                             {% if user.is_staff %}
-                                                <li>
-                                                  <a href="{% url 'admin:index' %}">Admin</a>
+                                                <li class="nav__item nav__item--sub">
+                                                  <a class="nav__link nav__link--sub-menu" href="{% url 'admin:index' %}">Admin</a>
                                                 </li>
                                             {% endif %}
-                                            <li>
-                                              <a href="{% url 'accounts:logout' %}">Log out</a>
+                                            <li class="nav__item nav__item--sub">
+                                              <a class="nav__link nav__link--sub-menu" href="{% url 'accounts:logout' %}">Log out</a>
                                             </li>
                                         </ul>
                                     </li>
@@ -74,8 +84,6 @@
                         </nav>
                     </div>
                 </header>
-
-                <div class="space-block"></div>
             {% endblock header %}
         
             {% block content %}{% endblock content %}

@@ -7,17 +7,17 @@
 {% endblock head %} 
 
 {% block nav_list %}
-    <li><a href="{% url 'notes:index' %}">All</a></li>
-    <li><a href="{% url 'notes:my' %}">My</a></li>
-    <li>
-        <a href="#">
+    <li class="nav__item"><a class="nav__link" href="{% url 'notes:index' %}">All</a></li>
+    <li class="nav__item"><a class="nav__link" href="{% url 'notes:my' %}">My</a></li>
+    <li class="nav__item">
+        <a class="nav__link" href="#">
             Subjects
             <i class="icon ion-md-arrow-dropdown"></i>
         </a>
-        <ul class="sub-menu">
+        <ul class="nav__sub-menu">
             {% recursetree categories %}
-                <li>
-                    <a href="{% url 'notes:category' node.full_path %}">
+                <li class="nav__item nav__item--sub">
+                    <a class="nav__link" href="{% url 'notes:category' node.full_path %}">
                         {{ node.name }}
                         {% if not node.is_leaf_node %}
                             <i class="icon ion-md-arrow-dropdown"></i>
