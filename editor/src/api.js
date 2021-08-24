@@ -22,6 +22,10 @@ let accessToken = null;
  */
 let refreshToken = null;
 
+/**
+ * @param {string} accessValue
+ * @param {string} refreshValue
+ */
 export function setTokenPair(accessValue, refreshValue) {
     accessToken = accessValue;
     refreshToken = refreshValue;
@@ -30,6 +34,7 @@ export function setTokenPair(accessValue, refreshValue) {
 /**
  * @param {string} url
  * @param {RequestInit} opts
+ * @returns {Promise<Response>}
  */
 function makeRequest(url, opts) {
     return fetch(`${API_URL}/${url}`, {
@@ -57,6 +62,11 @@ async function refreshTokenPair() {
     return false;
 }
 
+/**
+ * @param {string} url
+ * @param {RequestInit} opts
+ * @returns {Promise<Response>}
+ */
 async function makeAuthenticatedRequest(url, opts) {
     if (!accessToken) {
         throw new Error('API Token is not set!!');
@@ -77,6 +87,43 @@ async function makeAuthenticatedRequest(url, opts) {
     }
     return response;
 }
+
+/**
+ * @param {string} url
+ */
+async function getData(url, authenticated = true) {
+    const func = authenticated ? makeAuthenticatedRequest : makeRequest;
+    try {
+        const response = await func(url, {
+            method: 'GET',
+        });
+        const { data } = await response.json();
+        return [data, null];
+    } catch (err) {
+        console.error(err);
+        return [null, err];
+    }
+}
+
+/**
+ * @param {string} url
+ * @param {NoteData} updatedData
+ */
+async function updateData(url, updatedData, authenticated = true) {
+    const func = authenticated ? makeAuthenticatedRequest : makeRequest;
+    try {
+        const response = await func(url, {
+            method: 'PUT',
+            body: JSON.stringify(updatedData),
+        });
+        const { data } = await response.json();
+        return [data, null];
+    } catch (err) {
+        console.error(err);
+        return [null, err];
+    }
+}
+
 /**
  * @typedef {Object} Note
  * @property {string} author
@@ -93,10 +140,7 @@ async function makeAuthenticatedRequest(url, opts) {
  * @returns {Promise<Note>}
  */
 export async function getNote(uuid) {
-    const response = await makeAuthenticatedRequest(`notes/${uuid}/`, {
-        method: 'GET',
-    });
-    const data = await response.json();
+    const [data] = await getData(`notes/${uuid}/`);
     return data;
 }
 
@@ -115,10 +159,6 @@ export async function getNote(uuid) {
  * @returns {Promise<Note>}
  */
 export async function updateNote(uuid, noteData) {
-    const response = await makeAuthenticatedRequest(`notes/${uuid}/`, {
-        method: 'PUT',
-        body: JSON.stringify(noteData),
-    });
-    const data = await response.json();
+    const [data] = await updateData(`notes/${uuid}/`, noteData);
     return data;
 }
