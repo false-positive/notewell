@@ -1,17 +1,17 @@
-from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
-
 from rest_framework.generics import RetrieveAPIView
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .serializers import (
     AuthUserSerializer,
+    AuthUserTokenObtainPairSerializer,
     CategorySerializer,
     NoteSerializer,
     ViewNoteSerializer,
@@ -214,42 +214,8 @@ def register(request):
     return Response(data)
 
 
-@api_view(['GET', 'POST'])
-def login(request):
-    print(request.data)
-    serializer = AuthUserSerializer(data=request.data)
-    data = {}
-
-    print(serializer.initial_data)
-
-    username = serializer.initial_data.get('username', None)
-    password = serializer.initial_data.get('password', None)
-
-    print(username)
-
-    if username is None:
-        data['username'] = ['This field is required.']
-    elif username == "":
-        data['username'] = ['This field may not be blank.']
-
-    if password is None:
-        data['password'] = ['This field is required.']
-    elif password == "":
-        data['password'] = ['This field may not be blank.']
-
-    if not data:
-        user = authenticate(username=username, password=password)
-
-        if not user:
-            data['detail'] = 'A user with this username and password was not found.'
-        else:
-            data['detail'] = 'User logged in successfully'
-            data['email'] = user.email
-            data['username'] = user.username
-            # XXX only for python 3.5 or higher
-            data = {**data, **generate_jwt_token(user)}
-
-    return Response(data)
+class UserTokenPairView(TokenObtainPairView):
+    serializer_class = AuthUserTokenObtainPairSerializer
 
 
 class UserAPIView(RetrieveAPIView):
