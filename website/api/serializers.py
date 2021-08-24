@@ -20,8 +20,7 @@ class AuthUserSerializer(serializers.ModelSerializer):
 class MyStringRelatedField(serializers.StringRelatedField):
 
     def to_representation(self, value):
-        # TODO not exactly todo, but
-        # if return value is changed,
+        # XXX: if return value is changed,
         # to_interval_value must be changed
         # in order to match category name
         return f'{value.name}'.capitalize()
