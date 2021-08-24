@@ -1,8 +1,4 @@
-"""Render input data for editor.
-
-Creates a <script> tag with type="application/json" and
-id="nw-editor-initial-data".
-"""
+"""Render input data for editor."""
 
 import json
 
@@ -24,4 +20,5 @@ def render_initial_editor_data(*, note, token_pair):
         #     'categories': []
         # },
         'definitely_not_token_pair': token_pair,
+        'note': {'uuid': str(note.uuid)},
     }, separators=(',', ':')))
