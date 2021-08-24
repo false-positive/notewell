@@ -1,20 +1,23 @@
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 
+from rest_framework.generics import RetrieveAPIView
 from rest_framework import status
-from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from .serializers import (
+    AuthUserSerializer,
     CategorySerializer,
     NoteSerializer,
     ViewNoteSerializer,
     UserSerializer,
 )
+from .shortcuts import generate_jwt_token
 from notes.models import Category, Note
 from notes.shortcuts import get_accessible_note_or_404
 
@@ -23,46 +26,31 @@ from notes.shortcuts import get_accessible_note_or_404
 @permission_classes((IsAuthenticated,))
 def view_notes(request, cat_path=None):
     # TODO select only public notes
+    user = request.user
+
     if cat_path:
-        path_exists = False
-
-        for path in Category.objects.values('full_path'):
-            if path['full_path'] == cat_path:
-                path_exists = True
-
-        if not path_exists:
+        try:
+            category: Category = get_object_or_404(Category, full_path=cat_path)
+        except Http404:
             return Response(
-                {'message': 'No notes were found'},
+                {'detail': 'Category not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        cat_slug = cat_path.split('/')[-1]
-        category: Category = get_object_or_404(Category, slug=cat_slug)
-
-        # TODO: figure out how to make a join or something here
-        notes = []
-
-        def get_all_child_notes(category):
-            current_notes = Note.objects \
-                .select_related('author') \
-                .prefetch_related('categories') \
-                .filter(categories=category) \
-                .filter_accessible_notes_by(request.user.pk)
-
-            for note in current_notes:
-                notes.append(note)
-
-            for cat in category.children.all():
-                get_all_child_notes(cat)
-
-        get_all_child_notes(category)
-
+        notes = Note.objects \
+            .select_related('author') \
+            .prefetch_related('categories')\
+            .filter(
+                categories__in=category.get_descendants(include_self=True)
+            ) \
+            .filter_accessible_notes_by(user.pk) \
+            .distinct()
     else:
 
         notes = Note.objects \
             .select_related('author') \
             .prefetch_related('categories') \
-            .filter_accessible_notes_by(request.user.pk)
+            .filter_accessible_notes_by(user.pk)
 
     serializer = ViewNoteSerializer(notes, many=True)
     return Response(serializer.data)
@@ -179,22 +167,15 @@ def delete_note(request, note_id):
 @api_view(['GET'])
 def view_categories(request, cat_path=None):
     if cat_path:
-        path_exists = False
-
-        for path in Category.objects.values('full_path'):
-            if path['full_path'] == cat_path:
-                path_exists = True
-
-        if not path_exists:
-            return Response(
-                {'message': 'Category not found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        cat_slug = cat_path.split('/')[-1]
         categories = Category.objects \
             .prefetch_related('children' + '__children' * 5) \
-            .filter(slug=cat_slug)
+            .filter(full_path=cat_path)
+
+        if not categories:
+            return Response(
+                {'detail': 'Category not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
     else:
         categories = Category.objects.prefetch_related(
             'children' + '__children' * 5).filter(parent__isnull=True)
@@ -213,7 +194,7 @@ def view_users(request):
 
 @api_view(['POST'])
 def register(request):
-    serializer = UserSerializer(data=request.data)
+    serializer = AuthUserSerializer(data=request.data)
 
     data = {}
     if serializer.is_valid():
@@ -222,11 +203,58 @@ def register(request):
         )
         user = serializer.save()
 
-        data['message'] = 'User registered successfully'
+        data['detail'] = 'User registered successfully'
         data['email'] = user.email
         data['username'] = user.username
-        data['token'] = Token.objects.get(user=user).key
+        # XXX only for python 3.5 or higher
+        data = {**data, **generate_jwt_token(user)}
     else:
         data = serializer.errors
 
     return Response(data)
+
+
+@api_view(['GET', 'POST'])
+def login(request):
+    print(request.data)
+    serializer = AuthUserSerializer(data=request.data)
+    data = {}
+
+    print(serializer.initial_data)
+
+    username = serializer.initial_data.get('username', None)
+    password = serializer.initial_data.get('password', None)
+
+    print(username)
+
+    if username is None:
+        data['username'] = ['This field is required.']
+    elif username == "":
+        data['username'] = ['This field may not be blank.']
+
+    if password is None:
+        data['password'] = ['This field is required.']
+    elif password == "":
+        data['password'] = ['This field may not be blank.']
+
+    if not data:
+        user = authenticate(username=username, password=password)
+
+        if not user:
+            data['detail'] = 'A user with this username and password was not found.'
+        else:
+            data['detail'] = 'User logged in successfully'
+            data['email'] = user.email
+            data['username'] = user.username
+            # XXX only for python 3.5 or higher
+            data = {**data, **generate_jwt_token(user)}
+
+    return Response(data)
+
+
+class UserAPIView(RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user

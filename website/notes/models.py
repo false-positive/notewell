@@ -9,24 +9,20 @@ from django.urls import reverse
 
 # Just a friendly reminder to makemigrations and migrate after changing this :)
 
+from mptt.models import MPTTModel, TreeForeignKey
 
-class Category(models.Model):
+
+class Category(MPTTModel):
     name = models.CharField(max_length=256)
     slug = models.SlugField()
     full_path = models.CharField(max_length=255)
-    parent = models.ForeignKey(
-        'self',
-        blank=True,
-        null=True,
-        related_name='children',
-        on_delete=models.CASCADE
-    )
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
 
-    class Meta:
-        # enforcing that there can not be two categories under a parent with
-        # same slug
-        unique_together = ('slug', 'parent',)
-        verbose_name_plural = "categories"
+    class MPTTMeta:
+        order_insertion_by = ['name']
+
+    def __str__(self):
+        return self.name
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name, allow_unicode=False)
@@ -43,36 +39,69 @@ class Category(models.Model):
 
         super(Category, self).save(*args, **kwargs)
 
-    def get_full_path(self):
-        full_path = [self.slug]
-        k = self.parent
-        while k is not None:
-            full_path.append(k.slug)
-            k = k.parent
-        return '/'.join(full_path[::-1])
 
-    def __str__(self):
-        full_path = [self.name]
-        k = self.parent
-        while k is not None:
-            full_path.append(k.name)
-            k = k.parent
-        return ' / '.join(full_path[::-1])
+# class Category(models.Model):
+#     name = models.CharField(max_length=256)
+#     slug = models.SlugField()
+#     full_path = models.CharField(max_length=255)
+#     parent = models.ForeignKey(
+#         'self',
+#         blank=True,
+#         null=True,
+#         related_name='children',
+#         on_delete=models.CASCADE
+#     )
+
+#     class Meta:
+#         # enforcing that there can not be two categories under a parent with
+#         # same slug
+#         unique_together = ('slug', 'parent',)
+#         verbose_name_plural = "categories"
+
+#
+
+#     def get_full_path(self):
+#         full_path = [self.slug]
+#         k = self.parent
+#         while k is not None:
+#             full_path.append(k.slug)
+#             k = k.parent
+#         return '/'.join(full_path[::-1])
 
 
 class NoteQuerySet(models.QuerySet):
-    def filter_accessible_notes_by(self, user_pk):
-        return self.filter(
-            Q(author__pk=user_pk) | Q(shareditem__user__pk=user_pk)
-        ).distinct()  # For some reason, notes in the QS were repeating
+    def filter_accessible_notes_by(self, user_pk=None):
+        if not user_pk:
+            return self.select_related('author') \
+                .prefetch_related('categories') \
+                .filter(status='public')
+        else:
+            return self.select_related('author') \
+                .prefetch_related('categories') \
+                .filter(
+                    Q(author__pk=user_pk) | Q(shareditem__user__pk=user_pk) | Q(status='public')
+            ).distinct()  # For some reason, notes in the QS were repeating
 
 
 class Note(models.Model):
+
+    PUBLIC = 'public'
+    PRIVATE = 'private'
+
+    NOTE_STATUS_CHOICES = (
+        (PUBLIC, 'Public'),
+        (PRIVATE, 'Private'),
+    )
+
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(_('Title'), max_length=64)
     categories = models.ManyToManyField(Category, blank=True)
     creation_date = models.DateField(auto_now_add=True)
+    status = models.CharField(max_length=10,
+                              choices=NOTE_STATUS_CHOICES,
+                              default=PRIVATE)
+    verified = models.BooleanField(default=False)
 
     objects = NoteQuerySet.as_manager()
 

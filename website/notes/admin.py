@@ -1,3 +1,4 @@
+from mptt.admin import MPTTModelAdmin
 from django.contrib import admin
 from django.forms import Textarea
 from django.db import models
@@ -23,11 +24,13 @@ class CommentAdmin(admin.ModelAdmin):
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(MPTTModelAdmin):
+    # # specify pixel amount for this ModelAdmin only:
+    mptt_level_indent = 20
     exclude = ('full_path',)
     list_display = ('name', 'slug', 'full_path')
     prepopulated_fields = {'slug': ("name",)}
-    ordering = ('full_path',)
+    # ordering = ('full_path',)
 
 
 class BulletPointInline(admin.TabularInline):
@@ -89,8 +92,8 @@ class SharedItemInline(admin.TabularInline):
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
     inlines = [BulletPointInline, CommentInline, SharedItemInline]
-    list_display = ['title', 'author', 'uuid_link']
-    actions = ['share_with_admin']
+    list_display = ['title', 'author', 'uuid_link', 'status', 'verified']
+    actions = ['verify', 'unverify', 'share_with_admin']
 
     def get_queryset(self, request):
         return super().get_queryset(request) \
@@ -104,7 +107,19 @@ class NoteAdmin(admin.ModelAdmin):
         fmt = '<a href="{}" target="_blank">{}</a>'
         return format_html(fmt, url, note.uuid)
 
-    @admin.action(description='Give me read access')
+    @admin.action(description='Verify')
+    def verify(self, request, queryset):
+        for note in queryset:
+            note.verified = True
+            note.save()
+
+    @admin.action(description='Unverify')
+    def unverify(self, request, queryset):
+        for note in queryset:
+            note.verified = False
+            note.save()
+
+    @admin.action(description='Give me read access yes')
     def share_with_admin(self, request, queryset):
         # XXX: kinda creepy...
         for note in queryset:

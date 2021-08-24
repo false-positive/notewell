@@ -1,3 +1,6 @@
+from math import ceil
+from itertools import chain
+
 from django.views import generic
 from django.shortcuts import redirect, render, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
@@ -9,16 +12,33 @@ from .forms import CreateCommentForm
 from .shortcuts import get_accessible_note_or_404
 
 
-@login_required
-def index(request):
-    user_pk = request.user.pk
-    notes = Note.objects \
-        .select_related('author') \
-        .filter_accessible_notes_by(user_pk=user_pk)
+def index(request, cat_path=None):
+    if request.method != "GET":
+        raise "Only GET method is allowed!"
+
+    # TODO escape the string
+    # TODO make search bar more advanced and maybe filter from category
+    search_query = request.GET.get('search_query', None)
+    if search_query:
+        return search(request, search_query)
+
+    if cat_path:
+        try:
+            category: Category = get_object_or_404(Category, full_path=cat_path)
+        except Http404:
+            raise Http404('Category not found')
+
+        notes_res = get_notes(request, category)
+    else:
+        notes_res = get_notes(request)
+
+    notes = notes_res['notes']
     categories = Category.objects.all()
+
     return render(request, 'notes/note_list.html', {
         'title': 'Public Notes',
         'object_list': notes,
+        'page_count_range': range(1, notes_res['page_count'] + 1),
         'categories': categories,
     })
 
@@ -43,7 +63,6 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
 
-@login_required
 def read(request, note_id):
     note: Note = get_accessible_note_or_404(request.user.pk, uuid=note_id)
 
@@ -77,14 +96,8 @@ def edit(request, note_id):
     })
 
 
-@login_required
 def category(request, cat_path):
-    path_exists = False
-    for cat in Category.objects.all():
-        if cat.get_full_path() == cat_path:
-            path_exists = True
-
-    if not path_exists:
+    if not Category.objects.filter(full_path=cat_path).exists:
         raise Http404('Category not found')
 
     cat_slug = cat_path.split('/')[-1]
@@ -92,6 +105,7 @@ def category(request, cat_path):
     categories = Category.objects.all()
 
     # TODO: figure out how to make a join or something here
+
     notes = []
 
     def get_all_child_notes(category):
@@ -111,3 +125,48 @@ def category(request, cat_path):
         'categories': categories,
         'object_list': notes,
     })
+
+
+def search(request, search_query):
+    user = request.user
+    notes_by_title = Note.objects.filter(title__icontains=search_query).filter_accessible_notes_by(user_pk=user.pk)
+    notes_by_author = Note.objects.filter(author__username__icontains=search_query).filter_accessible_notes_by(user_pk=user.pk)
+
+    notes = set(chain(notes_by_title, notes_by_author))
+
+    return render(request, 'notes/note_list.html', {
+        'title': f'Search results for "{search_query}"',
+        'categories': Category.objects.all(),
+        'object_list': notes,
+    })
+
+
+def get_notes(request, category=None):
+
+    # TODO maybe fix limit bug
+    notes_on_page = int(request.GET.get('limit', 10))
+    page_num = int(request.GET.get('p', 1))
+
+    start = notes_on_page * (page_num - 1)
+    end = notes_on_page * page_num
+
+    if category:
+        notes = Note.objects \
+            .select_related('author') \
+            .prefetch_related('categories')\
+            .filter(
+                categories__in=category.get_descendants(include_self=True)
+            ) \
+            .filter_accessible_notes_by(user_pk=request.user.pk) \
+            .distinct()
+    else:
+        notes = Note.objects \
+            .select_related('author') \
+            .filter_accessible_notes_by(user_pk=request.user.pk)
+
+    # TODO maybe find a better way to return the values
+
+    return {
+        "notes": notes[start:end],
+        "page_count": ceil(notes.count() / notes_on_page)
+    }
