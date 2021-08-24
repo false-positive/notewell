@@ -6,15 +6,25 @@
 const API_URL = '/api';
 
 /**
- * The API token of the current interaction.
+ * The API access token of the current interaction.
  * Must be set before any calls to the API are made
+ * Must get refreshed withe the refresh token
  *
  * @type {string}
  */
-let token = null;
+let accessToken = null;
 
-export function setToken(value) {
-    token = value;
+/**
+ * The API refresh token of the current interaction.
+ * Must be set before refresh calls to the API are made
+ *
+ * @type {string}
+ */
+let refreshToken = null;
+
+export function setTokenPair(accessValue, refreshValue) {
+    accessToken = accessValue;
+    refreshToken = refreshValue;
 }
 
 /**
@@ -22,19 +32,51 @@ export function setToken(value) {
  * @param {RequestInit} opts
  */
 function makeRequest(url, opts) {
-    if (!token) {
-        throw new Error('API Token is not set!!');
-    }
     return fetch(`${API_URL}/${url}`, {
         ...opts,
         headers: {
-            ...opts.headers, // in case we want to add other headers
-            Authorization: `Token ${token}`,
+            ...opts.headers,
             'Content-Type': 'application/json',
         },
     });
 }
 
+async function refreshTokenPair() {
+    const response = await makeRequest(`token/refresh/`, {
+        method: 'POST',
+        body: JSON.stringify({
+            refresh: refreshToken,
+        }),
+    });
+    const { access, refresh } = await response.json();
+    if (access && refresh) {
+        accessToken = access;
+        refreshToken = refresh;
+        return true;
+    }
+    return false;
+}
+
+async function makeAuthenticatedRequest(url, opts) {
+    if (!accessToken) {
+        throw new Error('API Token is not set!!');
+    }
+    const requestOpts = () => ({
+        ...opts,
+        headers: {
+            ...opts.headers,
+            Authorization: `Bearer ${accessToken}`,
+        },
+    });
+    const response = await makeRequest(url, requestOpts());
+    if (response.status === 401) {
+        const isRefreshed = await refreshTokenPair();
+        if (isRefreshed) {
+            return await makeRequest(url, requestOpts());
+        }
+    }
+    return response;
+}
 /**
  * @typedef {Object} Note
  * @property {string} author
@@ -51,7 +93,7 @@ function makeRequest(url, opts) {
  * @returns {Promise<Note>}
  */
 export async function getNote(uuid) {
-    const response = await makeRequest(`notes/${uuid}/`, {
+    const response = await makeAuthenticatedRequest(`notes/${uuid}/`, {
         method: 'GET',
     });
     const data = await response.json();
@@ -73,7 +115,7 @@ export async function getNote(uuid) {
  * @returns {Promise<Note>}
  */
 export async function updateNote(uuid, noteData) {
-    const response = await makeRequest(`notes/${uuid}/`, {
+    const response = await makeAuthenticatedRequest(`notes/${uuid}/`, {
         method: 'PUT',
         body: JSON.stringify(noteData),
     });

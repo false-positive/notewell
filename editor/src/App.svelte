@@ -1,16 +1,19 @@
 <script>
     import { onMount } from 'svelte';
-    import { setToken } from './api';
+    import { setTokenPair } from './api';
 
     import Header from './components/Header.svelte';
     import { note } from './stores/note';
 
-    export let api_token;
-    export let note_uuid;
+    export let initialData;
 
-    onMount(async () => {
-        setToken(api_token);
-        note.load(note_uuid);
+    onMount(() => {
+        const {
+            definitely_not_token_pair: { access, refresh },
+            note: noteData,
+        } = initialData;
+        setTokenPair(access, refresh);
+        note.load(noteData.uuid);
     });
 </script>
 
