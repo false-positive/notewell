@@ -105,6 +105,53 @@ async function makeAuthenticatedRequest(url, opts) {
 }
 
 /**
+ * Map of all handlers registered to API events
+ *
+ * @type {Map<string, Set<Function>>}
+ */
+const apiEventHandlers = new Map();
+
+/**
+ * @param {string} event
+ * @param {Function} handler
+ */
+export function apiOn(event, handler) {
+    if (!apiEventHandlers.has(event)) {
+        apiEventHandlers.set(event, new Set());
+    }
+    apiEventHandlers.get(event).add(handler);
+}
+
+/**
+ * @param {string} event
+ * @param {Function} handler
+ */
+export function apiOff(event, handler) {
+    if (
+        !apiEventHandlers.has(event) ||
+        !apiEventHandlers.get(event).has(handler)
+    )
+        return;
+
+    apiEventHandlers.get(event).delete(handler);
+    if (!apiEventHandlers.get(event).size) {
+        apiEventHandlers.delete(event);
+    }
+}
+
+/**
+ * @param {string} event
+ * @param {any} details
+ */
+function apiDispatch(event, details) {
+    if (!apiEventHandlers.has(event)) return;
+
+    for (const handler of apiEventHandlers.get(event)) {
+        handler(details);
+    }
+}
+
+/**
  * @param {string} url
  */
 async function getData(url, authenticated = true) {
@@ -117,6 +164,7 @@ async function getData(url, authenticated = true) {
         return [data, null];
     } catch (err) {
         console.error(err);
+        apiDispatch('error', err);
         return [null, err];
     }
 }
@@ -136,6 +184,7 @@ async function updateData(url, updatedData, authenticated = true) {
         return [data, null];
     } catch (err) {
         console.error(err);
+        apiDispatch('error', err);
         return [null, err];
     }
 }
