@@ -127,11 +127,7 @@ export function apiOn(event, handler) {
  * @param {Function} handler
  */
 export function apiOff(event, handler) {
-    if (
-        !apiEventHandlers.has(event) ||
-        !apiEventHandlers.get(event).has(handler)
-    )
-        return;
+    if (!apiEventHandlers.get(event)?.has(handler)) return;
 
     apiEventHandlers.get(event).delete(handler);
     if (!apiEventHandlers.get(event).size) {
