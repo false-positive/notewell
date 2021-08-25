@@ -15,7 +15,8 @@ from .serializers import (
     AuthUserTokenObtainPairSerializer,
     CategorySerializer,
     NoteSerializer,
-    ViewNoteSerializer,
+    NoteViewSerializer,
+    NotePatchSerializer,
     UserSerializer,
 )
 from .shortcuts import generate_jwt_token
@@ -44,7 +45,7 @@ class NoteList(APIView):
         else:
             notes = self._get_notes(user)
 
-        serializer = ViewNoteSerializer(notes, many=True)
+        serializer = NoteViewSerializer(notes, many=True)
         return Response({'data': serializer.data})
 
     def post(self, request, format=None):
@@ -99,7 +100,7 @@ class NoteDetail(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        serializer = ViewNoteSerializer(note)
+        serializer = NoteViewSerializer(note)
         return Response({'data': serializer.data})
 
     def patch(self, request, note_id, format=None):
@@ -116,7 +117,7 @@ class NoteDetail(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        serializer = NoteSerializer(instance=note, data=request.data)
+        serializer = NotePatchSerializer(instance=note, data=request.data)
 
         # TODO maybe make category not optional or smth
         if serializer.is_valid():

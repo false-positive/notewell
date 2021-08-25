@@ -30,10 +30,10 @@ class AuthUserTokenObtainPairSerializer(TokenObtainPairSerializer):
 class MyStringRelatedField(serializers.StringRelatedField):
 
     def to_representation(self, value):
-        # XXX: if return value is changed,
+        # NOTE: if return value is changed,
         # to_interval_value must be changed
         # in order to match category name
-        return f'{value.name}'.capitalize()
+        return value.name.capitalize()
 
     def to_internal_value(self, data):
         try:
@@ -43,21 +43,25 @@ class MyStringRelatedField(serializers.StringRelatedField):
 
 
 class NoteSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField(required=False)
     categories = MyStringRelatedField(
         many=True, allow_null=True, required=False)
 
     class Meta:
         model = Note
-        fields = ('title', 'categories')
+        fields = ('uuid', 'title', 'categories', 'author', 'creation_date')
 
 
-class ViewNoteSerializer(serializers.ModelSerializer):
+class NoteViewSerializer(NoteSerializer):
     categories = MyStringRelatedField(many=True)
     author = serializers.StringRelatedField()
 
-    class Meta:
-        model = Note
-        fields = ('uuid', 'title', 'categories', 'author', 'creation_date')
+
+class NotePatchSerializer(NoteSerializer):
+    # XXX: maybe override get_fields to make it not require subclassing
+    # See: https://stackoverflow.com/questions/53735960/
+    # (slug ommited from url to make line shorter)
+    title = serializers.CharField(required=False)
 
 
 class CategorySerializer(serializers.ModelSerializer):
