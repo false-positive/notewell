@@ -12,8 +12,10 @@
             definitely_not_token_pair: { access, refresh },
             note: noteData,
         } = initialData;
+        note.setInitial(noteData);
         setTokenPair(access, refresh);
-        note.load(noteData.uuid);
+        // TODO: spinner state?
+        // note.load(noteData.uuid);
     });
 
     $: {

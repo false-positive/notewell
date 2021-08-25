@@ -6,6 +6,7 @@ function createNote() {
 
     return {
         subscribe,
+        setInitial: (v) => set(v),
         load: async (/** @type {string} */ uuid) => {
             const note = await getNote(uuid);
             set(note);

@@ -48,7 +48,7 @@ class NoteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Note
-        fields = ('title', 'categories')
+        fields = ('uuid', 'title', 'categories')
 
 
 class ViewNoteSerializer(serializers.ModelSerializer):
