@@ -4,19 +4,25 @@ import { writable } from 'svelte/store';
 function createNote() {
     const { subscribe, set } = writable(null);
 
+    const setNote = (data) => set({ ...data, isLocal: data.uuid === null });
+
     return {
         subscribe,
-        setInitial: (v) => set(v),
+        setInitial: setNote,
         load: async (/** @type {string} */ uuid) => {
             const note = await getNote(uuid);
-            set(note);
+            if (note) {
+                setNote(note);
+            }
         },
         update: async (
             /** @type {string} */ uuid,
             /** @type {import("../api").NoteData} */ noteData
         ) => {
             const note = await updateNote(uuid, noteData);
-            set(note);
+            if (note) {
+                setNote(note);
+            }
         },
     };
 }

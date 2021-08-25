@@ -142,10 +142,11 @@ async function updateData(url, updatedData, authenticated = true) {
 
 /**
  * @typedef {Object} Note
+ * @property {boolean} isLocal - whether the Note is stored in the server or in mempoy
  * @property {string} author
- * @property {string} uuid
+ * @property {string} uuid - the uuid of the Note used for updating. `null` if local.
  * @property {string} title
- * @property {string[]} categories
+ * @property {string[]} categories - the categories that the nore is present in
  * @property {Date} creation_date
  */
 
