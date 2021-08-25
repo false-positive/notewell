@@ -5,10 +5,33 @@
 
     import { messages } from '../stores/messages';
     import Alert from './ui/Alert.svelte';
+    import { onDestroy, onMount } from 'svelte';
+    import { apiOn, apiOff } from '../api';
 
-    const deleteMessage = (id) => () => {
+    const appendMessage = (
+        /** @type {import("../stores/messages").Message} */ message
+    ) => {
+        $messages = [...$messages, message];
+    };
+
+    const deleteMessage = (/** @type {number} */ id) => () => {
         $messages = $messages.filter((msg) => msg.id !== id);
     };
+
+    function handleAPIError(err) {
+        appendMessage({
+            id: new Date().getTime(),
+            severity: 'error',
+            text: String(err),
+        });
+    }
+
+    onMount(() => {
+        apiOn('error', handleAPIError);
+    });
+    onDestroy(() => {
+        apiOff('error', handleAPIError);
+    });
 </script>
 
 <div class="floating">
