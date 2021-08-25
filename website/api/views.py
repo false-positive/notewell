@@ -2,8 +2,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
-from rest_framework.generics import RetrieveAPIView
 from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -22,143 +23,127 @@ from notes.models import Category, Note
 from notes.shortcuts import get_accessible_note_or_404
 
 
-@api_view(['GET'])
-@permission_classes((IsAuthenticated,))
-def view_notes(request, cat_path=None):
-    # TODO select only public notes
-    user = request.user
+class NoteList(APIView):
+    """List all notes, or create a new one."""
 
-    if cat_path:
-        try:
-            category: Category = get_object_or_404(Category, full_path=cat_path)
-        except Http404:
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, format=None):
+        """List all notes accessible to user. Filter to category, if passed"""
+        user = request.user
+
+        cat_path = request.query_params.get('category')
+        if cat_path:
+            try:
+                notes = self._get_notes_in_category(user, cat_path)
+            except Http404:
+                return Response(
+                    {'detail': 'Category not found'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        else:
+            notes = self._get_notes(user)
+
+        serializer = ViewNoteSerializer(notes, many=True)
+        return Response({'data': serializer.data})
+
+    def post(self, request, format=None):
+        """Create a new note."""
+        serializer = NoteSerializer(data=request.data)
+
+        user = request.user
+
+        # TODO: maybe make category not optional or smth
+        if serializer.is_valid():
+            serializer.save(author=user)
             return Response(
-                {'detail': 'Category not found'},
-                status=status.HTTP_404_NOT_FOUND
+                {'data': serializer.data, 'detail': 'Note created successfully'},
+                status=status.HTTP_201_CREATED,
             )
+        else:
+            return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-        notes = Note.objects \
+    def _get_notes_in_category(self, user, cat_path):
+        """Query all notes accessible by user in category at cat_path."""
+        category: Category = get_object_or_404(Category, full_path=cat_path)
+
+        return Note.objects \
             .select_related('author') \
             .prefetch_related('categories')\
             .filter(
                 categories__in=category.get_descendants(include_self=True)
             ) \
             .filter_accessible_notes_by(user.pk) \
-            .distinct()
-    else:
+            .distinct()  # Q: why do we need distinct here?
 
-        notes = Note.objects \
+    def _get_notes(self, user):
+        """Query all notes accessible by user."""
+        return Note.objects \
             .select_related('author') \
             .prefetch_related('categories') \
             .filter_accessible_notes_by(user.pk)
 
-    serializer = ViewNoteSerializer(notes, many=True)
-    return Response({'data': serializer.data})
 
+class NoteDetail(APIView):
+    """Read, Patch or Delete Note."""
 
-@api_view(['POST', 'GET', 'PUT', 'PATCH', 'DELETE'])
-@permission_classes((IsAuthenticated,))
-def note_crud(request, note_id=None):
-    # crud = create, read, update, delete
-    request = request._request
+    def get(self, request, note_id, format=None):
+        """Get note."""
+        user = request.user
 
-    if request.method == 'GET':
-        return view_note(request, note_id)
-    elif request.method == 'POST':
-        return create_note(request)
-    elif request.method == 'GET':
-        return view_note(request, note_id)
-    elif request.method == 'PUT' or request.method == 'PATCH':
-        return update_note(request, note_id)
-    elif request.method == 'DELETE':
-        return delete_note(request, note_id)
+        try:
+            note = get_accessible_note_or_404(user.pk, uuid=note_id)
+        except Http404:
+            return Response(
+                {'detail': 'Note not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
+        serializer = ViewNoteSerializer(note)
+        return Response({'data': serializer.data})
 
-@api_view(['GET'])
-@permission_classes((IsAuthenticated,))
-def view_note(request, note_id):
-    user = request.user
+    def patch(self, request, note_id, format=None):
+        """Patch note."""
+        user = request.user
 
-    try:
-        note = get_accessible_note_or_404(user.pk, uuid=note_id)
-    except Http404:
+        try:
+            note = get_accessible_note_or_404(user.pk, uuid=note_id)
+            if not note.can_be_edited_by(user):
+                raise Http404()  # HACK: pretending as if lookup failed
+        except Http404:
+            return Response(
+                {'detail': 'Note not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = NoteSerializer(instance=note, data=request.data)
+
+        # TODO maybe make category not optional or smth
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data': serializer.data})
         return Response(
-            {"detail": "You do not have permission to view this note"},
-            status=status.HTTP_404_NOT_FOUND
+            {'errors': serializer.errors},
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
-    serializer = ViewNoteSerializer(note)
-    return Response({'data': serializer.data})
+    def delete(self, request, note_id, format=None):
+        """Delete note."""
+        user = request.user
 
+        try:
+            note = get_accessible_note_or_404(user.pk, uuid=note_id)
+            if not note.can_be_edited_by(user):
+                raise Http404()  # HACK: pretending as if lookup failed
+        except Http404:
+            return Response(
+                {'detail': 'Note not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
-@api_view(['POST'])
-@permission_classes((IsAuthenticated,))
-def create_note(request):
-    serializer = NoteSerializer(data=request.data)
-    data = {}
-
-    user = request.user
-
-    # TODO maybe make category not optional or smth
-    if serializer.is_valid():
-        note = Note()
-        note.title = serializer.validated_data['title']
-        note.author = user
-        note.save()
-        if serializer.validated_data.get('categories'):
-            note.categories.set(serializer.validated_data['categories'])
-
-        data = ViewNoteSerializer(note).data
-        data['detail'] = 'Note created successfully'
-    else:
-        data = serializer.errors
-
-    return Response({'data': data})
-
-
-@api_view(['PUT', 'PATCH'])
-@permission_classes((IsAuthenticated,))
-def update_note(request, note_id):
-    note = Note.objects.get(uuid=note_id)
-    serializer = NoteSerializer(instance=note, data=request.data)
-    data = {}
-
-    user = request.user
-
-    if user != note.author:
-        return Response(
-            {'detail': 'You do not have permissions to update this note'}
-        )
-
-    # TODO maybe make category not optional or smth
-    if serializer.is_valid():
-        note.title = serializer.validated_data['title']
-        note.save()
-        if serializer.validated_data.get('categories'):
-            note.categories.set(serializer.validated_data['categories'])
-
-        data = ViewNoteSerializer(note).data
-        data['detail'] = 'Note updated successfully'
-    else:
-        data = serializer.errors
-
-    return Response({'data': data})
-
-
-@api_view(['DELETE'])
-@permission_classes((IsAuthenticated,))
-def delete_note(request, note_id):
-    user = request.user
-    note = Note.objects.get(uuid=note_id)
-    data = {}
-
-    if user == note.author:
         note.delete()
-        data['detail'] = 'Note deleted successfully'
-    else:
-        data['detail'] = 'You do not have permissions to delete this note'
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-    return Response({'data': data})
 
 
 @api_view(['GET'])
