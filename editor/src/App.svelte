@@ -3,6 +3,7 @@
     import { setTokenPair } from './api';
 
     import Header from './components/Header.svelte';
+    import MessageList from './components/MessageList.svelte';
     import { note } from './stores/note';
 
     export let initialData;
@@ -27,4 +28,6 @@
 
 <main>
     <Header />
+
+    <MessageList />
 </main>
