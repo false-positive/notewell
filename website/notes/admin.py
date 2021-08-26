@@ -4,7 +4,7 @@ from django.forms import Textarea
 from django.db import models
 from django.utils.html import format_html
 
-from .models import Comment, BulletPoint, Note, Category, SharedItem
+from .models import Comment, Note, Category, SharedItem
 
 
 class CommentInline(admin.TabularInline):
@@ -25,29 +25,11 @@ class CommentAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(MPTTModelAdmin):
-    # # specify pixel amount for this ModelAdmin only:
-    mptt_level_indent = 20
+    mptt_level_indent = 20  # px
     exclude = ('full_path',)
     list_display = ('name', 'slug', 'full_path')
     prepopulated_fields = {'slug': ("name",)}
     # ordering = ('full_path',)
-
-
-class BulletPointInline(admin.TabularInline):
-    model = BulletPoint
-    extra = 0
-    formfield_overrides = {
-        models.TextField: {'widget': Textarea(attrs={'rows': 3})},
-    }
-
-
-@admin.register(BulletPoint)
-class BulletPointAdmin(admin.ModelAdmin):
-    inlines = [BulletPointInline]
-    list_display = ('content', 'note', 'order_id', 'parent')
-    formfield_overrides = {
-        models.TextField: {'widget': Textarea(attrs={'rows': 3})},
-    }
 
 
 # class ChoiceInline(admin.TabularInline):
@@ -91,13 +73,12 @@ class SharedItemInline(admin.TabularInline):
 
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
-    inlines = [BulletPointInline, CommentInline, SharedItemInline]
+    inlines = [CommentInline, SharedItemInline]
     list_display = ['title', 'author', 'uuid_link', 'status', 'verified']
     actions = ['verify', 'unverify', 'share_with_admin']
 
     def get_queryset(self, request):
         return super().get_queryset(request) \
-            .prefetch_related('bulletpoint_set') \
             .prefetch_related('categories')
 
     @admin.display(ordering='uuid', description='UUID')

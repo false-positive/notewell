@@ -7,9 +7,9 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.urls import reverse
 
-# Just a friendly reminder to makemigrations and migrate after changing this :)
-
 from mptt.models import MPTTModel, TreeForeignKey
+
+# Just a friendly reminder to makemigrations and migrate after changing this :)
 
 
 class Category(MPTTModel):
@@ -20,6 +20,9 @@ class Category(MPTTModel):
 
     class MPTTMeta:
         order_insertion_by = ['name']
+
+    class Meta:
+        verbose_name_plural = 'categories'
 
     def __str__(self):
         return self.name
@@ -37,36 +40,7 @@ class Category(MPTTModel):
 
         self.full_path = '/'.join(full_path[::-1])
 
-        super(Category, self).save(*args, **kwargs)
-
-
-# class Category(models.Model):
-#     name = models.CharField(max_length=256)
-#     slug = models.SlugField()
-#     full_path = models.CharField(max_length=255)
-#     parent = models.ForeignKey(
-#         'self',
-#         blank=True,
-#         null=True,
-#         related_name='children',
-#         on_delete=models.CASCADE
-#     )
-
-#     class Meta:
-#         # enforcing that there can not be two categories under a parent with
-#         # same slug
-#         unique_together = ('slug', 'parent',)
-#         verbose_name_plural = "categories"
-
-#
-
-#     def get_full_path(self):
-#         full_path = [self.slug]
-#         k = self.parent
-#         while k is not None:
-#             full_path.append(k.slug)
-#             k = k.parent
-#         return '/'.join(full_path[::-1])
+        super().save(*args, **kwargs)
 
 
 class NoteQuerySet(models.QuerySet):
@@ -96,6 +70,7 @@ class Note(models.Model):
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(_('Title'), max_length=64)
+    content = models.TextField(blank=True)
     categories = models.ManyToManyField(Category, blank=True)
     creation_date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=10,
@@ -152,22 +127,6 @@ class SharedItem(models.Model):
 
     def __str__(self):
         return f'{self.note} - {self.user} ({self.perm_level})'
-
-
-class BulletPoint(models.Model):
-    content = models.TextField()
-    parent = models.ForeignKey(
-        'self',
-        blank=True,
-        null=True,
-        related_name='children',
-        on_delete=models.CASCADE
-    )
-    note = models.ForeignKey(Note, on_delete=models.CASCADE)
-    order_id = models.IntegerField()
-
-    def __str__(self):
-        return self.content
 
 
 class Comment(models.Model):
