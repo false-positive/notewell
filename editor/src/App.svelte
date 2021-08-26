@@ -1,6 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import { setTokenPair } from './api';
+    import ContentEditor from './components/ContentEditor.svelte';
 
     import Header from './components/Header.svelte';
     import MessageList from './components/MessageList.svelte';
@@ -28,6 +29,8 @@
 
 <main>
     <Header />
+
+    <ContentEditor />
 
     <MessageList />
 </main>
