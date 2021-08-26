@@ -128,22 +128,6 @@ class SharedItem(models.Model):
         return f'{self.note} - {self.user} ({self.perm_level})'
 
 
-class BulletPoint(models.Model):
-    content = models.TextField()
-    parent = models.ForeignKey(
-        'self',
-        blank=True,
-        null=True,
-        related_name='children',
-        on_delete=models.CASCADE
-    )
-    note = models.ForeignKey(Note, on_delete=models.CASCADE)
-    order_id = models.IntegerField()
-
-    def __str__(self):
-        return self.content
-
-
 class Comment(models.Model):
     content = models.TextField()
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
