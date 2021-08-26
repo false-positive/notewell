@@ -173,7 +173,7 @@ async function updateData(url, updatedData, authenticated = true) {
     const func = authenticated ? makeAuthenticatedRequest : makeRequest;
     try {
         const response = await func(url, {
-            method: 'PUT',
+            method: 'PATCH',
             body: JSON.stringify(updatedData),
         });
         const { data } = await response.json();
@@ -188,9 +188,10 @@ async function updateData(url, updatedData, authenticated = true) {
 /**
  * @typedef {Object} Note
  * @property {boolean} isLocal - whether the Note is stored in the server or in mempoy
- * @property {string} author
  * @property {string} uuid - the uuid of the Note used for updating. `null` if local.
+ * @property {string} author
  * @property {string} title
+ * @property {string} content - the content of the note in markdown
  * @property {string[]} categories - the categories that the nore is present in
  * @property {Date} creation_date
  */
@@ -211,7 +212,8 @@ export async function getNote(uuid) {
  *
  * @typedef {Object} NoteData
  * @property {string} [uuid]
- * @property {string} title
+ * @property {string} [title]
+ * @property {string} [content]
  * @property {string[]} [categories]
  */
 
