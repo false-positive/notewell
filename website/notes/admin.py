@@ -25,8 +25,7 @@ class CommentAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(MPTTModelAdmin):
-    # # specify pixel amount for this ModelAdmin only:
-    mptt_level_indent = 20
+    mptt_level_indent = 20  # px
     exclude = ('full_path',)
     list_display = ('name', 'slug', 'full_path')
     prepopulated_fields = {'slug': ("name",)}
