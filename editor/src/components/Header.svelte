@@ -1,35 +1,29 @@
 <script>
+    import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
+    import IconButton from '@smui/icon-button';
+    import Header from '@smui/common/Header.svelte';
+
     import { note } from '../stores/note';
+
+    let titleEl;
 
     async function updateTitle(e) {
         note.update($note.uuid, { title: e.target.value });
     }
+
+    $: {
+        console.log(titleEl?.getElement()?.getElement());
+    }
 </script>
 
-<header class="header">
-    <div class="header__container">
-        <nav class="nav">
-            <a class="nav__link" href="/notes/">
-                <!--
-                    so the logo is taken from freepik and they
-                    insist that I attribute them, but
-                    this is a placehoder, sooo...
-                -->
-                <img src="/static/notes/img/logo.png" alt="Logo" class="logo" />
-            </a>
-            <input value={$note?.title} on:change={updateTitle} />
-            <p>{$note?.title}</p>
-        </nav>
-    </div>
-</header>
+<TopAppBar variant="static" color="secondary">
+    <Row>
+        <Section>
+            <IconButton class="material-icons" href="/notes/">menu</IconButton>
+            <Title contenteditable bind:this={titleEl}>{$note?.title}</Title>
+        </Section>
+    </Row>
+</TopAppBar>
 
 <style>
-    input {
-        background: none;
-        border: none;
-        font-size: 2rem;
-        padding-left: 0.4rem;
-        font-weight: 300;
-        color: #fff;
-    }
 </style>
