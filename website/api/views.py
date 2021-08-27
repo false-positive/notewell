@@ -133,9 +133,7 @@ class NoteDetail(APIView):
         user = request.user
 
         try:
-            note = get_accessible_note_or_404(user.pk, uuid=note_id)
-            if not note.can_be_edited_by(user):
-                raise Http404()  # HACK: pretending as if lookup failed
+            note = get_object_or_404(Note, uuid=note_id, author=user)
         except Http404:
             return Response(
                 {'detail': 'Note not found'},
