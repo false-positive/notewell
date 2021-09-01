@@ -174,9 +174,10 @@ class CurrentUserView(generics.RetrieveUpdateAPIView):
 
 class UserView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
+    queryset = User.objects.filter(is_active=True)
 
     def get_object(self):
-        return get_object_or_404(User, username=self.kwargs['username'])
+        return get_object_or_404(self.queryset, username=self.kwargs['username'])
 
 
 @api_view(['GET'])
@@ -187,12 +188,13 @@ def user_search(request):
     if not query:
         return Response({'data': []})
 
+    qs = User.objects.filter(is_active=True)
     if len(query) < LEN_QUERY_MIN:
-        users = User.objects.filter(username=query)[:1]
+        users = qs.filter(username=query)[:1]
     else:
-        users = User.objects \
+        users = qs \
                     .filter(username__startswith=query) \
-                    .order_by('username')[:NUM_USERS_MAX + 1]  # ordering guarantees that first object is closest match
+                    .order_by('username')[:NUM_USERS_MAX + 1]  # ordering guarantees that first object is closest match (maybe)
         if len(users) > NUM_USERS_MAX:
             if users[0].username == query:
                 # the closest match is an exact match, that's the only one we'll need
