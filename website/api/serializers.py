@@ -11,7 +11,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('username', 'email', 'first_name', 'last_name')
 
-
 class AuthUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -59,8 +58,12 @@ class NoteViewSerializer(NoteSerializer):
 
 class NotePatchSerializer(NoteSerializer):
     # XXX: maybe override get_fields to make it not require subclassing
-    # See: https://stackoverflow.com/questions/53735960/
+    # See: https://stackoverflow.com/q/53735960/
     # (slug ommited from url to make line shorter)
+    #
+    # or.. use an UpdateAPIView that does it for us
+    # See: https://www.django-rest-framework.org/api-guide/generic-views/#updateapiview
+    # And: https://www.django-rest-framework.org/api-guide/generic-views/#updatemodelmixin
     title = serializers.CharField(required=False)
 
 
@@ -70,6 +73,6 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ('name', 'slug', 'full_path', 'children')
 
     def get_fields(self):
-        fields = super(CategorySerializer, self).get_fields()
+        fields = super().get_fields()
         fields['children'] = CategorySerializer(many=True)
         return fields

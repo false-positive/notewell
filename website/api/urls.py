@@ -8,8 +8,8 @@ urlpatterns = [
     path('token/', views.UserTokenPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    # path('users/', views.UserAPIView.as_view()),
-    path('users/', views.view_users, name='user-list'),
+    path('user/', views.CurrentUserView.as_view()),
+    path('user/<str:username>/', views.UserView.as_view()),
 
     path('register/', views.register, name='register'),
 

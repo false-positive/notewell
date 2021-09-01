@@ -4,7 +4,7 @@ from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.generics import RetrieveAPIView
+from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -164,43 +164,45 @@ def view_categories(request, cat_path=None):
     return Response({'data': serializer.data})
 
 
-@api_view(['GET'])
-def view_users(request):
-    users = User.objects.filter(is_active=True)
+class CurrentUserView(generics.RetrieveUpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserSerializer
 
-    serializer = UserSerializer(users, many=True)
-    return Response({'data': serializer.data})
+    def get_object(self):
+        return self.request.user
+
+
+class UserView(generics.RetrieveAPIView):
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        # return User.objects.get(username=self.kwargs['username'])
+        return get_object_or_404(User, username=self.kwargs['username'])
+
+# @api_view(['GET'])
+# def view_users(request):
+#     users = User.objects.filter(is_active=True)
+
+#     serializer = UserSerializer(users, many=True)
 
 
 @api_view(['POST'])
 def register(request):
     serializer = AuthUserSerializer(data=request.data)
 
-    data = {}
     if serializer.is_valid():
+        # XXX: maybe use User.create_user instead
         serializer.validated_data['password'] = make_password(
             serializer.validated_data['password']
         )
         user = serializer.save()
+        return Response(
+            {'data': serializer.data, 'detail': 'User registered successfully'},
+            status=status.HTTP_201_CREATED,
+        )
 
-        data['detail'] = 'User registered successfully'
-        data['email'] = user.email
-        data['username'] = user.username
-        # XXX only for python 3.5 or higher
-        data = {**data, **generate_jwt_token(user)}
-    else:
-        data = serializer.errors
-
-    return Response({'data': data})
+    return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserTokenPairView(TokenObtainPairView):
     serializer_class = AuthUserTokenObtainPairSerializer
-
-
-class UserAPIView(RetrieveAPIView):
-    permission_classes = (IsAuthenticated,)
-    serializer_class = UserSerializer
-
-    def get_object(self):
-        return self.request.user
