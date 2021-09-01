@@ -176,14 +176,31 @@ class UserView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
 
     def get_object(self):
-        # return User.objects.get(username=self.kwargs['username'])
         return get_object_or_404(User, username=self.kwargs['username'])
 
-# @api_view(['GET'])
-# def view_users(request):
-#     users = User.objects.filter(is_active=True)
 
-#     serializer = UserSerializer(users, many=True)
+@api_view(['GET'])
+def user_search(request):
+    NUM_USERS_MAX = 5
+    LEN_QUERY_MIN = 3
+    query = request.query_params.get('search_query')
+    if not query:
+        return Response({'data': []})
+
+    if len(query) < LEN_QUERY_MIN:
+        users = User.objects.filter(username=query)[:1]
+    else:
+        users = User.objects \
+                    .filter(username__startswith=query) \
+                    .order_by('username')[:NUM_USERS_MAX + 1]  # ordering guarantees that first object is closest match
+        if len(users) > NUM_USERS_MAX:
+            if users[0].username == query:
+                # the closest match is an exact match, that's the only one we'll need
+                users = [users[0]]
+            else:
+                users = []
+    serializer = UserSerializer(users, many=True)
+    return Response({'data': serializer.data})
 
 
 @api_view(['POST'])
@@ -195,7 +212,7 @@ def register(request):
         serializer.validated_data['password'] = make_password(
             serializer.validated_data['password']
         )
-        user = serializer.save()
+        serializer.save()
         return Response(
             {'data': serializer.data, 'detail': 'User registered successfully'},
             status=status.HTTP_201_CREATED,
