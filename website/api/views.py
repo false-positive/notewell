@@ -1,26 +1,28 @@
-from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User
+from django.db import IntegrityError
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
+from rest_framework import generics
 from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.generics import RetrieveAPIView
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .serializers import (
     AuthUserSerializer,
     AuthUserTokenObtainPairSerializer,
     CategorySerializer,
+    NotePatchSerializer,
     NoteSerializer,
     NoteViewSerializer,
-    NotePatchSerializer,
+    SharedItemSerializer,
     UserSerializer,
 )
 from .shortcuts import generate_jwt_token
-from notes.models import Category, Note
+from notes.models import Category, Note, SharedItem
 from notes.shortcuts import get_accessible_note_or_404
 
 
@@ -88,6 +90,8 @@ class NoteList(APIView):
 class NoteDetail(APIView):
     """Read, Patch or Delete Note."""
 
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request, note_id, format=None):
         """Get note."""
         user = request.user
@@ -133,9 +137,7 @@ class NoteDetail(APIView):
         user = request.user
 
         try:
-            note = get_accessible_note_or_404(user.pk, uuid=note_id)
-            if not note.can_be_edited_by(user):
-                raise Http404()  # HACK: pretending as if lookup failed
+            note = get_object_or_404(Note, uuid=note_id, author=user)
         except Http404:
             return Response(
                 {'detail': 'Note not found'},
@@ -145,6 +147,54 @@ class NoteDetail(APIView):
         note.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+class NoteSharedItemList(generics.ListAPIView):
+    serializer_class = SharedItemSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        note_id = self.kwargs['note_id']
+        note = get_object_or_404(Note, uuid=note_id, author=self.request.user)
+        return SharedItem.objects.filter(note=note)
+
+    def post(self, request, note_id):
+        note = get_object_or_404(Note, uuid=note_id, author=self.request.user)
+        serializer = SharedItemSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(note=note)
+            return Response(
+                {'data': serializer.data, 'detail': 'Note permission supdated successfully'},
+                status=status.HTTP_201_CREATED,  # TODO: make it so it does proper status
+            )
+        return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, note_id):
+        note = get_object_or_404(Note, uuid=note_id, author=self.request.user)
+        serializer = SharedItemSerializer(data=request.data, many=True)
+        if not serializer.is_valid():
+            return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        SharedItem.objects.filter(note=note).delete()
+
+        serializer.save(note=note)
+        return Response(
+            {'data': serializer.data, 'detail': 'Note permissions updated successfully'},
+        )
+
+    def patch(self, request, note_id):
+        note = get_object_or_404(Note, uuid=note_id, author=self.request.user)
+        serializer = SharedItemSerializer(data=request.data, many=True)
+        if not serializer.is_valid():
+            return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save(note=note)
+        return Response(
+            {'data': serializer.data, 'detail': 'Note permissions updated successfully'},
+        )
+
+    def delete(self, request, note_id):
+        note = get_object_or_404(Note, uuid=note_id, author=self.request.user)
+        SharedItem.objects.filter(note=note).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET'])
@@ -167,10 +217,43 @@ def view_categories(request, cat_path=None):
     return Response({'data': serializer.data})
 
 
-@api_view(['GET'])
-def view_users(request):
-    users = User.objects.filter(is_active=True)
+class CurrentUserView(generics.RetrieveUpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserSerializer
 
+    def get_object(self):
+        return self.request.user
+
+
+class UserView(generics.RetrieveAPIView):
+    serializer_class = UserSerializer
+    queryset = User.objects.filter(is_active=True)
+
+    def get_object(self):
+        return get_object_or_404(self.queryset, username=self.kwargs['username'])
+
+
+@api_view(['GET'])
+def user_search(request):
+    NUM_USERS_MAX = 5
+    LEN_QUERY_MIN = 3
+    query = request.query_params.get('search_query')
+    if not query:
+        return Response({'data': []})
+
+    qs = User.objects.filter(is_active=True)
+    if len(query) < LEN_QUERY_MIN:
+        users = qs.filter(username=query)[:1]
+    else:
+        users = qs \
+                    .filter(username__startswith=query) \
+                    .order_by('username')[:NUM_USERS_MAX + 1]  # ordering guarantees that first object is closest match (maybe)
+        if len(users) > NUM_USERS_MAX:
+            if users[0].username == query:
+                # the closest match is an exact match, that's the only one we'll need
+                users = [users[0]]
+            else:
+                users = []
     serializer = UserSerializer(users, many=True)
     return Response({'data': serializer.data})
 
@@ -179,31 +262,19 @@ def view_users(request):
 def register(request):
     serializer = AuthUserSerializer(data=request.data)
 
-    data = {}
     if serializer.is_valid():
+        # XXX: maybe use User.create_user instead
         serializer.validated_data['password'] = make_password(
             serializer.validated_data['password']
         )
-        user = serializer.save()
+        serializer.save()
+        return Response(
+            {'data': serializer.data, 'detail': 'User registered successfully'},
+            status=status.HTTP_201_CREATED,
+        )
 
-        data['detail'] = 'User registered successfully'
-        data['email'] = user.email
-        data['username'] = user.username
-        # XXX only for python 3.5 or higher
-        data = {**data, **generate_jwt_token(user)}
-    else:
-        data = serializer.errors
-
-    return Response({'data': data})
+    return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserTokenPairView(TokenObtainPairView):
     serializer_class = AuthUserTokenObtainPairSerializer
-
-
-class UserAPIView(RetrieveAPIView):
-    permission_classes = (IsAuthenticated,)
-    serializer_class = UserSerializer
-
-    def get_object(self):
-        return self.request.user

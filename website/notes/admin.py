@@ -68,14 +68,17 @@ class CategoryAdmin(MPTTModelAdmin):
 
 class SharedItemInline(admin.TabularInline):
     model = SharedItem
+    autocomplete_fields = ['user']
     extra = 0
 
 
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
     inlines = [CommentInline, SharedItemInline]
-    list_display = ['title', 'author', 'uuid_link', 'status', 'verified']
+    list_display = ['title', 'author', 'uuid_link', 'creation_date', 'status', 'verified']
+    autocomplete_fields = ['author']
     actions = ['verify', 'unverify', 'share_with_admin']
+    search_fields = ['title__icontains']
 
     def get_queryset(self, request):
         return super().get_queryset(request) \

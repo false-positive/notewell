@@ -1,7 +1,9 @@
+import re
 import uuid
 
 from django.db import models
 from django.db.models import Q
+from django.db.utils import IntegrityError
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from django.utils.text import slugify
@@ -31,12 +33,6 @@ class Category(MPTTModel):
         self.slug = slugify(self.name, allow_unicode=False)
         if not self.slug:
             raise ValueError('Name cannot be slugified')
-
-        full_path = [self.slug]
-        k = self.parent
-        while k is not None:
-            full_path.append(k.slug)
-            k = k.parent
 
         self.full_path = '/'.join(full_path[::-1])
 
@@ -79,6 +75,51 @@ class Note(models.Model):
     verified = models.BooleanField(default=False)
 
     objects = NoteQuerySet.as_manager()
+
+    class Meta:
+        unique_together = ['title', 'author']
+
+    def save(self, *args, **kwargs):
+        """If name collides, add number at the end, so it doesn't
+
+        Example:
+
+        >>> Note.objects.create(author_id=1, title='N').title
+        'N'
+        >>> Note.objects.create(author_id=1, title='N').title
+        'N 1'
+        >>> Note.objects.create(author_id=1, title='N').title
+        'N 2'
+        >>> Note.objects.get(title='N 1').delete()
+        (1, {'notes.Note': 1})
+        >>> Note.objects.create(author_id=1, title='N').title
+        'N 3'
+        >>> Note.objects.create(author_id=1, title='N 3').title
+        'N 4'
+        >>> Note.objects.create(author_id=2, title='N').title
+        'N'
+        """
+        try:
+            super().save(*args, **kwargs)
+        except IntegrityError:
+            title = re.sub(r' \d+$', '', self.title)
+            existing_titles = Note.objects \
+                .filter(author=self.author) \
+                .filter(title__regex=fr'^{title} \d+$') \
+                .values_list('title', flat=True) \
+                .order_by('title')
+            nums = [int(t.split(' ')[-1]) for t in existing_titles]
+
+            unused_num = max(nums) + 1 if nums else 1
+
+            # Alternative approach:
+            # Get the first natural number that isn't in list of nums
+            # Solution from: https://stackoverflow.com/q/28176866
+            # (yes, i understand how it works. don't @ me)
+            # unused_num = next(i for i, e in enumerate(nums + [None], 1) if i != e)
+
+            self.title = f'{title} {unused_num}'
+            super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse("notes:read", kwargs={"note_id": self.uuid})
@@ -125,8 +166,20 @@ class SharedItem(models.Model):
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = ('note', 'user')
+
     def __str__(self):
         return f'{self.note} - {self.user} ({self.perm_level})'
+
+    def save(self, *args, **kwargs):
+        """Enforce uniqueness by deleting existing `SharedItems` before saving on collision."""
+        try:
+            super().save(*args, **kwargs)
+        except IntegrityError:
+            shareditem = SharedItem.objects.get(note=self.note, user=self.user)
+            shareditem.delete()
+            super().save(*args, **kwargs)
 
 
 class Comment(models.Model):

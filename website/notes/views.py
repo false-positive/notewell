@@ -2,6 +2,7 @@ import math
 from itertools import chain
 
 from django.views import generic
+from django.urls import reverse_lazy
 from django.shortcuts import redirect, render, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -99,6 +100,18 @@ def edit(request, note_id):
         'note': note,
         'token_pair': token_pair,
     })
+
+
+class NoteDeleteView(generic.DeleteView):
+    model = Note
+    success_url = reverse_lazy('notes:index')
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = Note.objects
+        note_id = self.kwargs['note_id']
+        user = self.request.user
+        return queryset.get(uuid=note_id, author=user)
 
 
 def category(request, cat_path):
