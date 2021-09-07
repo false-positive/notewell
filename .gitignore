@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Questgen stuff
+Questgen/s2v_old/
+Questgen/s2v_reddit_2015_md.tar.gz
