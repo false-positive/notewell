@@ -8,20 +8,34 @@ Spacy 2.2.4 \
 [Questgen](https://github.com/ramsrigouthamg/Questgen.ai)  
 
 ## Setup
+
+### Multiple-choice questions
 For the multiple choice questions to work you need to download and extract zip of [Sense2vec wordvectors](https://github.com/explosion/sense2vec/releases/download/v1.0.0/s2v_reddit_2015_md.tar.gz).
-Extraction can be done with tools for working with archives such as Winrar or 7zip.
+
+Extraction can be done under POSIX-compliant systems where `wget` and `tar` are available using:
+
+```
+wget https://github.com/explosion/sense2vec/releases/download/v1.0.0/s2v_reddit_2015_md.tar.gz
+tar xvf s2v_reddit_2015_md.tar.gz 
+rm ._s2v_old
+```
+
+### Starting the server
 ```
 python -m pip install -U pipenv
 pipenv install && pipenv shell
 python main.py
 ```
+
 ## Usage
 This is a flask mini web-application with a single endpoint - `/generate_question`, that runs on port 5000.
 It accepts json input with key `input_text`
+
 ### Example  usage
 ```
 curl http://localhost:5000/generate_question -X POST -H "Content-Type: application/json" -d '{"input_text": "I have to save this coupon in case I come back to the store tomorrow."}'
 ```
+
 #### Response
 ```json
 {
