@@ -9,12 +9,14 @@ nlp = Questgen.main.QGen()
 @app.route('/generate_question', methods=('POST',))
 def generate_question():
     input = request.json
-    print(input)
     output = nlp.predict_mcq(input)
-    print(output)
-    print(clean_answer(output['questions'][0]))
+    output_list = []
+    if len(output) == 0:
+        return {
+        'output': "Something happened and the algorithm failed to return anything, most likely the text is too short"
+    }
     return {
-        'output': output
+        'output': output['questions']
     }
 
 

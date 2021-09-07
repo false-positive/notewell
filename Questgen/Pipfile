@@ -4,6 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+en-core-web-sm = {file = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.2.5/en_core_web_sm-2.2.5.tar.gz"}
+pke = {git = "https://github.com/boudinfl/pke.git"}
+questgen = {git = "https://github.com/ramsrigouthamg/Questgen.ai"}
+spacy = "==2.2.4"
+transformers = "==3.0.2"
+flask = "*"
 
 [dev-packages]
 
