@@ -10,20 +10,29 @@
     async function updateTitle(e) {
         note.update($note.uuid, { title: e.target.value });
     }
-
-    $: {
-        console.log(titleEl?.getElement()?.getElement());
-    }
 </script>
 
-<TopAppBar variant="static" color="secondary">
+<TopAppBar variant="static">
     <Row>
         <Section>
             <IconButton class="material-icons" href="/notes/">menu</IconButton>
-            <Title contenteditable bind:this={titleEl}>{$note?.title}</Title>
+            <Title bind:this={titleEl}>
+                <input
+                    class="title-input"
+                    value={$note?.title}
+                    on:change={updateTitle}
+                />
+            </Title>
         </Section>
     </Row>
 </TopAppBar>
 
 <style>
+    .title-input {
+        background: none;
+        border: none;
+        font: inherit;
+        color: inherit;
+        outline: none;
+    }
 </style>
