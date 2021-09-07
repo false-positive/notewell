@@ -166,11 +166,20 @@ class SharedItem(models.Model):
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = ('note', 'user')
+
     def __str__(self):
         return f'{self.note} - {self.user} ({self.perm_level})'
 
-    class Meta:
-        unique_together = ('note', 'user')
+    def save(self, *args, **kwargs):
+        """Enforce uniqueness by deleting existing `SharedItems` before saving on collision."""
+        try:
+            super().save(*args, **kwargs)
+        except IntegrityError:
+            shareditem = SharedItem.objects.get(note=self.note, user=self.user)
+            shareditem.delete()
+            super().save(*args, **kwargs)
 
 
 class Comment(models.Model):
