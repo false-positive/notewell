@@ -1,26 +1,28 @@
-from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User
+from django.db import IntegrityError
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
-from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework import generics
+from rest_framework import status
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .serializers import (
     AuthUserSerializer,
     AuthUserTokenObtainPairSerializer,
     CategorySerializer,
+    NotePatchSerializer,
     NoteSerializer,
     NoteViewSerializer,
-    NotePatchSerializer,
+    SharedItemSerializer,
     UserSerializer,
 )
 from .shortcuts import generate_jwt_token
-from notes.models import Category, Note
+from notes.models import Category, Note, SharedItem
 from notes.shortcuts import get_accessible_note_or_404
 
 
@@ -88,6 +90,8 @@ class NoteList(APIView):
 class NoteDetail(APIView):
     """Read, Patch or Delete Note."""
 
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request, note_id, format=None):
         """Get note."""
         user = request.user
@@ -141,6 +145,55 @@ class NoteDetail(APIView):
             )
 
         note.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class NoteSharedItemList(generics.ListAPIView):
+    serializer_class = SharedItemSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        note_id = self.kwargs['note_id']
+        note = get_object_or_404(Note, uuid=note_id, author=self.request.user)
+        return SharedItem.objects.filter(note=note)
+
+    def post(self, request, note_id):
+        note = get_object_or_404(Note, uuid=note_id, author=self.request.user)
+        serializer = SharedItemSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(note=note)
+            return Response(
+                {'data': serializer.data, 'detail': 'Note permission supdated successfully'},
+                status=status.HTTP_201_CREATED,  # TODO: make it so it does proper status
+            )
+        return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, note_id):
+        note = get_object_or_404(Note, uuid=note_id, author=self.request.user)
+        serializer = SharedItemSerializer(data=request.data, many=True)
+        if not serializer.is_valid():
+            return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        SharedItem.objects.filter(note=note).delete()
+
+        serializer.save(note=note)
+        return Response(
+            {'data': serializer.data, 'detail': 'Note permissions updated successfully'},
+        )
+
+    def patch(self, request, note_id):
+        note = get_object_or_404(Note, uuid=note_id, author=self.request.user)
+        serializer = SharedItemSerializer(data=request.data, many=True)
+        if not serializer.is_valid():
+            return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save(note=note)
+        return Response(
+            {'data': serializer.data, 'detail': 'Note permissions updated successfully'},
+        )
+
+    def delete(self, request, note_id):
+        note = get_object_or_404(Note, uuid=note_id, author=self.request.user)
+        SharedItem.objects.filter(note=note).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
-from notes.models import Category, Note
+from notes.models import Category, Note, SharedItem
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -41,6 +41,20 @@ class MyStringRelatedField(serializers.StringRelatedField):
             return
 
 
+class UsernameField(serializers.RelatedField):
+
+    queryset = User.objects.all()
+
+    def to_representation(self, user):
+        return user.username
+
+    def to_internal_value(self, username):
+        try:
+            return get_object_or_404(self.get_queryset(), username=username)
+        except Http404 as err:
+            raise serializers.ValidationError({'username': f'User "{username}" not found'}) from err
+
+
 class NoteSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField(required=False)
     categories = MyStringRelatedField(
@@ -65,6 +79,20 @@ class NotePatchSerializer(NoteSerializer):
     # See: https://www.django-rest-framework.org/api-guide/generic-views/#updateapiview
     # And: https://www.django-rest-framework.org/api-guide/generic-views/#updatemodelmixin
     title = serializers.CharField(required=False)
+
+
+class SharedItemSerializer(serializers.ModelSerializer):
+    user = UsernameField()
+    # XXX: figure out why it doesn't just know that it's supposed to be required
+    perm_level = serializers.ChoiceField(
+        choices=SharedItem.PERM_LEVEL_CHOICES,
+        label='Permission Level',
+        required=True,
+    )
+
+    class Meta:
+        model = SharedItem
+        fields = ('user', 'perm_level')
 
 
 class CategorySerializer(serializers.ModelSerializer):
