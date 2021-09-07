@@ -34,12 +34,6 @@ class Category(MPTTModel):
         if not self.slug:
             raise ValueError('Name cannot be slugified')
 
-        full_path = [self.slug]
-        k = self.parent
-        while k is not None:
-            full_path.append(k.slug)
-            k = k.parent
-
         self.full_path = '/'.join(full_path[::-1])
 
         super().save(*args, **kwargs)
@@ -174,6 +168,9 @@ class SharedItem(models.Model):
 
     def __str__(self):
         return f'{self.note} - {self.user} ({self.perm_level})'
+
+    class Meta:
+        unique_together = ('note', 'user')
 
 
 class Comment(models.Model):
