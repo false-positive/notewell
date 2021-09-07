@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from .distilbart import sum_text
+from .ai import sum_text, gen_quest
 
 from .serializers import (
     CategorySerializer,
@@ -230,8 +230,15 @@ def register(request):
 
 @api_view(['POST'])
 def summarize(request):
+    if len(request.data['text']) < 50:
+        return Response(
+            {'message': 'Text too short for proper summarization'},
+            status=status.HTTP_406_NOT_ACCEPTABLE
+        )
     return Response(sum_text(request.data['text']))
 
-@api_view(['GET'])
-def dummythick(request):
-    return Response("test")
+
+@api_view(['POST'])
+def genquest(request):
+    return Response(gen_quest(request.data['text']))
+

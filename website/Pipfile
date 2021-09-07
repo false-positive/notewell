@@ -7,10 +7,11 @@ name = "pypi"
 django = "*"
 django-debug-toolbar = "*"
 djangorestframework = "*"
+transformers = "*"
 torch = "*"
 torchvision = "*"
 torchaudio = "*"
-transformers = "*"
+requests = "*"
 
 [dev-packages]
 pytest = "*"
