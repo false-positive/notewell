@@ -188,3 +188,7 @@ def get_notes(request, category=None):
         "notes": notes[start:end],
         "page_count": math.ceil(notes.count() / notes_on_page)
     }
+
+
+def test(request):
+    return render(request, 'notes/test.html', {})
