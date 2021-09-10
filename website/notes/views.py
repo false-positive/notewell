@@ -38,9 +38,24 @@ def index(request, cat_path=None):
     notes = notes_res['notes']
     categories = Category.objects.all()
 
+    current_page = notes_res['current_page']
+    previous_page = current_page - 1
+    next_page = current_page + 1
+
+    if current_page <= 1:
+        previous_page = 1
+    elif current_page >= notes_res['page_count']:
+        next_page = notes_res['page_count']
+
     return render(request, 'notes/note_list.html', {
         'title': 'Public Notes',
         'object_list': notes,
+        'page': {
+            'current': current_page,
+            'previous': previous_page,
+            'next': next_page,
+            'count': notes_res['page_count'],
+        },
         'page_count_range': range(1, notes_res['page_count'] + 1),
         'categories': categories,
     })
@@ -186,7 +201,8 @@ def get_notes(request, category=None):
 
     return {
         "notes": notes[start:end],
-        "page_count": math.ceil(notes.count() / notes_on_page)
+        "page_count": math.ceil(notes.count() / notes_on_page),
+        "current_page": page_num,
     }
 
 

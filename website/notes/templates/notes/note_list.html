@@ -8,7 +8,9 @@
 
 {% block nav_list %}
     <li class="nav__item"><a class="nav__link" href="{% url 'notes:index' %}">All</a></li>
+    {% if user.is_authenticated %}
     <li class="nav__item"><a class="nav__link" href="{% url 'notes:my' %}">My</a></li>
+    {% endif %}
     <li class="nav__item">
         <a class="nav__link" href="#">
             Subjects
@@ -42,12 +44,6 @@
 
 {% block content %}
     <h1 class="title">{{ title }}</h1>
-    <h1 class="title">
-        {% for page in page_count_range %}
-        <a href=".?p={{ page  }}">{{ page }}</a>
-        {% endfor %}
-    </h1>
-
 
     <section class="section-notes">
         {% for object in object_list %} 
@@ -55,9 +51,11 @@
         {% endfor %}
     </section>
 
-    <h1 class="title">
-        {% for page in page_count_range %}
-        <a href=".?p={{ page }}">{{ page }}</a>
-        {% endfor %}
-    </h1>
+    <div class="nav-pages">
+        <h3 class="mdc-typography--subtitle1 pagination-text">Page {{ page.current }} of {{ page.count }}</h3>
+        <a href=".?p=1"><span class="material-icons">skip_previous</span></a>
+        <a href=".?p={{ page.previous }}"><span class="material-icons">navigate_before</span></a>
+        <a href=".?p={{ page.next }}"><span class="material-icons">navigate_next</span></a>
+        <a href=".?p={{ page.count }}"><span class="material-icons">skip_next</span></a>
+    </div>
 {% endblock content %}
