@@ -59,6 +59,7 @@
         </label>
     </form>
 
+    {% if object_list %}
     <section class="section-notes">
         {% for object in object_list %} 
             {% include 'notes/components/note.html' with note=object %}
@@ -72,6 +73,7 @@
         <a href=".?p={{ page.next }}"><span class="material-icons">navigate_next</span></a>
         <a href=".?p={{ page.count }}"><span class="material-icons">skip_next</span></a>
     </div>
+    {% endif %}
 
     <script src="{% static 'notes/js/search_bar.js' %}"></script>
 {% endblock content %}

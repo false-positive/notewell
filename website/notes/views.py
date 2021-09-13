@@ -15,6 +15,8 @@ def index(request, cat_path=None):
     if request.method != "GET":
         raise "Only GET method is allowed!"
 
+    title = 'Public Notes'
+
     # TODO escape the string
     # TODO make search bar more advanced and maybe filter from category
     search_query = request.GET.get('search_query', None)
@@ -28,6 +30,7 @@ def index(request, cat_path=None):
             raise Http404('Category not found')
 
         notes_res = get_notes(request, category)
+        title = category.name
     else:
         notes_res = get_notes(request)
 
@@ -44,7 +47,7 @@ def index(request, cat_path=None):
         next_page = notes_res['page_count']
 
     return render(request, 'notes/note_list.html', {
-        'title': 'Public Notes',
+        'title': title,
         'object_list': notes,
         'page': {
             'current': current_page,
