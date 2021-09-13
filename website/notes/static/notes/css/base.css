@@ -180,6 +180,22 @@ body {
     padding: 3rem 0;
 }
 
+.search-form {
+    text-align: center;
+}
+
+.search-form__search-box {
+    width: 40%;
+    margin: 0 5% 40px 5%;
+}
+
+@media screen and (max-width: 680px) {
+    .search-form__search-box {
+        width: 90%;
+    }
+}
+
+
 @media screen and (max-width: 850px) {
     .nav__list {
         position: fixed;
@@ -288,3 +304,5 @@ body {
 .footer__text--link:hover {
     color: var(--link-bg--hover);
 }
+
+
