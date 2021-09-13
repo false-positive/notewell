@@ -1,6 +1,3 @@
-import math
-from itertools import chain
-
 from django.views import generic
 from django.urls import reverse_lazy
 from django.shortcuts import redirect, render, get_object_or_404, reverse
@@ -10,8 +7,7 @@ from django.http import Http404
 
 from .models import Category, Note
 from .forms import CreateCommentForm
-from .shortcuts import get_accessible_note_or_404
-
+from .shortcuts import get_accessible_note_or_404, get_notes, search
 from api.shortcuts import generate_jwt_token
 
 
@@ -158,52 +154,6 @@ def category(request, cat_path):
         'categories': categories,
         'object_list': notes,
     })
-
-
-def search(request, search_query):
-    user = request.user
-    notes_by_title = Note.objects.filter(title__icontains=search_query).filter_accessible_notes_by(user_pk=user.pk)
-    notes_by_author = Note.objects.filter(author__username__icontains=search_query).filter_accessible_notes_by(user_pk=user.pk)
-
-    notes = set(chain(notes_by_title, notes_by_author))
-
-    return render(request, 'notes/note_list.html', {
-        'title': f'Search results for "{search_query}"',
-        'categories': Category.objects.all(),
-        'object_list': notes,
-    })
-
-
-def get_notes(request, category=None):
-
-    # TODO maybe fix limit bug
-    notes_on_page = int(request.GET.get('limit', 10))
-    page_num = int(request.GET.get('p', 1))
-
-    start = notes_on_page * (page_num - 1)
-    end = notes_on_page * page_num
-
-    if category:
-        notes = Note.objects \
-            .select_related('author') \
-            .prefetch_related('categories')\
-            .filter(
-                categories__in=category.get_descendants(include_self=True)
-            ) \
-            .filter_accessible_notes_by(user_pk=request.user.pk) \
-            .distinct()
-    else:
-        notes = Note.objects \
-            .select_related('author') \
-            .filter_accessible_notes_by(user_pk=request.user.pk)
-
-    # TODO maybe find a better way to return the values
-
-    return {
-        "notes": notes[start:end],
-        "page_count": math.ceil(notes.count() / notes_on_page),
-        "current_page": page_num,
-    }
 
 
 def test(request):
