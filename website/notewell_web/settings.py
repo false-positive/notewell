@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'mptt',
     'markdownify',
-    'markdown',
 
     'accounts',
     'notes',
