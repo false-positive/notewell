@@ -48,9 +48,6 @@
 <a href="{% url 'notes:edit' note.uuid %}">edit</a>
 
 <div class="note-content">
-    {{'Some *test* [link](#)'|markdownify }}
-
-    <br>
     {% autoescape off %}
     {{ note.content|markdownify|safe }}
     {% endautoescape %}
