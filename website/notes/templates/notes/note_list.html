@@ -66,6 +66,7 @@
         {% endfor %}
     </section>
 
+    {% if page.count > 1 %}
     <div class="nav-pages">
         <h3 class="mdc-typography--subtitle1 pagination-text">Page {{ page.current }} of {{ page.count }}</h3>
         <a href=".?p=1"><span class="material-icons">skip_previous</span></a>
@@ -73,6 +74,7 @@
         <a href=".?p={{ page.next }}"><span class="material-icons">navigate_next</span></a>
         <a href=".?p={{ page.count }}"><span class="material-icons">skip_next</span></a>
     </div>
+    {% endif %}
     {% endif %}
 
     <script src="{% static 'notes/js/search_bar.js' %}"></script>
