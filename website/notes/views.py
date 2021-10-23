@@ -108,6 +108,7 @@ def read(request, note_id):
         'note': note,
         'comments': note.comment_set.order_by('-creation_date'),
         'create_comment_form': create_comment_form,
+        'categories': Category.objects.all(),
     })
 
 

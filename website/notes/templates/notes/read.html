@@ -2,10 +2,42 @@
 
 {% load markdownify %}
 {% load static %}
+{% load mptt_tags %} 
+
 
 {% block head %}
     <link rel="stylesheet" href="{% static 'notes/css/comment_list.css' %}" />
 {% endblock head %} 
+
+{% block nav_list %}
+    <li class="nav__item"><a class="nav__link" href="{% url 'notes:index' %}">All</a></li>
+    {% if user.is_authenticated %}
+    <li class="nav__item"><a class="nav__link" href="{% url 'notes:my' %}">My</a></li>
+    {% endif %}
+    <li class="nav__item">
+        <a class="nav__link" href="#">
+            Subjects
+            <i class="icon ion-md-arrow-dropdown"></i>
+        </a>
+        <ul class="nav__sub-menu">
+            {% recursetree categories %}
+                <li class="nav__item nav__item--sub">
+                    <a class="nav__link" href="{% url 'notes:category' node.full_path %}">
+                        {{ node.name }}
+                        {% if not node.is_leaf_node %}
+                            <i class="icon ion-md-arrow-dropdown"></i>
+                        {% endif %}
+                    </a>
+                    {% if not node.is_leaf_node %}
+                        <ul class="nav__sub-menu">
+                            {{ children }}
+                        </ul>
+                    {% endif %}
+                </li> 
+            {% endrecursetree %}
+        </ul>
+    </li>
+{% endblock nav_list %}
 
 {% block content %}
 <h1 class="title">{{ note.title }}</h1>
@@ -32,33 +64,11 @@
         {% csrf_token %}
         
         <!-- TODO make textarea auto-resize -->
-
         {{ create_comment_form.content }}
 
         <button class="submit" type="submit">Post Comment</button>
 
     </form>
-
-        <!-- <div class="input-field username">
-            <label class="mdc-text-field mdc-text-field--outlined mdc-text-field--with-leading-icon">
-                <span class="mdc-notched-outline">
-                    <span class="mdc-notched-outline__leading"></span>
-                    <span class="mdc-notched-outline__notch">
-                        <span class="mdc-floating-label" id="my-label-id"> Username</span>
-                    </span>
-                    <span class="mdc-notched-outline__trailing"></span>
-                </span>
-                <i class="material-icons mdc-text-field__icon mdc-text-field__icon--leading" tabindex="0" role="button">person</i>
-                {{ form.content }}
-            </label>
-            <div class="mdc-text-field-helper-line">
-                <div class="mdc-text-field-helper-text" id="my-helper-id" aria-hidden="true">*Required</div>
-            </div>
-        </div> -->
-        <!-- <ul>
-            {{ create_comment_form.as_ul }}
-        </ul> -->
-        <!-- <button>Post Comment</button> -->
 {% endif %}
 
 
