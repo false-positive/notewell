@@ -178,7 +178,7 @@ class SharedItem(models.Model):
 
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    creation_date = models.DateField(auto_now_add=True)
+    creation_date = models.DateTimeField(auto_now_add=True)
     content = models.TextField()
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
 

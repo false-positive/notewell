@@ -1,0 +1,106 @@
+.create-comment-form  {
+    margin: 0 auto;
+    text-align: center;
+    width: 40%;
+}
+
+.create-comment-form textarea {
+    width: 100%;
+    resize: none;
+    padding: 1rem 2rem;
+    border-radius: 2rem;
+    border: 1px solid black
+}
+
+.create-comment-form .submit {
+    /* TODO change colors of button */
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 1.5rem;
+    background-color: #317dc5;
+    transition: 0.3s background-color;
+    border: none;
+    border-radius: 2rem;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.create-comment-form .submit:hover {
+    background-color: #085a8d;
+}
+
+
+.comment-card {
+    padding: 1rem 2rem;
+    margin: 3rem auto;
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.1s;
+}
+
+.comment-title {
+    font-size: 2.5rem;
+    margin-top: 0;
+    width: 100%;
+}
+
+.comment-extra-info {
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-bottom: 0.6rem;
+}
+
+.comment-extra-info * {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.comment-extra-info .author {
+    margin-right: 2rem;
+}
+
+.comment-extra-info .date {
+    margin-left: auto;
+}
+
+.nav-pages {
+    text-align: center;
+    font-size: 3rem;
+    margin-top: 50px;
+}
+
+.nav-pages .pagination-text {
+    margin-bottom: 0;
+}
+.nav-pages a {
+    margin-top: 0;
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s;
+}
+
+.nav-pages a:hover {
+    color: #3c89d2;
+}
+
+/* 850px */
+@media screen and (max-width: 1050px) {
+    .comment-extra-info {
+        flex-direction: column;
+    }
+    .comment-extra-info .date {
+        margin-left: 0;
+    }
+}
+
+/* 500px */
+@media screen and (max-width: 680px) {
+    .comment-card {
+        width: 100%;
+    }
+}

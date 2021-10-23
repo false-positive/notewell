@@ -88,9 +88,16 @@ def read(request, note_id):
     create_comment_form = CreateCommentForm()
     if request.method == "POST":
         create_comment_form = CreateCommentForm(request.POST)
+        print(request.user)
+        print(create_comment_form.is_valid())
+        print(create_comment_form.errors)
         if create_comment_form.is_valid():
             instance = create_comment_form.save(commit=False)
+            
             instance.note = note
+            instance.author = request.user
+
+
             instance.save()
 
             return redirect(request.path_info)
@@ -99,6 +106,7 @@ def read(request, note_id):
     return render(request, 'notes/read.html', {
         'title': note.title,
         'note': note,
+        'comments': note.comment_set.order_by('-creation_date'),
         'create_comment_form': create_comment_form,
     })
 
