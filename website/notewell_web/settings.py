@@ -43,10 +43,64 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'mptt',
+    'markdownify',
+    'markdown',
 
     'accounts',
     'notes',
 ]
+
+MARKDOWNIFY = {
+    "default": {
+        "WHITELIST_TAGS": [
+            'a',
+            'abbr',
+            'acronym',
+            'b',
+            'blockquote',
+            'em',
+            'i',
+            'li',
+            'ol',
+            'p',
+            'strong',
+            'ul',
+            'hr',
+            'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+            'sup',
+            'dl', 'dt', 'dd',
+            'code',
+            'pre',
+            'table', 'thead', 'tr', 'th', 'tbody', 'td', 
+            'img',
+            'ins',
+            'mark',
+            'div'
+        ],
+        "WHITELIST_ATTRS": [
+            'href',
+            'src',
+            'alt',
+        ],
+        "WHITELIST_PROTOCOLS": [
+            'http',
+            'https',
+        ],
+        "MARKDOWN_EXTENSIONS": [
+            'markdown.extensions.fenced_code',
+            'markdown.extensions.extra',
+        ],
+        "STRIP": False,
+        "LINKIFY_TEXT": {
+            "PARSE_URLS": True,
+
+            # Next key/value-pairs only have effect if "PARSE_URLS" is True
+            "PARSE_EMAIL": False,
+            "CALLBACKS": [],
+            "SKIP_TAGS": [],
+        },
+    }
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

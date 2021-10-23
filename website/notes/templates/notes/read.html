@@ -1,12 +1,24 @@
 {% extends 'notes/base.html' %}
 
-{% block content %}
-<h1>{{ note.title }}</h1>
+{% load markdownify %}
 
-<h2>Author: {{ note.author.username }}</h2>
+{% block content %}
+<h1 class="title">{{ note.title }}</h1>
+
+<h2 class="title-2">By {{ note.author.username }}</h2>
+<!-- TODO: Add link to user -->
+
 <a href="{% url 'notes:edit' note.uuid %}">edit</a>
 
-<hr />
+<div class="note-content">
+    {{'Some *test* [link](#)'|markdownify }}
+
+    <br>
+    {% autoescape off %}
+    {{ note.content|markdownify|safe }}
+    {% endautoescape %}
+</div>
+
 
 <h3>Comments:</h3>
 <form action="" method="POST">

@@ -9,6 +9,8 @@ django-debug-toolbar = "*"
 djangorestframework = "*"
 django-mptt = "*"
 djangorestframework-simplejwt = "*"
+django-markdownify = "*"
+markdown = "*"
 
 [dev-packages]
 pytest = "*"

@@ -11,6 +11,7 @@ from .shortcuts import get_accessible_note_or_404, get_notes, search
 from api.shortcuts import generate_jwt_token
 
 
+
 def index(request, cat_path=None):
     if request.method != "GET":
         raise "Only GET method is allowed!"
@@ -81,6 +82,7 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
 
 
 def read(request, note_id):
+    
     note: Note = get_accessible_note_or_404(request.user.pk, uuid=note_id)
 
     create_comment_form = CreateCommentForm()
@@ -92,6 +94,7 @@ def read(request, note_id):
             instance.save()
 
             return redirect(request.path_info)
+
 
     return render(request, 'notes/read.html', {
         'title': note.title,

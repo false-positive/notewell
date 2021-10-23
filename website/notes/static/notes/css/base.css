@@ -175,9 +175,15 @@ body {
 
 .title {
     text-align: center;
-    text-transform: capitalize;
+    /* text-transform: capitalize; */
     font-size: 4rem;
     padding: 3rem 0;
+}
+
+.title-2 {
+    text-align: center;
+    font-size: 2rem;
+    /* padding: 1rem 0; */
 }
 
 .search-form {
@@ -187,6 +193,17 @@ body {
 .search-form__search-box {
     width: 40%;
     margin: 0 5% 40px 5%;
+}
+
+.note-content {
+    width: 50%;
+    border: 1px solid grey;
+    font-size: 2rem;
+    border-radius: 20px;
+    padding: 10px 20px;
+    /* text-align: center; */
+    /* text-align: center; */
+    margin: 10px auto;
 }
 
 @media screen and (max-width: 680px) {
