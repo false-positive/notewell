@@ -1,9 +1,9 @@
 <script>
     import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
     import IconButton from '@smui/icon-button';
-    import Header from '@smui/common/Header.svelte';
 
     import { note } from '../stores/note';
+    import { isShareDialogOpen } from '../stores/isShareDialogOpen';
 
     let titleEl;
 
@@ -23,6 +23,12 @@
                     on:change={updateTitle}
                 />
             </Title>
+        </Section>
+        <Section align="end">
+            <IconButton
+                class="material-icons"
+                on:click={() => ($isShareDialogOpen = true)}>share</IconButton
+            >
         </Section>
     </Row>
 </TopAppBar>
