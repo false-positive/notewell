@@ -50,11 +50,20 @@
         isDirty = false;
     }
 
+    function handleAdd(e) {
+        console.log(e.detail);
+        permissions = [
+            ...permissions,
+            { user: e.detail.username, perm_level: 'R' },
+        ];
+    }
+
     $: {
         if (open) {
             loadPermissions();
         }
     }
+    $: ignoreUsernames = [$note.author, ...permissions.map((p) => p.user)];
 </script>
 
 <!-- TODO: add aria's -->
@@ -83,7 +92,7 @@
                 </List>
             </Menu>
         {/each}
-        <PermissionForm />
+        <PermissionForm {ignoreUsernames} on:submit={handleAdd} />
         <List>
             <Item>
                 <Text>{$note.author}</Text>

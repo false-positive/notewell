@@ -280,3 +280,27 @@ export async function updateNotePermissions(uuid, permissions) {
     );
     return data;
 }
+
+/**
+ *
+ * @typedef {Object} User
+ * @property {string} username
+ * @property {string} email
+ * @property {string} first_name
+ * @property {string} last_name
+ *
+ */
+
+/**
+ * Search users by username
+ *
+ * Used mainly for autocompletion.
+ *
+ * @param {string} username - The Username to search
+ */
+export async function searchUsers(username) {
+    const [data] = await getData(
+        `user_search/?search_query=${encodeURIComponent(username)}`
+    );
+    return data;
+}
