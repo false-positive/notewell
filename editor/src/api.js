@@ -148,15 +148,21 @@ function apiDispatch(event, details) {
 }
 
 /**
+ * Perform a request and return the `data` field.
+ *
+ * By default, it is authenticated, unless the param is set to false
  * @param {string} url
+ * @param {boolean} [authenticated=true]
+ * @param {boolean} [isTopLevel=false] - whether the data is inside a data field of the json response, or it is just the top level. Temporary hack
  */
-async function getData(url, authenticated = true) {
+async function getData(url, authenticated = true, isTopLevel = false) {
     const func = authenticated ? makeAuthenticatedRequest : makeRequest;
     try {
         const response = await func(url, {
             method: 'GET',
         });
-        const { data } = await response.json();
+        const json = await response.json();
+        const data = isTopLevel ? json : json.data;
         return [data, null];
     } catch (err) {
         console.error(err);
@@ -168,15 +174,24 @@ async function getData(url, authenticated = true) {
 /**
  * @param {string} url
  * @param {NoteData} updatedData
+ * @param {boolean} [isTopLevel=false] - whether the data is inside a data field of the json response, or it is just the top level. Temporary hack
+ * @param {('PUT'|'PATCH')} [method='PATCH'] - whether to use PUT or PATCH
  */
-async function updateData(url, updatedData, authenticated = true) {
+async function updateData(
+    url,
+    updatedData,
+    authenticated = true,
+    isTopLevel = false,
+    method = 'PATCH'
+) {
     const func = authenticated ? makeAuthenticatedRequest : makeRequest;
     try {
         const response = await func(url, {
-            method: 'PATCH',
+            method,
             body: JSON.stringify(updatedData),
         });
-        const { data } = await response.json();
+        const json = await response.json();
+        const data = isTopLevel ? json : json.data;
         return [data, null];
     } catch (err) {
         console.error(err);
@@ -224,5 +239,44 @@ export async function getNote(uuid) {
  */
 export async function updateNote(uuid, noteData) {
     const [data] = await updateData(`notes/${uuid}/`, noteData);
+    return data;
+}
+
+/**
+ * @typedef {Object} Permission - a.k.a. SharedItem in the Django source ;-;
+ * @property {string} user - the name of the user that receives the note
+ * @property {('R'|'W')} perm_level - wether the user can edit or just view the note
+ */
+
+/**
+ * Get Edit and View permissions of a Note
+ *
+ * @param {string} uuid - the uuid of the node to query
+ * @returns {Promise<Permission[]>}
+ */
+export async function getNotePermissions(uuid) {
+    const [data] = await getData(
+        `notes/${uuid}/permissions/`,
+        /* authenticated = */ true,
+        /* isTopLevel = */ true
+    );
+    return data;
+}
+
+/**
+ * Update Edit and View permissions of a Note
+ *
+ * @param {string} uuid - the uuid of the node to query
+ * @param {Permission[]} permissions - the new, updated list of permissions
+ * @returns {Promise<Permission[]>}
+ */
+export async function updateNotePermissions(uuid, permissions) {
+    const [data] = await updateData(
+        `notes/${uuid}/permissions/`,
+        permissions,
+        /* authenticated = */ true,
+        /* isTopLevel = */ false,
+        /* method = */ 'PUT'
+    );
     return data;
 }
