@@ -8,8 +8,6 @@
     "serve": "vite preview"
   },
   "devDependencies": {
-    "@material/elevation": "^13.0.0",
-    "@material/typography": "^13.0.0",
     "@smui/banner": "^5.0.0-beta.7",
     "@smui/button": "^5.0.0-beta.7",
     "@smui/card": "^5.0.0-beta.7",
