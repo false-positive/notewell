@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import { setTokenPair } from './api';
     import ContentEditor from './components/ContentEditor.svelte';
+    import Dialogs from './components/Dialogs.svelte';
 
     import Header from './components/Header.svelte';
     import MessageList from './components/MessageList.svelte';
@@ -27,13 +28,19 @@
     }
 </script>
 
-<main>
+{#if !$note}
+    <h1>hehe i should be a loading spinner</h1>
+{:else}
     <Header />
 
-    <ContentEditor />
+    <main>
+        <ContentEditor />
+    </main>
 
     <MessageList />
-</main>
+
+    <Dialogs />
+{/if}
 
 <style>
     :global(body) {
