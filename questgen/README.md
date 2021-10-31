@@ -29,14 +29,15 @@ python main.py
 
 ## Usage
 This is a flask mini web-application with a single endpoint - `/generate_question`, that runs on port 5000.
-It accepts json input with key `input_text`
+It accepts json input with key `input_text`. The mode of generation can be specified with `type` key.
 
 ### Example  usage
+- One thing that is important to note is that for question generation to produce better results longer text is neccessary. 
+#### Multiple choice questions
 ```
-curl http://localhost:5000/generate_question -X POST -H "Content-Type: application/json" -d '{"input_text": "I have to save this coupon in case I come back to the store tomorrow."}'
+curl http://localhost:5000/generate_question -X POST -H "Content-Type: application/json" -d '{"input_text": "I have to save this coupon in case I come back to the store tomorrow.", "type": "MCQ"}'
 ```
-
-#### Response
+##### Response
 ```json
 {
   "output": [
@@ -62,4 +63,18 @@ curl http://localhost:5000/generate_question -X POST -H "Content-Type: applicati
   ]
 }
 
+```
+#### Question generation(Without answers)
+```
+curl http://localhost:5000/generate_question -X POST -H "Content-Type: application/json" -d '{"input_text": "Carbon is the 15th most abundant element in the Earth crust, and the fourth most abundant element in the universe by mass after hydrogen, helium, and oxygen. Carbon abundance, its unique diversity of organic compounds, and its unusual ability to form polymers at the temperatures commonly encountered on Earth enables this element to serve as a common element of all known life. It is the second most abundant element in the human body by mass after oxygen."}'
+```
+##### Response
+```
+{
+  "output": [
+    "Is carbon the most abundant element in the universe?",
+    "Is carbon the second most abundant element in the universe?",
+    "Is carbon the most abundant element in the human body?"
+  ]
+}
 ```
