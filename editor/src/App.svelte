@@ -1,64 +1,49 @@
 <script>
-  import Counter from './components/Counter.svelte'
+    import { onMount } from 'svelte';
+    import { setTokenPair } from './api';
+    import ContentEditor from './components/ContentEditor.svelte';
+    import Dialogs from './components/Dialogs.svelte';
+
+    import Header from './components/Header.svelte';
+    import MessageList from './components/MessageList.svelte';
+    import { note } from './stores/note';
+
+    export let initialData;
+
+    onMount(() => {
+        const {
+            definitely_not_token_pair: { access, refresh },
+            note: noteData,
+        } = initialData;
+        note.setInitial(noteData);
+        setTokenPair(access, refresh);
+        // TODO: spinner state?
+        // note.load(noteData.uuid);
+    });
+
+    $: {
+        if ($note) {
+            document.title = `${$note.title} // Notewell`;
+        }
+    }
 </script>
 
-<main>
-  <img src="/static/notes/img/svelte.png" alt="Svelte Logo" />
-  <h1>Hello world!</h1>
+{#if !$note}
+    <h1>hehe i should be a loading spinner</h1>
+{:else}
+    <Header />
 
-  <Counter />
+    <main>
+        <ContentEditor />
+    </main>
 
-  <p>
-    Visit <a href="https://svelte.dev">svelte.dev</a> to learn how to build Svelte
-    apps.
-  </p>
+    <MessageList />
 
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme">SvelteKit</a> for
-    the officially supported framework, also powered by Vite!
-  </p>
-</main>
+    <Dialogs />
+{/if}
 
 <style>
-  :root {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-      Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  }
-
-  main {
-    text-align: center;
-    padding: 1em;
-    margin: 0 auto;
-  }
-
-  img {
-    height: 16rem;
-    width: 16rem;
-  }
-
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4rem;
-    font-weight: 100;
-    line-height: 1.1;
-    margin: 2rem auto;
-    max-width: 14rem;
-  }
-
-  p {
-    max-width: 14rem;
-    margin: 1rem auto;
-    line-height: 1.35;
-  }
-
-  @media (min-width: 480px) {
-    h1 {
-      max-width: none;
+    :global(body) {
+        margin: 0;
     }
-
-    p {
-      max-width: none;
-    }
-  }
 </style>

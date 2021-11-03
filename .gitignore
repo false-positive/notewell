@@ -7,6 +7,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+.lock
 .Python
 build/
 develop-eggs/
@@ -127,3 +128,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Questgen stuff
+questgen/s2v_old/
+questgen/s2v_reddit_2015_md.tar.gz
+
+# idk really
+model_cache/

@@ -12,6 +12,8 @@ torchaudio = "*"
 spacy = "*"
 transformers = "*"
 requests = "*"
+django-mptt = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 pytest = "*"
