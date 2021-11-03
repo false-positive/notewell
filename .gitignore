@@ -134,3 +134,6 @@ questgen/s2v_reddit_2015_md.tar.gz
 
 # JS library pain
 node_modules
+
+# idk really
+model_cache/
