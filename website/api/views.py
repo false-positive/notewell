@@ -248,8 +248,8 @@ def user_search(request):
         users = qs.filter(username=query)[:1]
     else:
         users = qs \
-                    .filter(username__startswith=query) \
-                    .order_by('username')[:NUM_USERS_MAX + 1]  # ordering guarantees that first object is closest match (maybe)
+            .filter(username__startswith=query) \
+            .order_by('username')[:NUM_USERS_MAX + 1]  # ordering guarantees that first object is closest match (maybe)
         if len(users) > NUM_USERS_MAX:
             if users[0].username == query:
                 # the closest match is an exact match, that's the only one we'll need
@@ -270,6 +270,17 @@ def register(request):
             serializer.validated_data['password']
         )
         serializer.save()
+        return Response(
+            {'data': serializer.data, 'detail': 'User registered successfully'},
+            status=status.HTTP_201_CREATED,
+        )
+
+    return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def summarize(request):
+    if len(request.data['text']) < 50:
         return Response(
             {'data': serializer.data, 'detail': 'User registered successfully'},
             status=status.HTTP_201_CREATED,

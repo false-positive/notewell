@@ -1,3 +1,6 @@
+import math
+from itertools import chain
+
 from django.views import generic
 from django.urls import reverse_lazy
 from django.shortcuts import redirect, render, get_object_or_404, reverse
@@ -12,6 +15,7 @@ from api.shortcuts import generate_jwt_token
 
 # TODO: Rewrite all of these views pretty much
 
+from api.shortcuts import generate_jwt_token
 
 def index(request, cat_path=None):
     # XXX: This code is *insanely* scuffed
@@ -179,7 +183,3 @@ def category(request, cat_path):
             'name': 'category',
         }
     })
-
-
-def test(request):
-    return render(request, 'notes/test.html', {})
