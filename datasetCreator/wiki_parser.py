@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 import pke
 
-subject = "Oxygen"
+subject = "Computer Science"
 subject_xml = 'Wikipedia Articles/' + subject + '.xml'
 tree = ET.parse(subject_xml)
 root = tree.getroot()
@@ -124,7 +124,7 @@ def _extract(segmented_text):
                 extractor.candidate_weighting()
                 key_phrases = extractor.get_n_best(n=n_keywords)
                 for tple in key_phrases:
-                    output.write(tple[0] + ' ')
+                    output.write(tple[0] + '; ')
 
 
 def parse():

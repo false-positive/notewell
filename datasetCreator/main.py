@@ -1,15 +1,22 @@
-import numpy as np
-import pandas as pd
-import json
+
+new_dataset = open("new_dataset.txt", "a+", encoding="utf-8")
 
 
-dataset = open("dataset.txt")
-p_dataset = pd.read_excel("Physics.xlsx")
-x = p_dataset.iloc[:,  0].values
-dataset_lines = []
+def write_lines(k_title):
+    keywords = open(k_title + ".txt", "r", encoding="utf-8")
+    keywords = keywords.readlines()[0].split("; ")
+    i = 0
+    line_output = '{"text": "'
+    for keyword in keywords:
+        line_output += keyword + ' '
+        i += 1
+        if i % 10 == 0:
+            line_output += '", "label": "' + k_title + '", "metadata": []}'
+            new_dataset.write(line_output + '\n')
+            line_output = '{"text": "'
 
-for line in dataset:
-    dataset_lines.append(json.loads(line))
 
-for article in x:
-    print(article)
+write_lines("Chemistry")
+write_lines("Biology")
+write_lines("Physics")
+write_lines("Computer Science")
