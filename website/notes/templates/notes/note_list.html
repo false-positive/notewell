@@ -1,45 +1,64 @@
 {% extends 'notes/base.html' %}
 {% load static %}
+{% load mptt_tags %} 
 
-{% block head %}
+{% block styles %}
+    {{ block.super }}
     <link rel="stylesheet" href="{% static 'notes/css/note_list.css' %}" />
-{% endblock head %} 
+{% endblock %}
 
 {% block nav_list %}
-    <li><a href="{% url 'notes:index' %}">All</a></li>
-    <li><a href="{% url 'notes:my' %}">My</a></li>
-    <li>
-        <a href="#">
+    <li class="nav__item"><a class="nav__link" href="{% url 'notes:index' %}">All</a></li>
+    <li class="nav__item"><a class="nav__link" href="{% url 'notes:my' %}">My</a></li>
+    <li class="nav__item">
+        <a class="nav__link" href="#">
             Subjects
             <i class="icon ion-md-arrow-dropdown"></i>
         </a>
-        <ul class="sub-menu">
-            {% for category in categories %}
-                {% if not category.parent %}
-                    <li>
-                        <a href="{% url 'notes:category' category.get_full_path %}">
-                            {{ category.name }}
-                            {% if category.children.all %}
-                                <i class="icon ion-md-arrow-dropdown"></i>
-                            {% endif %}
-                        </a>
-                        {% if category.children.all %}
-                            <ul class="sub-menu">
-                                {% include "notes/menu.html" with categories=category.children.all %}
-                            </ul>
+        <ul class="nav__sub-menu">
+            {% recursetree categories %}
+                <li class="nav__item nav__item--sub">
+                    <a class="nav__link" href="{% url 'notes:category' node.full_path %}">
+                        {{ node.name }}
+                        {% if not node.is_leaf_node %}
+                            <i class="icon ion-md-arrow-dropdown"></i>
                         {% endif %}
-                    </li>
-                {% endif %}
-            {% endfor %}
+                    </a>
+                    {% if not node.is_leaf_node %}
+                        <ul class="sub-menu">
+                            {{ children }}
+                        </ul>
+                    {% endif %}
+                </li> 
+            {% endrecursetree %}
         </ul>
+    </li>
+    <li>
+        <form method="GET" action="{% url 'notes:index' %}">
+            <input type="search" placehoder="Search Notes" aria-label="Search" name="search_query">
+            <button>Search</button>
+        </form>
+    </li>
 {% endblock nav_list %}
 
 {% block content %}
     <h1 class="title">{{ title }}</h1>
-    
+    <h1 class="title">
+        {% for page in page_count_range %}
+        <a href=".?p={{ page  }}">{{ page }}</a>
+        {% endfor %}
+    </h1>
+
+
     <section class="section-notes">
         {% for object in object_list %} 
             {% include 'notes/components/note.html' with note=object %}
         {% endfor %}
     </section>
+
+    <h1 class="title">
+        {% for page in page_count_range %}
+        <a href=".?p={{ page }}">{{ page }}</a>
+        {% endfor %}
+    </h1>
 {% endblock content %}
