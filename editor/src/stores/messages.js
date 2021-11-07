@@ -14,9 +14,4 @@ import { writable } from 'svelte/store';
 /**
  * @type {import('svelte/store').Writable<Message[]>}
  */
-export const messages = writable([
-    { id: 0, severity: 'info', text: 'Info' },
-    { id: 1, severity: 'success', text: 'Success' },
-    { id: 2, severity: 'warning', text: 'Warning' },
-    { id: 3, severity: 'error', text: 'Error' },
-]);
+export const messages = writable([]);
