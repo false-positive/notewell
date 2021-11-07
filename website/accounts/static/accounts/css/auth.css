@@ -15,8 +15,11 @@ body {
 }
 
 :root {
-    /* change primary color */
-    /* --mdc-theme-primary: green */
+    --mdc-theme-primary: #2b4854;
+    --mdc-theme-secondary: #1baeea;
+    --mdc-theme-background: #e6eff3;
+    --mdc-theme-on-primary: #e6eff3;
+    --mdc-theme-on-secondary: #39383b;
 }
 
 .input-field {
