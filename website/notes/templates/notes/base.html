@@ -23,11 +23,15 @@
             <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap" rel="stylesheet" />
         {% endblock fonts %}
 
-        {% block ionicons %}
+        {% block icons %}
             <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet" />
-        {% endblock ionicons %}
-        <link href="{% static 'notes/css/base.css' %}" rel="stylesheet" />
-        {% block head %}{% endblock head %}
+        {% endblock icons %}
+
+        {% block styles %}
+            <link href="{% static 'notes/css/base.css' %}" rel="stylesheet" />
+        {% endblock styles %}
+
+        {% block script_head %}{% endblock script_head %}
     </head>
     <body>
         <div id="app">
@@ -132,7 +136,8 @@
             {% endblock footer %}
         </div>
 
-        <script src="{% static 'notes/js/nav.js' %}"></script>
-        {% block script %}{% endblock script %}
+        {% block script %}
+            <script src="{% static 'notes/js/nav.js' %}"></script>
+        {% endblock script %}
     </body>
 </html>

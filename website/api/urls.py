@@ -17,6 +17,8 @@ urlpatterns = [
 
     path('notes/', views.NoteList.as_view(), name='note_list'),
     path('notes/<uuid:note_id>/', views.NoteDetail.as_view(), name='note_detail'),
+    path('notes/<uuid:note_id>/permissions/',
+         views.NoteSharedItemList.as_view(), name='note_shareditem_list'),
 
     path('categories/', views.view_categories, name='category_list'),
     path('categories/<path:cat_path>/', views.view_categories, name='category_detail'),
