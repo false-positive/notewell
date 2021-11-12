@@ -2,12 +2,12 @@
 
 {% load markdownify %}
 {% load static %}
-{% load mptt_tags %} 
+{% load mptt_tags %}
 
 
 {% block head %}
     <link rel="stylesheet" href="{% static 'notes/css/comment_list.css' %}" />
-{% endblock head %} 
+{% endblock head %}
 
 {% block nav_list %}
     <li class="nav__item"><a class="nav__link" href="{% url 'notes:index' %}">All</a></li>
@@ -33,31 +33,55 @@
                             {{ children }}
                         </ul>
                     {% endif %}
-                </li> 
+                </li>
             {% endrecursetree %}
         </ul>
     </li>
 {% endblock nav_list %}
 
 {% block content %}
-    <h1>{{ note.title }}</h1>
+<h1 class="title">{{ note.title }}</h1>
 
-    <h2>Author: {{ note.author.username }}</h2>
-    <a href="{% url 'notes:edit' note.uuid %}">edit</a>
+<h2 class="title-2">By {{ note.author.username }}</h2>
+<!-- TODO: Add link to user -->
 
-    <hr />
+{% if user == note.author %}
+<div class="edit-btn">
+    <a href="{% url 'notes:edit' note.uuid %}">
+    <button class="mdc-icon-button material-icons">
+    <div class="mdc-icon-button__ripple"></div>
+    edit
+    </button>
+    </a>
+</div>
+{% endif %}
 
-    <h3>Comments:</h3>
-    <form action="" method="POST">
+<div class="note-content">
+    {% autoescape off %}
+    {{ note.content|markdownify|safe }}
+    {% endautoescape %}
+</div>
+
+
+<h3 class="title">Comments:</h3>
+
+{% if user.is_authenticated %}
+    <form action="" method="POST" class="create-comment-form">
         {% csrf_token %}
-        <ul>
-            {{ create_comment_form.as_ul }}
-        </ul>
-        <button>Post Comment</button>
-    </form>
 
-    {% for comment in note.comment_set.all %}
-        <p>{{ comment.content }}</p>
-        <hr />
-    {% endfor %}
+        <!-- TODO make textarea auto-resize -->
+        {{ create_comment_form.content }}
+
+        <button class="submit" type="submit">Post Comment</button>
+
+    </form>
+{% endif %}
+
+
+{% for comment in comments %}
+    {% include 'notes/components/comment.html' with comment=comment %}
+{% endfor %}
+
+<script src="{% static 'notes/js/comment_form.js' %}"></script>
+
 {% endblock content %}
