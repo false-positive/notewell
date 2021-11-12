@@ -46,4 +46,11 @@
     :global(body) {
         margin: 0;
     }
+    :global(:root) {
+        --mdc-theme-primary: #2b4854;
+        --mdc-theme-secondary: #1baeea;
+        --mdc-theme-background: #e6eff3;
+        --mdc-theme-on-primary: #e6eff3;
+        --mdc-theme-on-secondary: #39383b;
+    }
 </style>
