@@ -173,6 +173,15 @@ body {
     left: 100%;
 }
 
+.nav__logo {
+    position: absolute;
+    top: 50%;
+    left: 2rem;
+    transform: translateY(-50%);
+    z-index: 1500;
+    height: 4rem;
+}
+
 .title {
     text-align: center;
     /* text-transform: capitalize; */

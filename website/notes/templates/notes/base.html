@@ -48,14 +48,9 @@
                                 </span>
                             </div>
 
-                            <a class="nav__link" href="{% url 'notes:index' %}">
-                                <!--
-                                    so the logo is taken from freepik and they
-                                    insist that I attribute them, but
-                                    this is a placehoder, sooo...
-                                -->
+                            <a href="{% url 'notes:index' %}">
                                 <img
-                                    src="{% static 'notes/img/logo.png' %}"
+                                    src="{% static 'notes/img/logo.svg' %}"
                                     alt="Logo"
                                     class="nav__logo"
                                 />

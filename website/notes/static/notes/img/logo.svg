@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Blender, SVG Export for Grease Pencil - v1.0 -->
+
+<svg
+   version="1.0"
+   x="0px"
+   y="0px"
+   width="814px"
+   height="869px"
+   viewBox="0 0 814 869"
+   id="svg461"
+   sodipodi:docname="notewell_logo.svg"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs465" />
+  <sodipodi:namedview
+     id="namedview463"
+     pagecolor="#ffffff"
+     bordercolor="#ffffff"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="0.69490126"
+     inkscape:cx="502.22963"
+     inkscape:cy="451.86276"
+     inkscape:window-width="1916"
+     inkscape:window-height="1052"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg461" />
+  <path
+     d="m 336.7737,-104.93209 h 24 v 24 h -24 z"
+     fill="none"
+     id="path2608" />
+  <g
+     id="g4584"
+     transform="translate(476.87536,-0.2156995)"
+     style="fill:#ffffff;fill-opacity:1">
+    <path
+       id="path2610"
+       style="fill:#ffffff;stroke-width:42.4246;fill-opacity:1"
+       d="m -381.97351,10.380859 c -46.67108,0 -84.85742,38.178944 -84.85742,84.841797 V 773.95508 c 0,46.66286 37.76252,84.84179 84.43359,84.8418 h 330.142583 v -84.8418 H -381.97351 V 95.222656 H -84.975457 V 307.32617 H 127.16516 l 0.0664,283.78424 h 84.92309 L 212.02063,264.90625 -42.547727,10.380859 Z m 84.85547,424.207031 v 84.8418 H 42.307743 v -84.8418 z m 0,169.68359 v 84.8418 l 229.080083,0.12695 v -84.90429 z"
+       sodipodi:nodetypes="sssscccccccccccscccccccccc" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m -50.967927,713.61493 57.94001,-57.9278 87.11532,87.09711 L 268.31836,568.59015 327.0802,626.51788 94.498413,859.05054 -50.967927,713.61493"
+       id="path4354" />
+  </g>
+</svg>
