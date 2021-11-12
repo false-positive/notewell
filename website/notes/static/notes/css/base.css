@@ -178,7 +178,7 @@ body {
     top: 50%;
     left: 2rem;
     transform: translateY(-50%);
-    z-index: 1500;
+    /* z-index: 1500; */
     height: 4rem;
 }
 

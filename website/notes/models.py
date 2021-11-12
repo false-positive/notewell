@@ -34,6 +34,12 @@ class Category(MPTTModel):
         if not self.slug:
             raise ValueError('Name cannot be slugified')
 
+        full_path = [self.slug]
+        k = self.parent
+        while k is not None:
+            full_path.append(k.slug)
+            k = k.parent
+
         self.full_path = '/'.join(full_path[::-1])
 
         super().save(*args, **kwargs)
