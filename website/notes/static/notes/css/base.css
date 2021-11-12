@@ -213,6 +213,22 @@ body {
     margin: 10px auto;
 }
 
+.edit-btn {
+    display: block;
+    width: 50%;
+    border-radius: 20px;
+    margin: 0 auto;
+}
+
+.edit-btn a {
+    color: inherit;
+    transition: color 0.3s;
+}
+
+.edit-btn a:hover {
+    color: #3c89d2;
+}
+
 @media screen and (max-width: 680px) {
     .search-form__search-box {
         width: 90%;
