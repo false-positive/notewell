@@ -55,6 +55,7 @@ def index(request, cat_path=None):
             'previous': previous_page,
             'next': next_page,
             'count': notes_res['page_count'],
+            'name': 'index',
         },
         'page_count_range': range(1, notes_res['page_count'] + 1),
         'categories': categories,
@@ -69,6 +70,9 @@ def my(request):
         'title': 'My Notes',
         'categories': categories,
         'object_list': notes,
+        'page': {
+            'name': 'my',
+        }
     })
 
 
@@ -168,6 +172,9 @@ def category(request, cat_path):
         'title': category.name,
         'categories': categories,
         'object_list': notes,
+        'page': {
+            'name': 'category',
+        }
     })
 
 

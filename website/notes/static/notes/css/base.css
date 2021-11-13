@@ -229,6 +229,67 @@ body {
     color: #3c89d2;
 }
 
+.create-note-btn {
+    /* TODO change colors of button */
+    display: block;
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 3rem;
+    background-color: #317dc5;
+    transition: 0.3s background-color;
+    border: none;
+    border-radius: 2rem;
+    margin: 20px auto;
+    cursor: pointer;
+    text-align: center;
+    width: 30rem;
+    text-decoration: none;
+}
+
+.create-note-btn:hover {
+    background-color: #085a8d;
+}
+
+
+.create-note-form  {
+    padding-top: 3rem;
+    font-size: 2rem;
+    margin: 0 auto;
+    text-align: center;
+    width: 30%;
+}
+
+.create-note-form input {
+    margin: 1rem 0;
+    width: 100%;
+    resize: none;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    border: 1px solid black;
+    height: 3rem;
+}
+
+.create-note-form button {
+     /* TODO change colors of button */
+     display: block;
+     color: white;
+     padding: 1rem 2rem;
+     font-size: 1.5rem;
+     background-color: #317dc5;
+     transition: 0.3s background-color;
+     border: none;
+     border-radius: 2rem;
+     margin: 20px auto;
+     cursor: pointer;
+     text-align: center;
+     width: 10rem;
+     text-decoration: none;
+}
+
+.create-note-form button:hover {
+    background-color: #085a8d;
+}
+
 @media screen and (max-width: 680px) {
     .search-form__search-box {
         width: 90%;

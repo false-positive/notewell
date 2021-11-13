@@ -40,6 +40,11 @@
 {% block content %}
     <h1 class="title">{{ title }}</h1>
 
+    {% if page.name == "my" %}
+        <a href="{% url 'notes:create' %}" class="create-note-btn">Create a new note</a>
+    {% endif %}
+
+
     <form method="GET" action="{% url 'notes:index' %}" class="search-form">
         <label class="search-form__search-box  mdc-text-field mdc-text-field--outlined mdc-text-field--with-trailing-icon">
             <span class="mdc-notched-outline">
