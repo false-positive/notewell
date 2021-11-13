@@ -8,7 +8,7 @@
   <h3 align="center">Take notes with ease</h3>
 
   <p align="center">
-    _Notewell_ is a set of tools that helps you convert long, boring paragraphs to short and concise notes.
+    <em>Notewell</em> is a set of tools that helps you convert long, boring paragraphs to short and concise notes.
     <br />
     <a href="#installation"><strong>Run it locally »</strong></a>
     <br />
@@ -47,9 +47,9 @@
 
   ``` shell
   $ npm install -g npm@8.1.3
-  ```
+    ```
 
-> snippet assumes that you already have a version of npm installed
+> The snippet assumes that you already have a version of npm installed
 
 ### Installation
 
@@ -78,7 +78,7 @@
   $ python manage.py runserver
   ```
 
-Will start the Django development server on <http://localhost:8000>.
+  This will start the Django development server on <http://localhost:8000>.
 
 4. Run the Vite server (for the editor)
 
@@ -91,7 +91,7 @@ Will start the Django development server on <http://localhost:8000>.
 
   > Note: Don't access <http://localhost:3000>. The Django server on :8000 automatically connects to it
 
-Then you can head on over to <http://localhost:8000/accounts/login/> and login as `admin` with the password you set earlier.
+5. Head on over to <http://localhost:8000/accounts/login/> and login as `admin` with the password you set earlier.
 
 ## License
 
