@@ -8,12 +8,12 @@
   <h3 align="center">Take notes with ease</h3>
 
   <p align="center">
-    <em>Notewell</em> is a set of tools that helps you convert long, boring paragraphs to short and concise notes.
+    <em>Notewell</em> is a set of tools that help you convert long, boring paragraphs to short and concise notes.
     <br />
     <a href="#installation"><strong>Run it locally »</strong></a>
     <br />
     <br />
-    <a href="./LICENSE">AGPL_3.0 License</a>
+    <a href="./LICENSE">License</a>
     ·
     <a href="https://github.com/false-positive/notewell/issues">Report Bug</a>
     ·
@@ -27,9 +27,9 @@
 ## Built With
 
 - [Django](https://djangoproject.com/)
-- [Svelte](https://svelte.dev/)
-- [Vite](https://vite.dev/)
-- [Svelte Material UI](https://sveltematerialui.com/)
+- [Svelte](https://svelte.dev)
+- [Vite](https://vite.dev)
+- [Svelte Material UI](https://sveltematerialui.com)
 
 ## Getting Started
 
@@ -68,7 +68,7 @@
   $ pipenv install && pipenv shell
   $ python manage.py migrate
   $ python manage.py loaddata fixtures/*.json
-  $ python managepy changepassword admin
+  $ python manage.py changepassword admin
   ```
 
 3. Run the Django development server
@@ -85,7 +85,7 @@
   In order for the editor to work, you have to start the Vite server on port <http://localhost:3000>:
 
   ``` shell
-  $ cd editor/
+  $ cd ~/editor/
   $ npm install && npm run dev
   ```
 
