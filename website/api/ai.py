@@ -1,4 +1,4 @@
-import os, requests
+import os, requests, json
 from spacy.lang.en import English
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -49,5 +49,20 @@ def sum_text(input_text):
 
 
 def gen_quest(input_text):
-    r = requests.post('http://localhost:5000/generate_question', json={'input_text': input_text})
-    return {'result': r.json()}
+    json_input = json.loads(input_text)
+    result = []
+    for title in json_input['result']:
+        for entry in json_input['result'][title]:
+            r = requests.post('http://localhost:5000/generate_question', json={'input_text': entry, 'type': json_input['type']})
+            result.append(r.json())
+    return {'result': result}
+
+
+def text_quality(input_text):
+    result = requests.get('http://localhost:5001/text_quality', json={'input_text': input_text})
+    return {'result': result.text}
+
+
+def text_subject(input_text):
+    result = requests.get('http://localhost:5001/text_subject', json={'input_text': input_text})
+    return {'result': result.json()}
