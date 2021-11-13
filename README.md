@@ -2,6 +2,8 @@
 
 The notewell project.
 
+Download [the moderation models](https://drive.google.com/drive/folders/1xSoSajUtSy8YyDWEXeiSh7CyaFLBcJaE?usp=sharing) and place them in the `moderation_models` folder (place the folders not the individual model.tar.gz files)
+
 Here's how y'all can run the Django project (in `website/`). _(Works everywhere)_
 
     python -m pip install -U pipenv
