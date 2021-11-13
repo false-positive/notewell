@@ -1,10 +1,10 @@
+from mptt.admin import MPTTModelAdmin
 from django.contrib import admin
 from django.forms import Textarea
 from django.db import models
-from django.shortcuts import reverse
 from django.utils.html import format_html
 
-from .models import Comment, BulletPoint, Note, Category, SharedItem
+from .models import Comment, Note, Category, SharedItem
 
 
 class CommentInline(admin.TabularInline):
@@ -24,25 +24,12 @@ class CommentAdmin(admin.ModelAdmin):
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(MPTTModelAdmin):
+    mptt_level_indent = 20  # px
+    exclude = ('full_path',)
+    list_display = ('name', 'slug', 'full_path')
     prepopulated_fields = {'slug': ("name",)}
-
-
-class BulletPointInline(admin.TabularInline):
-    model = BulletPoint
-    extra = 0
-    formfield_overrides = {
-        models.TextField: {'widget': Textarea(attrs={'rows': 3})},
-    }
-
-
-@admin.register(BulletPoint)
-class BulletPointAdmin(admin.ModelAdmin):
-    inlines = [BulletPointInline]
-    list_display = ('content', 'note', 'order_id', 'parent')
-    formfield_overrides = {
-        models.TextField: {'widget': Textarea(attrs={'rows': 3})},
-    }
+    # ordering = ('full_path',)
 
 
 # class ChoiceInline(admin.TabularInline):
@@ -81,17 +68,48 @@ class BulletPointAdmin(admin.ModelAdmin):
 
 class SharedItemInline(admin.TabularInline):
     model = SharedItem
+    autocomplete_fields = ['user']
     extra = 0
 
 
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
-    inlines = [BulletPointInline, CommentInline, SharedItemInline]
-    list_display = ['title', 'author', 'uuid_link']
+    inlines = [CommentInline, SharedItemInline]
+    list_display = ['title', 'author', 'uuid_link', 'creation_date', 'status', 'verified']
+    autocomplete_fields = ['author']
+    actions = ['verify', 'unverify', 'share_with_admin']
+    search_fields = ['title__icontains']
+
+    def get_queryset(self, request):
+        return super().get_queryset(request) \
+            .prefetch_related('categories')
 
     @admin.display(ordering='uuid', description='UUID')
     def uuid_link(self, note):
-        url = reverse('notes:read', kwargs={'note_id': note.uuid})
+        url = note.get_absolute_url()
 
         fmt = '<a href="{}" target="_blank">{}</a>'
         return format_html(fmt, url, note.uuid)
+
+    @admin.action(description='Verify')
+    def verify(self, request, queryset):
+        for note in queryset:
+            note.verified = True
+            note.save()
+
+    @admin.action(description='Unverify')
+    def unverify(self, request, queryset):
+        for note in queryset:
+            note.verified = False
+            note.save()
+
+    @admin.action(description='Give me read access yes')
+    def share_with_admin(self, request, queryset):
+        # XXX: kinda creepy...
+        for note in queryset:
+            if note.can_be_read_by(request.user):
+                continue
+            note.shareditem_set.create(
+                perm_level=SharedItem.PERM_LEVEL_READ,
+                user=request.user,
+            )

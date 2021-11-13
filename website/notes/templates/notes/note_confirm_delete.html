@@ -1,0 +1,10 @@
+{% extends 'notes/base.html' %}
+
+{% block content %}
+    <form method="POST">
+      {% csrf_token %}
+      <p>Are you sure you want to delete "{{ object }}"?</p>
+      <input type="submit" value="Yes">
+      <a href="{% url 'notes:index' %}">No</a>
+    </form>
+{% endblock %}

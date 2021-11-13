@@ -1,12 +1,54 @@
 {% extends 'notes/base.html' %}
 
-{% block content %}
-    <h1>{{ note.title }}</h1>
+{% load render_vite_bundle %}
+{% load render_initial_editor_data %}
 
-    <h2>Author: {{ note.author.username }}</h2>
-    <a href="{% url 'notes:read' note.uuid %}">view</a>
+{% block fonts %}
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700"
+    />
+{% endblock fonts %}
 
-    <hr />
+{% block icons %}
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+{% endblock icons %}
 
-    <p>This is where you would edit this note...</p>
-{% endblock content %}
+{% block styles %}
+    <!-- Material Typography -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/@material/typography@11.0.0/dist/mdc.typography.css"
+    />
+
+    <!-- Material Elevation -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/@material/elevation@11.0.0/dist/mdc.elevation.css"
+    />
+
+    <!-- SMUI -->
+    <link rel="stylesheet" href="https://unpkg.com/svelte-material-ui/bare.css" />
+{% endblock styles %}
+
+{% block script_head %}
+    {% if debug %}
+        <script type="module" src="http://localhost:3000/@vite/client"></script>
+    {% endif %}
+    <script type="application/json" id="nw-editor-initial-data">
+        {% render_initial_editor_data note=note token_pair=token_pair %}
+    </script>
+{% endblock script_head %}
+
+{% block header %}{% endblock header %}
+
+{% block script %}
+    {% if debug %}
+        <script type="module" src="http://localhost:3000/main.js"></script>
+    {% else %}
+        {% render_vite_bundle %}
+    {% endif %}
+{% endblock script %}

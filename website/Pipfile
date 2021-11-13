@@ -6,12 +6,17 @@ name = "pypi"
 [packages]
 django = "*"
 django-debug-toolbar = "*"
+djangorestframework = "*"
+django-mptt = "*"
+djangorestframework-simplejwt = "*"
+django-markdownify = "*"
 
 [dev-packages]
 pytest = "*"
 pytest-django = "*"
 flake8 = "*"
 autopep8 = "*"
+faker = "*"
 
 [requires]
 python_version = "3.9"

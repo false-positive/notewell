@@ -1,15 +1,11 @@
-<a href="{% url 'notes:read' note.uuid %}" class="note">
-    <h2>{{ note.title }}</h2>
-    <div class="note-extra-info">
-        <h3 class="author">By {{ note.author.username }}</h3>
-        <h3 class="date">Created on {{ note.creation_date }}</h3>
-    </div>
-    <div class="note-tags">
-        <div class="tag">This is a tag!</div>
-        <div class="tag">test</div>
-        <div class="tag">calculus</div>
-        <div class="tag">Hello</div>
-    </div>
-</a>
-
-<!-- <a href="">{{ note.title }}</a> by {{ note.author.username }}123 -->
+<div class="mdc-card mdc-typography note-card" tabindex="0">
+    <a class="mdc-card__primary-action note-card__action" href="{{ note.get_absolute_url }}">
+        <!-- XXX maybe add a small menu for editing notes and deleting them -->
+        <h2 class="note-title mdc-typography--headline2">{{ note.title }}</h2>
+        <div class="note-extra-info">
+            <h3 class="author mdc-typography--headline5">By {{ note.author.username }}</h3>
+            <h3 class="date mdc-typography--headline5">Created on {{ note.creation_date }}</h3>
+        </div>
+        <div class="mdc-card__ripple"></div>
+    </a>
+</div>

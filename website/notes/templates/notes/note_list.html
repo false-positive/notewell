@@ -1,84 +1,87 @@
 {% extends 'notes/base.html' %}
 {% load static %}
+{% load mptt_tags %} 
 
-{% block head %}
+{% block styles %}
+    {{ block.super }}
     <link rel="stylesheet" href="{% static 'notes/css/note_list.css' %}" />
-{% endblock head %} 
+{% endblock %}
+
+{% block nav_list %}
+    <li class="nav__item"><a class="nav__link" href="{% url 'notes:index' %}">All</a></li>
+    {% if user.is_authenticated %}
+    <li class="nav__item"><a class="nav__link" href="{% url 'notes:my' %}">My</a></li>
+    {% endif %}
+    <li class="nav__item">
+        <a class="nav__link" href="#">
+            Subjects
+            <i class="icon ion-md-arrow-dropdown"></i>
+        </a>
+        <ul class="nav__sub-menu">
+            {% recursetree categories %}
+                <li class="nav__item nav__item--sub">
+                    <a class="nav__link" href="{% url 'notes:category' node.full_path %}">
+                        {{ node.name }}
+                        {% if not node.is_leaf_node %}
+                            <i class="icon ion-md-arrow-dropdown"></i>
+                        {% endif %}
+                    </a>
+                    {% if not node.is_leaf_node %}
+                        <ul class="nav__sub-menu">
+                            {{ children }}
+                        </ul>
+                    {% endif %}
+                </li> 
+            {% endrecursetree %}
+        </ul>
+    </li>
+{% endblock nav_list %}
 
 {% block content %}
-    <header>
-        <div class="container">
-            <nav>
-                <div class="menu-icons">
-                    <i class="icon ion-md-menu"></i>
-                    <i class="icon ion-md-close"></i>
-                </div>
-
-                <img src="" alt="Logo" class="logo" />
-
-                <ul class="nav-list">
-                    <li><a href="{% url 'notes:index' %}">All</a></li>
-                    <li><a href="{% url 'notes:my' %}">My</a></li>
-                    <li>
-                        <a href="#">
-                            Subjects
-                            <i class="icon ion-md-arrow-dropdown"></i>
-                        </a>
-                        <ul class="sub-menu">
-                            {% for category in categories %}
-                                {% if not category.parent %}
-                                    <li>
-                                        <a href="{% url 'notes:category' category.get_full_path %}">
-                                            {{ category.name }}
-                                            {% if category.children.all %}
-                                                <i class="icon ion-md-arrow-dropdown"></i>
-                                            {% endif %}
-                                        </a>
-                                        {% if category.children.all %}
-                                            <ul class="sub-menu">
-                                                {% include "notes/menu.html" with categories=category.children.all %}
-                                            </ul>
-                                        {% endif %}
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </li>
-                    {% if not user.is_authenticated %}
-                        <li class="move-right">
-                            <a href="{% url 'accounts:register' %}">Sign up</a>
-                        </li>
-                        <li><a href="{% url 'accounts:login' %}">Log in</a></li>
-                    {% else %}
-                        <li class="move-right">
-                            <a href="#">
-                                {{ user.username }}
-                                <i class="icon ion-md-arrow-dropdown"></i>
-                            </a>
-                            <ul class="sub-menu">
-                                {% if user.is_staff %}
-                                    <li>
-                                      <a href="{% url 'admin:index' %}">Admin</a>
-                                    </li>
-                                {% endif %}
-                                <li>
-                                  <a href="{% url 'accounts:logout' %}">Log out</a>
-                                </li>
-                            </ul>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <div class="space-block"></div>
-
     <h1 class="title">{{ title }}</h1>
-    
+
+    {% if page.name == "my" %}
+        <a href="{% url 'notes:create' %}" class="create-note-btn">Create a new note</a>
+    {% endif %}
+
+
+    <form method="GET" action="{% url 'notes:index' %}" class="search-form">
+        <label class="search-form__search-box  mdc-text-field mdc-text-field--outlined mdc-text-field--with-trailing-icon">
+            <span class="mdc-notched-outline">
+                <span class="mdc-notched-outline__leading"></span>
+                <span class="mdc-notched-outline__notch">
+                    <span class="mdc-floating-label" id="my-label-id">Search</span>
+                </span>
+                <span class="mdc-notched-outline__trailing"></span>
+            </span>
+            <!-- <input type="text" class="mdc-text-field__input" aria-labelledby="my-label-id" /> -->
+            <input class="mdc-text-field__input" type="search" placehoder="Search Notes" aria-label="Search" name="search_query">
+            
+            <button href="{% url 'notes:index' %}" class="mdc-icon-button material-icons mdc-text-field__icon mdc-text-field__icon--trailing search__button" tabindex="0" >
+                <div class="mdc-icon-button__ripple"></div>
+                search
+                <div class="mdc-icon-button__touch"></div>
+            </button>
+        </label>
+    </form>
+
+    {% if object_list %}
     <section class="section-notes">
         {% for object in object_list %} 
             {% include 'notes/components/note.html' with note=object %}
         {% endfor %}
     </section>
+
+    {% if page.count > 1 %}
+    <div class="nav-pages">
+        <h3 class="mdc-typography--subtitle1 pagination-text">Page {{ page.current }} of {{ page.count }}</h3>
+        <a href=".?p=1"><span class="material-icons">skip_previous</span></a>
+        <a href=".?p={{ page.previous }}"><span class="material-icons">navigate_before</span></a>
+        <a href=".?p={{ page.next }}"><span class="material-icons">navigate_next</span></a>
+        <a href=".?p={{ page.count }}"><span class="material-icons">skip_next</span></a>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    <script src="{% static 'notes/js/search_bar.js' %}"></script>
 {% endblock content %}

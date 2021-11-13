@@ -1,0 +1,1 @@
+This folder exists, because the `typewriter-editor` and `fastdiff` libraries were using a CommonJS syntax to export their symbols and that was incompatible with the Vite dev server. The easiest solution was to copy and patch the code in the repo. This is a temporary solution and shouldn't exist for a long time.

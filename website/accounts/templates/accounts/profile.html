@@ -1,0 +1,64 @@
+{% extends 'notes/base.html' %}
+{% load static %}
+{% load mptt_tags %} 
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'accounts/css/profile.css' %}" />
+    <link rel="stylesheet" href="{% static 'notes/css/note_list.css' %}" />
+{% endblock head %} 
+
+{% block nav_list %}
+    <li class="nav__item"><a class="nav__link" href="{% url 'notes:index' %}">All</a></li>
+    {% if user.is_authenticated %}
+    <li class="nav__item"><a class="nav__link" href="{% url 'notes:my' %}">My</a></li>
+    {% endif %}
+    <li class="nav__item">
+        <a class="nav__link" href="#">
+            Subjects
+            <i class="icon ion-md-arrow-dropdown"></i>
+        </a>
+        <ul class="nav__sub-menu">
+            {% recursetree categories %}
+                <li class="nav__item nav__item--sub">
+                    <a class="nav__link" href="{% url 'notes:category' node.full_path %}">
+                        {{ node.name }}
+                        {% if not node.is_leaf_node %}
+                            <i class="icon ion-md-arrow-dropdown"></i>
+                        {% endif %}
+                    </a>
+                    {% if not node.is_leaf_node %}
+                        <ul class="nav__sub-menu">
+                            {{ children }}
+                        </ul>
+                    {% endif %}
+                </li> 
+            {% endrecursetree %}
+        </ul>
+    </li>
+{% endblock nav_list %}
+
+{% block content %}
+
+    <img class="user-pf" src="{% static 'accounts/img/avatar.png' %}">
+
+    <h1 class="user-username">{{ username }}</h1>
+    
+    {% if object_list %}
+    <h1 class="title">{{ title }}</h1>
+
+    <section class="section-notes">
+        {% for object in object_list %} 
+            {% include 'notes/components/note.html' with note=object %}
+        {% endfor %}
+    </section>
+
+    <div class="nav-pages">
+        <h3 class="mdc-typography--subtitle1 pagination-text">Page {{ page.current }} of {{ page.count }}</h3>
+        <a href=".?p=1"><span class="material-icons">skip_previous</span></a>
+        <a href=".?p={{ page.previous }}"><span class="material-icons">navigate_before</span></a>
+        <a href=".?p={{ page.next }}"><span class="material-icons">navigate_next</span></a>
+        <a href=".?p={{ page.count }}"><span class="material-icons">skip_next</span></a>
+    </div>
+    {% endif %}
+
+{% endblock content %}

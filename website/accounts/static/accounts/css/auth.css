@@ -1,0 +1,70 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* font-family: "Lato", sans-serif; */
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    align-items: center;
+}
+
+:root {
+    --mdc-theme-primary: #2b4854;
+    --mdc-theme-secondary: #1baeea;
+    --mdc-theme-background: #e6eff3;
+    --mdc-theme-on-primary: #e6eff3;
+    --mdc-theme-on-secondary: #39383b;
+}
+
+.input-field {
+    width: 100%;
+}
+.input-field .mdc-text-field {
+    width: 100%;
+}
+
+form {
+    /* XXX Maybe change form width */
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: baseline;
+}
+
+.mdc-text-field {
+    margin-top: 0.7rem;
+}
+
+.submit {
+    align-self: center;
+    margin: 10px auto;
+}
+
+.suggestion {
+    align-self: center;
+}
+
+.suggestion__link {
+    color: #466a8c;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.suggestion__link:hover {
+    color: #074973;
+}
+
+.error {
+    color: var(--mdc-theme-error) !important;
+}
+
+.error-message {
+    margin-bottom: 10px;    
+}

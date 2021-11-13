@@ -1,0 +1,8 @@
+<div class="mdc-card mdc-typography comment-card" tabindex="0">
+    <div class="comment-extra-info">
+        <!-- TODO: add a link to user page -->
+        <h3 class="author mdc-typography--headline4">{{ comment.author.username }}</h3>
+        <h3 class="date mdc-typography--headline5">{{ comment.creation_date | date }}</h3>
+    </div>
+    <h2 class="comment-title mdc-typography--headline2">{{ comment.content | linebreaks }}</h2>
+</div>

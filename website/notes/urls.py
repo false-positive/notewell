@@ -5,9 +5,12 @@ from . import views
 
 app_name = 'notes'
 urlpatterns = [
+    path('test/', views.test, name='category'),
     path('', views.index, name='index'),
     path('my/', views.my, name='my'),
-    path('<uuid:note_id>/view/', views.read, name='read'),
+    path('new/', views.NoteCreateView.as_view(), name='create'),
+    path('<uuid:note_id>/', views.read, name='read'),
     path('<uuid:note_id>/edit/', views.edit, name='edit'),
-    path('<path:cat_path>/', views.category, name='category'),
+    path('<uuid:note_id>/delete/', views.NoteDeleteView.as_view(), name='delete'),
+    path('<path:cat_path>/', views.index, name='category'),
 ]

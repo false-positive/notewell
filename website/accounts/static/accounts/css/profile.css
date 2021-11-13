@@ -1,0 +1,26 @@
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* font-family: "Lato", sans-serif; */
+}
+
+.user-pf {
+    width: 15%;
+    /* width: 300px; */
+    border-radius: 50%;
+    height: auto;
+    display: block;
+    margin: 30px auto 10px auto;
+}
+
+.user-username {
+    text-align: center;
+    font-size: 4rem;
+    padding: 3rem 0;
+}
+
+.title {
+    font-size: 3.5rem;
+}

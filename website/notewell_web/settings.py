@@ -10,10 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# BASE_URL = 'http://localhost:8000/'
 
 
 # Quick-start development settings - unsuitable for production
@@ -24,8 +27,6 @@ SECRET_KEY = 'django-insecure-2z22^z$v@&%5=fhwybmvy4wgbsna1qbmn9=ra-c2x8ga1u&i=s
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -39,10 +40,75 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'debug_toolbar',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'mptt',
+    'markdownify',
 
     'accounts',
     'notes',
 ]
+
+MARKDOWNIFY = {
+    "default": {
+        "WHITELIST_TAGS": [
+            'a',
+            'abbr',
+            'acronym',
+            'b',
+            'blockquote',
+            'em', 'i', 'strong',     
+            'p',
+            'ul', 'ol', 'li',
+            'hr',
+            'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+            'sup', 'sub',
+            'dl', 'dt', 'dd',
+            'code',
+            'pre',
+            'table', 'thead', 'tr', 'th', 'tbody', 'td', 
+            'img',
+            'ins',
+            'mark',
+            'div',
+        ],
+        "WHITELIST_ATTRS": [
+            'href',
+            'src',
+            'alt',
+        ],
+        "WHITELIST_PROTOCOLS": [
+            'http',
+            'https',
+        ],
+        "MARKDOWN_EXTENSIONS": [
+            'markdown.extensions.fenced_code',
+            'markdown.extensions.extra',
+        ],
+        "STRIP": False,
+        "LINKIFY_TEXT": {
+            "PARSE_URLS": True,
+
+            # Next key/value-pairs only have effect if "PARSE_URLS" is True
+            "PARSE_EMAIL": False,
+            "CALLBACKS": [],
+            "SKIP_TAGS": [],
+        },
+    }
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication'
+    ]
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=15),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -127,7 +193,22 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+
+# Needed for production. Avoid using '*'.
+# TODO: change allowed hosts to actual domain
+ALLOWED_HOSTS = ['*']
+
+# Vite App Dir: the folder where the editor is.
+VITE_APP_DIR = BASE_DIR / '..' / 'editor' / 'src'
+
+# You may change these, but it's important that the dist folder is included.
+# If it's not, collectstatic won't copy your bundle to production.
+
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    VITE_APP_DIR / 'dist',
+]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

@@ -1,0 +1,16 @@
+{% extends 'notes/base.html' %}
+
+{% load static %}
+
+{% block content %}
+    <form method="POST" class="create-note-form">
+        {% csrf_token %}
+        <label>Title</label>
+        {{ form.title }}
+        <button class=".create-note-btn-2">Create</button>
+    </form>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'notes/js/create_note_form.js' %}"></script>
+{% endblock script %}
