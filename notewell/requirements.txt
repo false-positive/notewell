@@ -1,0 +1,5 @@
+git+https://github.com/CodenameSource/scibert.git
+spacy==2.2.4
+git+https://github.com/ramsrigouthamg/Questgen.ai
+git+https://github.com/boudinfl/pke.git
+overrides==3.1.0

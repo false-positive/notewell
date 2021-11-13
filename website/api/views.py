@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .ai import sum_text, gen_quest
+from .ai import sum_text, gen_quest, text_subject, text_quality
 
 from .serializers import (
     AuthUserSerializer,
@@ -287,6 +287,14 @@ def summarize(request):
         )
 
     return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+def subject(request):
+    return Response(text_subject(request.data['text']))
+
+
+def quality(request):
+    return Response(text_quality(request.data['text']))
 
 
 class UserTokenPairView(TokenObtainPairView):

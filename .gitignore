@@ -136,5 +136,7 @@ questgen/s2v_reddit_2015_md.tar.gz
 # JS library pain
 node_modules
 
-# idk really
+# ml models
 model_cache/
+/moderation_models/text_quality/
+/moderation_models/subject_classification/
