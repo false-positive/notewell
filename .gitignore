@@ -133,5 +133,7 @@ dmypy.json
 questgen/s2v_old/
 questgen/s2v_reddit_2015_md.tar.gz
 
-# idk really
+# ml models
 model_cache/
+/moderation_models/text_quality/
+/moderation_models/subject_classification/
