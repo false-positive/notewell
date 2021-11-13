@@ -297,5 +297,13 @@ def quality(request):
     return Response(text_quality(request.data['text']))
 
 
+def subject(request):
+    return Response(text_subject(request.data['text']))
+
+
+def quality(request):
+    return Response(text_quality(request.data['text']))
+
+
 class UserTokenPairView(TokenObtainPairView):
     serializer_class = AuthUserTokenObtainPairSerializer
