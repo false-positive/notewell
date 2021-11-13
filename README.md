@@ -1,6 +1,6 @@
 # notewell
 The notewell project.
-
+[Models corresponding with the project](https://drive.google.com/drive/folders/1xSoSajUtSy8YyDWEXeiSh7CyaFLBcJaE?usp=sharing)
 Here's how y'all can run the Django project (in `website/`). _(Works everywhere)_
 
     python -m pip install -U pipenv
