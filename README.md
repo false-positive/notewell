@@ -8,7 +8,7 @@
   <h3 align="center">Take notes with ease</h3>
 
   <p align="center">
-    <em>Notewell</em> is a set of tools that help you convert long, boring paragraphs to short and concise notes.
+    <em>Notewell</em> is a set of tools that help you take short and concise notes and study more efficiently.
     <br />
     <a href="#installation"><strong>Run it locally »</strong></a>
     <br />
