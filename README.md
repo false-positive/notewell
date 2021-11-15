@@ -49,7 +49,7 @@
   $ npm install -g npm@8.1.3
     ```
 
-> The snippet assumes that you already have a version of npm installed
+> The snippet assumes that you already have an older version of npm installed
 
 ### Installation
 
@@ -64,7 +64,7 @@
 2. Setup the Django development database
 
   ``` shell
-  $ cd ~/website/
+  $ cd ~/notewell/website/
   $ pipenv install && pipenv shell
   $ python manage.py migrate
   $ python manage.py loaddata fixtures/*.json
@@ -74,7 +74,7 @@
 3. Run the Django development server
 
   ``` shell
-  $ cd ~/website/
+  $ cd ~/notewell/website/
   $ python manage.py runserver
   ```
 
@@ -85,7 +85,7 @@
   In order for the editor to work, you have to start the Vite server on port <http://localhost:3000>:
 
   ``` shell
-  $ cd ~/editor/
+  $ cd ~/notewell/editor/
   $ npm install && npm run dev
   ```
 
