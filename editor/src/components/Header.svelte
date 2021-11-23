@@ -5,8 +5,6 @@
     import { note } from '../stores/note';
     import { isShareDialogOpen } from '../stores/isShareDialogOpen';
 
-    let titleEl;
-
     async function updateTitle(e) {
         note.update($note.uuid, { title: e.target.value });
     }
@@ -16,7 +14,7 @@
     <Row>
         <Section>
             <IconButton class="material-icons" href="/notes/">menu</IconButton>
-            <Title bind:this={titleEl}>
+            <Title>
                 <input
                     class="title-input"
                     value={$note?.title}

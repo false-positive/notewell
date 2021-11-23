@@ -19,7 +19,7 @@
     });
 </script>
 
-<Toolbar {editor} let:active let:commands>
+<Toolbar {editor} let:commands>
     <div class="toolbar">
         <IconButton class="material-icons" on:click={commands.header1}>
             title
