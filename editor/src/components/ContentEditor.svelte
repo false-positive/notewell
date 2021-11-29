@@ -1,22 +1,51 @@
 <script>
     import IconButton from '@smui/icon-button/IconButton.svelte';
-    import { Editor } from 'typewriter-editor';
+    import { Delta, Editor } from 'typewriter-editor';
     import Dialog, { Title, Content } from '@smui/dialog';
     import CircularProgress from '@smui/circular-progress';
     import Root from 'typewriter-editor/lib/Root.svelte';
     import Toolbar from 'typewriter-editor/lib/Toolbar.svelte';
+    import { toDelta, fromDelta } from '@slite/quill-delta-markdown';
+    import { note } from '../stores/note';
     import { onMount } from 'svelte';
 
     const editor = new Editor();
 
-    let open = false;
+    export let saveMs = 1000;
+
+    let shorteningText = false;
+    let lastSaveTimeout = null;
 
     onMount(() => {
-        setTimeout(() => {
-            open = true;
-            setTimeout(() => (open = false), 5673);
-        }, 600);
+        const ops = toDelta($note.content);
+        editor.setDelta(new Delta(ops));
     });
+
+    /**
+     * @param {Event} event
+     */
+    function save(event) {
+        // @ts-ignore
+        if (!event.changedLines.length) return;
+
+        // console.log('asd');
+        const content = fromDelta(editor.getDelta().ops);
+        note.update($note.uuid, { content });
+    }
+
+    editor.on('change', (e) => {
+        if (lastSaveTimeout !== null) {
+            clearTimeout(lastSaveTimeout);
+        }
+        lastSaveTimeout = setTimeout(() => save(e), saveMs);
+    });
+
+    async function shortenText() {
+        shorteningText = true;
+        const text = await new Promise((resolve) => setTimeout(resolve, 1000));
+        editor.insert(text);
+        shorteningText = false;
+    }
 </script>
 
 <Toolbar {editor} let:commands>
@@ -44,6 +73,10 @@
         <IconButton class="material-icons" on:click={commands.redo}>
             redo
         </IconButton>
+
+        <IconButton class="material-icons" on:click={shortenText}>
+            straighten
+        </IconButton>
     </div>
 </Toolbar>
 
@@ -54,7 +87,7 @@
     </div>
 </div>
 
-<Dialog bind:open>
+<Dialog scrimClickAction="" escapeKeyAction="" open={shorteningText}>
     <Title>Shortening Text...</Title>
     <Content>
         Please wait as your selection is being shortened...
@@ -77,7 +110,6 @@
         padding: 0.3em;
         overflow-x: wrap;
         overflow-y: scroll;
-        /* height: 51.5em; */
         height: 48.5em;
     }
 

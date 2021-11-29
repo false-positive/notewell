@@ -18,6 +18,7 @@
     "vite": "^2.6.4"
   },
   "dependencies": {
-    "typewriter-editor": "file:../vendor/typewriter/"
+    "@slite/quill-delta-markdown": "file:../vendor/quill-delta-markdown",
+    "typewriter-editor": "file:../vendor/typewriter"
   }
 }
