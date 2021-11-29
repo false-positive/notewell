@@ -41,61 +41,13 @@ INSTALLED_APPS = [
 
     'debug_toolbar',
     'rest_framework',
-    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
     'mptt',
     'markdownify',
 
     'accounts',
     'notes',
 ]
-
-MARKDOWNIFY = {
-    "default": {
-        "WHITELIST_TAGS": [
-            'a',
-            'abbr',
-            'acronym',
-            'b',
-            'blockquote',
-            'em', 'i', 'strong',     
-            'p',
-            'ul', 'ol', 'li',
-            'hr',
-            'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-            'sup', 'sub',
-            'dl', 'dt', 'dd',
-            'code',
-            'pre',
-            'table', 'thead', 'tr', 'th', 'tbody', 'td', 
-            'img',
-            'ins',
-            'mark',
-            'div',
-        ],
-        "WHITELIST_ATTRS": [
-            'href',
-            'src',
-            'alt',
-        ],
-        "WHITELIST_PROTOCOLS": [
-            'http',
-            'https',
-        ],
-        "MARKDOWN_EXTENSIONS": [
-            'markdown.extensions.fenced_code',
-            'markdown.extensions.extra',
-        ],
-        "STRIP": False,
-        "LINKIFY_TEXT": {
-            "PARSE_URLS": True,
-
-            # Next key/value-pairs only have effect if "PARSE_URLS" is True
-            "PARSE_EMAIL": False,
-            "CALLBACKS": [],
-            "SKIP_TAGS": [],
-        },
-    }
-}
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -220,3 +172,74 @@ LOGIN_REDIRECT_URL = 'notes:index'  # TODO: change
 
 # Unit Tests
 TEST_RUNNER = 'notewell_web.runner.PytestTestRunner'
+
+# Markdownify
+
+MARKDOWNIFY = {
+    "default": {
+        "WHITELIST_TAGS": [
+            'a',
+            'abbr',
+            'acronym',
+            'b',
+            'blockquote',
+            'em',
+            'i',
+            'strong',
+            'p',
+
+            'ul',
+            'ol',
+            'li',
+
+            'hr',
+
+            'h1',
+            'h2',
+            'h3',
+            'h4',
+            'h5',
+            'h6',
+
+            'sup',
+            'sub',
+
+            'dl',
+            'dt',
+            'dd',
+
+            'code',
+            'pre',
+
+            'table',
+            'thead',
+            'tr',
+            'th',
+            'tbody',
+            'td',
+
+            'ins',
+            'mark',
+        ],
+        "WHITELIST_ATTRS": [
+            'href',
+        ],
+        "WHITELIST_PROTOCOLS": [
+            # 'http',
+            'https',
+        ],
+        "MARKDOWN_EXTENSIONS": [
+            'markdown.extensions.fenced_code',
+            'markdown.extensions.extra',
+        ],
+        "STRIP": False,
+        "LINKIFY_TEXT": {
+            "PARSE_URLS": True,
+
+            # Next key/value-pairs only have effect if "PARSE_URLS" is True
+            "PARSE_EMAIL": False,
+            "CALLBACKS": [],
+            "SKIP_TAGS": [],
+        },
+    }
+}
