@@ -32,6 +32,7 @@ total_users = 0
 
 
 def create_categories(num_categories):
+    # XXX: this is outdated and probably doesn't work
     global total_categories
     categories = []
     for _ in range(num_categories):
