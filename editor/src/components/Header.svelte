@@ -5,6 +5,8 @@
     import { note } from '../stores/note';
     import { isShareDialogOpen } from '../stores/isShareDialogOpen';
 
+    export let backlink = '..';
+
     async function updateTitle(e) {
         note.update($note.uuid, { title: e.target.value });
     }
@@ -13,7 +15,9 @@
 <TopAppBar variant="static">
     <Row>
         <Section>
-            <IconButton class="material-icons" href="/notes/">menu</IconButton>
+            <IconButton class="material-icons" href={backlink}>
+                arrow_backward
+            </IconButton>
             <Title>
                 <input
                     class="title-input"
