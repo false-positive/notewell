@@ -5,6 +5,7 @@ from . import views
 
 app_name = 'notes'
 urlpatterns = [
+    path('test/', views.test, name='category'),
     path('', views.index, name='index'),
     path('my/', views.my, name='my'),
     path('new/', views.NoteCreateView.as_view(), name='create'),

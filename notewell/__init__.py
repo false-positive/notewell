@@ -1,5 +1,0 @@
-"""
-Notewell
-"""
-
-# TODO: write docstring

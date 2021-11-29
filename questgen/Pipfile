@@ -10,6 +10,7 @@ questgen = {git = "https://github.com/ramsrigouthamg/Questgen.ai"}
 spacy = "==2.2.4"
 transformers = "==3.0.2"
 flask = "*"
+urllib3 = ">=1.26.5"
 
 [dev-packages]
 
