@@ -3,23 +3,26 @@ from django.urls import reverse_lazy
 from django.shortcuts import redirect, render, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import Http404
+from django.http import Http404, HttpResponseNotAllowed
 
 from .models import Category, Note
 from .forms import CreateCommentForm
 from .shortcuts import get_accessible_note_or_404, get_notes, search
 from api.shortcuts import generate_jwt_token
 
+# TODO: Rewrite all of these views pretty much
 
 
 def index(request, cat_path=None):
+    # XXX: This code is *insanely* scuffed
+    # should probably be rewritten
     if request.method != "GET":
-        raise "Only GET method is allowed!"
+        return HttpResponseNotAllowed('Only GET method is allowed!')  # no. NEVER do this!
 
     title = 'Public Notes'
 
-    # TODO escape the string
-    # TODO make search bar more advanced and maybe filter from category
+    # TODO: escape the string
+    # TODO: make search bar more advanced and maybe filter from category
     search_query = request.GET.get('search_query', None)
     if search_query:
         return search(request, search_query)
