@@ -176,7 +176,3 @@ def category(request, cat_path):
             'name': 'category',
         }
     })
-
-
-def test(request):
-    return render(request, 'notes/test.html', {})
