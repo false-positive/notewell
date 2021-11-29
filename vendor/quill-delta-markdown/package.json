@@ -1,0 +1,33 @@
+{
+  "name": "@slite/quill-delta-markdown",
+  "version": "0.0.8",
+  "public": true,
+  "description": "To and from Markdown and Quill delta",
+  "main": "index.js",
+  "engines": {
+    "node": ">=6.4.0"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:watch": "mocha \"tests/**/*.spec.js\" --reporter progress --watch",
+    "pretty": "find ./**/*.js | xargs prettier --write --no-semi --print-width 80 --single-quote --trailing-comma es5"
+  },
+  "keywords": [
+    "quill",
+    "delta",
+    "markdown"
+  ],
+  "author": "Slite Team",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "3.8.1",
+    "eslint-plugin-node": "2.1.3",
+    "jest": "^21.0.1",
+    "prettier": "^1.5.2"
+  },
+  "dependencies": {
+    "commonmark": "^0.26.0",
+    "lodash-es": "^4.16.4",
+    "quill-delta": "^3.4.0"
+  }
+}
