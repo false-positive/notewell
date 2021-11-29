@@ -1,0 +1,3 @@
+[submodule "vendor/typewriter"]
+	path = vendor/typewriter
+	url = https://github.com/bvpav/typewriter
