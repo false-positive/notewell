@@ -125,29 +125,6 @@ def read(request, note_id):
 
 
 @login_required
-def question(request, note_id):
-    note: Note = get_accessible_note_or_404(request.user.pk, uuid=note_id)
-
-    # parameters = {"input_text": "I have to save this coupon in case I come back to the store tomorrow.", "type": "MCQ"}
-    parameters = {
-        "input_text": note.content,
-        "type": "MCQ"
-    }
-
-    response = requests.post("http://localhost:5000/generate_question", json=parameters)
-
-    print(response.text)
-
-    notes = Note.objects.filter(author=request.user)
-    categories = Category.objects.all()
-    return render(request, 'notes/note_list.html', {
-        'title': 'Public Notes',
-        'object_list': notes,
-        'categories': categories,
-    })
-
-
-@login_required
 def edit(request, note_id):
     note: Note = get_accessible_note_or_404(request.user.pk, uuid=note_id)
     if not note.can_be_edited_by(request.user):
