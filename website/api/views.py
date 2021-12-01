@@ -289,21 +289,20 @@ def summarize(request):
     return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
-def subject(request):
-    return Response(text_subject(request.data['text']))
-
-
-def quality(request):
-    return Response(text_quality(request.data['text']))
-
-
-def subject(request):
-    return Response(text_subject(request.data['text']))
-
-
-def quality(request):
-    return Response(text_quality(request.data['text']))
-
-
 class UserTokenPairView(TokenObtainPairView):
     serializer_class = AuthUserTokenObtainPairSerializer
+
+
+@api_view(['POST'])
+def genquest(request):
+    return Response(gen_quest(request.data['text']))
+
+
+@api_view(['POST'])
+def subject(request):
+    return Response(text_subject(request.data['text']))
+
+
+@api_view(['POST'])
+def quality(request):
+    return Response(text_quality(request.data['text']))
