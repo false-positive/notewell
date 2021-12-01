@@ -14,10 +14,10 @@ urlpatterns = [
 
     path('register/', views.register, name='register'),
 
-    path('notes/summarize/', views.summarize, name='summarize'),
-    path('notes/questgen/', views.genquest, name='questgen'),
-    path('notes/quality/', views.quality, name='quality'),
-    path('notes/subject/', views.subject, name='subject'),
+    path('ai/summarize/', views.summarize, name='summarize'),
+    path('ai/questgen/', views.genquest, name='questgen'),
+    path('ai/quality/', views.quality, name='quality'),
+    path('ai/subject/', views.subject, name='subject'),
 
     path('notes/', views.NoteList.as_view(), name='note_list'),
     path('notes/<uuid:note_id>/', views.NoteDetail.as_view(), name='note_detail'),
