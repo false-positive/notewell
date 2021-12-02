@@ -304,3 +304,12 @@ export async function searchUsers(username) {
     );
     return data;
 }
+
+export async function summarizeText(text) {
+    const response = await makeRequest(`ai/summarize/`, {
+        method: 'POST',
+        body: JSON.stringify({ text }),
+    });
+    const { result } = await response.json();
+    return result;
+}

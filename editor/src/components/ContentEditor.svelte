@@ -8,10 +8,11 @@
     import { toDelta, fromDelta } from '@slite/quill-delta-markdown';
     import { note } from '../stores/note';
     import { onMount } from 'svelte';
+    import { summarizeText } from '../api';
 
     const editor = new Editor();
 
-    export let saveMs = 1000;
+    export let saveMs = 500;
 
     let shorteningText = false;
     let lastSaveTimeout = null;
@@ -26,7 +27,7 @@
      */
     function save(event) {
         // @ts-ignore
-        if (!event.changedLines.length) return;
+        if (!event?.changedLines.length) return;
 
         // console.log('asd');
         const content = fromDelta(editor.getDelta().ops);
@@ -40,10 +41,18 @@
         lastSaveTimeout = setTimeout(() => save(e), saveMs);
     });
 
-    async function shortenText() {
+    async function summarizeSelection() {
+        if (!editor.doc.selection) return;
+
         shorteningText = true;
-        const text = await new Promise((resolve) => setTimeout(resolve, 1000));
-        editor.insert(text);
+        const selection = editor.doc.getText(editor.doc.selection);
+        const result = await summarizeText(selection);
+        console.log(result);
+
+        const lines = Object.values(result)
+            .map((ps) => ps.map((p) => p.trim()).join('\n'))
+            .join('\n\n');
+        editor.insert(lines);
         shorteningText = false;
     }
 </script>
@@ -74,7 +83,7 @@
             redo
         </IconButton>
 
-        <IconButton class="material-icons" on:click={shortenText}>
+        <IconButton class="material-icons" on:click={summarizeSelection}>
             straighten
         </IconButton>
     </div>
