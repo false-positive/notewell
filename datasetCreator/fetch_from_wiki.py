@@ -5,38 +5,39 @@ from spacy import displacy
 
 #dataset = pd.read_excel("Chemistry.xlsx")
 #dataset_x = dataset.iloc[:, 0].values
-dataset_x = []
+#dataset_x = []
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.environ['TRANSFORMERS_CACHE'] = os.path.join(dir_path, 'model_cache')
+dataset = open("new_dataset.txt", "a", encoding="utf-8")
 
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+#from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+#
+#tokenizer = AutoTokenizer.from_pretrained("sshleifer/distilbart-cnn-12-3")
+#model = AutoModelForSeq2SeqLM.from_pretrained("sshleifer/distilbart-cnn-12-3")
 
-tokenizer = AutoTokenizer.from_pretrained("sshleifer/distilbart-cnn-12-3")
-model = AutoModelForSeq2SeqLM.from_pretrained("sshleifer/distilbart-cnn-12-3")
-
-def sum_text(input_text):
-    inputs = tokenizer(input_text, return_tensors='pt')
-    encoded = model.generate(inputs['input_ids'])
-    result = tokenizer.batch_decode(encoded, skip_special_tokens=True)[0]
-    return result
+#def sum_text(text):
+#    inputs = tokenizer(text, return_tensors='pt')
+#    encoded = model.generate(inputs['input_ids'])
+#    result = tokenizer.batch_decode(encoded, skip_special_tokens=True)[0]
+#    return result
 
 def extract_keywords(nlp, sequence, special_tags: list = None):
     """ Takes a Spacy core language model,
-    string sequence of text and optional
+    text sequence of text and optional
     list of special tags as arguments.
 
-    If any of the words in the string are
+    If any of the words in the text are
     in the list of special tags they are immediately
     added to the result.
 
     Arguments:
-        sequence {str} -- string sequence to have keywords extracted from
+        sequence {str} -- text sequence to have keywords extracted from
 
     Keyword Arguments:
         tags {list} --  list of tags to be automatically added(words to be automatically added as a keyword) (default: {None})
 
     Returns:
-        {set} -- set of the unique keywords extracted from a string
+        {set} -- set of the unique keywords extracted from a text
     """
     result = []
 
@@ -75,38 +76,38 @@ def extract_keywords(nlp, sequence, special_tags: list = None):
     return list(set(result))
 
 
-def gen_keywords_excel():
-    # dataset = pd.read_excel("Chemistry.xlsx")
-    # dataset_x = dataset.iloc[:, 0].values
-    dataset_x = []
-    nlp = spacy.load("en_core_web_sm", exclude=['tagger', 'parser', 'attribute_ruler', 'lemmatizer'])
-    nlp.add_pipe('sentencizer')
-    keyword_nlp = spacy.load("en_core_web_sm", exclude=['lemmatizer', 'ner'])
-    i = 0
-
-    for article in dataset_x:
-        if i >= 4:
-            break
-        if type(article) != float:
-            if "Key concepts" in article:
-                continue
-            if len(article.replace(' ', '')) > 1024:
-                article_doc = nlp(article)
-                tempSents = []
-                for sent in article_doc.sents:
-                    tempSents.append(sent.text)
-                k = 0
-                while len(article) > 1024:
-                    article = article.replace(tempSents[k], '')
-                    k += 1
-            i += 1
-            keywords = extract_keywords(nlp=keyword_nlp, sequence=sum_text(article))
-            keyword_text = ' '.join(keywords)
-            keyword_doc = nlp(keyword_text)
-            for ent in keyword_doc.ents:
-                keyword_text = keyword_text.replace(ent.text, '')
-            #print(keywords)
-            print('{"text": "' + keyword_text + '", "label": "chemistry", "metadata": []}')
+#def gen_keywords_excel():
+#    # dataset = pd.read_excel("Chemistry.xlsx")
+#    # dataset_x = dataset.iloc[:, 0].values
+#    dataset_x = []
+#    nlp = spacy.load("en_core_web_sm", exclude=['tagger', 'parser', 'attribute_ruler', 'lemmatizer'])
+#    nlp.add_pipe('sentencizer')
+#    keyword_nlp = spacy.load("en_core_web_sm", exclude=['lemmatizer', 'ner'])
+#    i = 0
+#
+#    for article in dataset_x:
+#        if i >= 4:
+#            break
+#        if type(article) != float:
+#            if "Key concepts" in article:
+#                continue
+#            if len(article.replace(' ', '')) > 1024:
+#                article_doc = nlp(article)
+#                tempSents = []
+#                for sent in article_doc.sents:
+#                    tempSents.append(sent.text)
+#                k = 0
+#                while len(article) > 1024:
+#                    article = article.replace(tempSents[k], '')
+#                    k += 1
+#            i += 1
+#            keywords = extract_keywords(nlp=keyword_nlp, sequence=sum_text(article))
+#            keyword_text = ' '.join(keywords)
+#            keyword_doc = nlp(keyword_text)
+#            for ent in keyword_doc.ents:
+#                keyword_text = keyword_text.replace(ent.text, '')
+#            #print(keywords)
+#            print('{"text": "' + keyword_text + '", "label": "chemistry", "metadata": []}')
 
 
 def gen_keywords_wiki(topic):
@@ -114,19 +115,25 @@ def gen_keywords_wiki(topic):
         """Yield successive n-sized chunks from lst."""
         for i in range(0, len(lst), n):
             yield lst[i:i + n]
-    titles = open("wikipedia_input.txt")
+    titles = open("wikipedia_input.txt", encoding="utf-8")
     i = 0
     keyword_nlp = spacy.load("en_core_web_sm", exclude=['lemmatizer', 'ner'])
     for title in titles:
+        print(title)
+        if '\n' in title:
+            title = title.replace('\n', '')
         i += 1
         if i % 100 != 0:
             time.sleep(5)
-            keywords = extract_keywords(nlp=keyword_nlp, sequence=wikipedia.page(title).summary)
+            keywords = extract_keywords(nlp=keyword_nlp, sequence=wikipedia.summary(title, auto_suggest=False, redirect=True))
         sub_lists = list(chunks(keywords, 12))
         for sub_list in sub_lists:
             if len(sub_list) < 12:
                 continue
-            else: print('{"text": "' + " ".join(set(sub_list)) + '", "label":' + topic + '", metadata": []}')
-
+            else:
+                result = '{"text": "' + " ".join(set(sub_list)) + '", "label": "' + topic + '", metadata": []}'
+                print(result)
+                dataset.write(result + '\n')
+    dataset.close()
 
 gen_keywords_wiki(input("input topic: "))
