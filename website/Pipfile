@@ -6,10 +6,14 @@ name = "pypi"
 [packages]
 django = "*"
 django-debug-toolbar = "*"
-djangorestframework = "*"
-django-mptt = "*"
-djangorestframework-simplejwt = "*"
 django-markdownify = "*"
+django-mptt = "*"
+djangorestframework = "*"
+djangorestframework-simplejwt = "*"
+torch = "*"
+torchaudio = "*"
+torchvision = "*"
+transformers = "*"
 
 [dev-packages]
 pytest = "*"
