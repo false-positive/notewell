@@ -20,7 +20,7 @@ import debug_toolbar
 
 urlpatterns = [
     path('', RedirectView.as_view(url=reverse_lazy('notes:index')), name='index'),
-    path('accounts/', include('accounts.urls')),
+    path('', include('accounts.urls')),
     path('notes/', include('notes.urls')),
     path('api/', include('api.urls')),
     path('__debug__/', include(debug_toolbar.urls)),
