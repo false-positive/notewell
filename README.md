@@ -96,7 +96,7 @@ $ npm install && npm run dev
 
 > Note: Don't access <http://localhost:3000>. The Django server on :8000 automatically connects to it
 
-5. Head on over to <http://localhost:8000/accounts/login/> and login as `admin` with the password you set earlier.
+5. Head on over to <http://localhost:8000/login/> and login as `admin` with the password you set earlier.
 
 ## License
 
