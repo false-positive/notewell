@@ -1,4 +1,4 @@
-import os
+import os, requests
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.environ['TRANSFORMERS_CACHE'] = os.path.join(dir_path, 'model_cache')
 
@@ -12,3 +12,7 @@ def sum_text(input_text):
     encoded = model.generate(inputs['input_ids'])
     result = tokenizer.batch_decode(encoded, skip_special_tokens=True)[0]
     return {'result': result}
+
+def gen_quest(input_text):
+    r = requests.post('http://localhost:5000/generate_question', json={'input_text': input_text})
+    return {'result': r.json()}
