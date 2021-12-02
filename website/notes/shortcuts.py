@@ -60,7 +60,8 @@ def get_notes(request, category=None, user=None):
     else:
         notes = Note.objects \
             .select_related('author') \
-            .filter_accessible_notes_by(user_pk=request.user.pk)
+            .filter(status='public') \
+            # .filter_accessible_notes_by(user_pk=request.user.pk)
 
     # TODO maybe find a better way to return the values
 
