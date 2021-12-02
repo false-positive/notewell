@@ -46,13 +46,32 @@
 <!-- TODO: Add link to user -->
 
 {% if user == note.author %}
-<div class="edit-btn">
-    <a href="{% url 'notes:edit' note.uuid %}">
-    <button class="mdc-icon-button material-icons">
-    <div class="mdc-icon-button__ripple"></div>
-    edit
-    </button>
-    </a>
+<div class="btns">
+    <div class="btn">
+        <a href="{% url 'notes:edit' note.uuid %}">
+            <button class="mdc-icon-button material-icons">
+            <div class="mdc-icon-button__ripple"></div>
+            edit
+            </button>
+        </a>
+    </div>
+
+    <div class="btn">
+        <a href="{% url 'notes:edit' note.uuid %}">
+            <button class="mdc-icon-button material-icons">
+            <div class="mdc-icon-button__ripple"></div>
+            share
+            </button>
+        </a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'notes:delete' note.uuid %}">
+            <button class="mdc-icon-button material-icons">
+            <div class="mdc-icon-button__ripple"></div>
+            delete
+            </button>
+        </a>
+    </div>
 </div>
 {% endif %}
 

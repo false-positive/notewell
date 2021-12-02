@@ -213,19 +213,22 @@ body {
     margin: 10px auto;
 }
 
-.edit-btn {
-    display: block;
+.btns {
     width: 50%;
-    border-radius: 20px;
     margin: 0 auto;
 }
 
-.edit-btn a {
-    color: inherit;
-    transition: color 0.3s;
+.btns .btn {
+    display: inline;
 }
 
-.edit-btn a:hover {
+.btns .btn a {
+    color: inherit;
+    transition: color 0.3s;
+    text-decoration: none;
+}
+
+.btns .btn a:hover {
     color: #3c89d2;
 }
 
