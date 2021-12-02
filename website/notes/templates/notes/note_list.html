@@ -44,7 +44,7 @@
         <a href="{% url 'notes:create' %}" class="create-note-btn">Create a new note</a>
     {% endif %}
 
-
+    {% if object_list %}
     <form method="GET" action="{% url 'notes:index' %}" class="search-form">
         <label class="search-form__search-box  mdc-text-field mdc-text-field--outlined mdc-text-field--with-trailing-icon">
             <span class="mdc-notched-outline">
@@ -65,7 +65,6 @@
         </label>
     </form>
 
-    {% if object_list %}
     <section class="section-notes">
         {% for object in object_list %} 
             {% include 'notes/components/note.html' with note=object %}
@@ -81,6 +80,8 @@
         <a href=".?p={{ page.count }}"><span class="material-icons">skip_next</span></a>
     </div>
     {% endif %}
+    {% else %}
+        <h1 class="title empty">There are no notes here. <a href="{% url 'notes:create' %}">Create one</a></h2>
     {% endif %}
 
     <script src="{% static 'notes/js/search_bar.js' %}"></script>

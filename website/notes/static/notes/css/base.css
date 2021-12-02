@@ -329,6 +329,15 @@ body {
 
 }
 
+.empty {
+    font-size: 3rem; 
+    font-weight: 400;
+}
+
+.empty a {
+    color: var(--link-bg);
+}
+
 @media screen and (max-width: 680px) {
     .search-form__search-box {
         width: 90%;
