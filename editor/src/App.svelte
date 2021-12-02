@@ -17,7 +17,6 @@
             note: noteData,
             open_dialog,
         } = initialData;
-        console.log(initialData);
         note.setInitial(noteData);
         setTokenPair(access, refresh);
         isShareDialogOpen.set(open_dialog === 'share');

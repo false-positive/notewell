@@ -51,7 +51,6 @@
     }
 
     function handleAdd(e) {
-        console.log(e.detail);
         permissions = [
             ...permissions,
             { user: e.detail.username, perm_level: 'R' },

@@ -3,7 +3,6 @@
     import { Delta, Editor } from 'typewriter-editor';
     import Dialog, { Title, Content } from '@smui/dialog';
     import CircularProgress from '@smui/circular-progress';
-    import Select, { Option } from '@smui/select';
     import Root from 'typewriter-editor/lib/Root.svelte';
     import Toolbar from 'typewriter-editor/lib/Toolbar.svelte';
     import { toDelta, fromDelta } from '@slite/quill-delta-markdown';
@@ -30,7 +29,6 @@
         // @ts-ignore
         if (!event?.changedLines?.length) return;
 
-        // console.log('asd');
         const content = fromDelta(editor.getDelta().ops);
         note.update($note.uuid, { content });
     }
@@ -48,7 +46,6 @@
         shorteningText = true;
         const selection = editor.doc.getText(editor.doc.selection);
         const result = await summarizeText(selection);
-        console.log(result);
 
         const lines = Object.values(result)
             .map((ps) => ps.map((p) => p.trim()).join('\n'))
