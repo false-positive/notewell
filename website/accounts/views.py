@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.contrib.auth import logout as do_logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
 
@@ -32,7 +33,7 @@ def profile(request, username):
         next_page = notes_res['page_count']
 
     return render(request, 'accounts/profile.html', {
-        'title': f"{user.username}'s Public Notes",
+        'title': f"{user.username}'s Public Notes",  # XXX: maybe XSS here, idk?
         'object_list': notes,
         'page': {
             'current': current_page,
@@ -62,3 +63,8 @@ def register(request):
         form = UserRegisterForm()
 
     return render(request, 'accounts/register.html', {'form': form})
+
+
+def logout(request):
+    do_logout(request)
+    return redirect('accounts:login')
