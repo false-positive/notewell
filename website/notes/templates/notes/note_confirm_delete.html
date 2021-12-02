@@ -3,8 +3,10 @@
 {% block content %}
     <form method="POST">
       {% csrf_token %}
-      <p>Are you sure you want to delete "{{ object }}"?</p>
-      <input type="submit" value="Yes">
-      <a href="{% url 'notes:index' %}">No</a>
+      <p class="title">Are you sure you want to delete "{{ object }}"?</p>
+      <div class="delete-btns">
+        <input class="delete-note-btn btn-success" type="submit" value="Delete">
+        <a class="delete-note-btn btn-fail" href="{% url 'notes:index' %}">Cancel</a>
+      </div>
     </form>
 {% endblock %}

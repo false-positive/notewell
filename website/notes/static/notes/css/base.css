@@ -22,6 +22,7 @@ html {
     --blue-2: #466a8c;
     --blue-3: #91c9fa;
     --blue-4: #658496;
+    --red-0: #b00020;
 }
 
 [theme="light"] {
@@ -293,9 +294,45 @@ body {
     background-color: #085a8d;
 }
 
+.delete-btns {
+    display: flex;
+    width: 50%; 
+    margin: 0 auto;
+}
+
+.delete-note-btn {
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 3rem;
+    transition: 0.3s background-color;
+    border: none;
+    border-radius: 2rem;
+    margin: 20px auto;
+    cursor: pointer;
+    text-align: center;
+    width: 15rem;
+    text-decoration: none;
+}
+
+.btn-success {
+    background-color: var(--red-0);
+
+}
+
+.btn-fail {
+    background-color: #317dc5;
+
+}
+
 @media screen and (max-width: 680px) {
     .search-form__search-box {
         width: 90%;
+    }
+    .delete-btns {
+        flex-direction: column;
+    }
+    .delete-btns .delete-note-btn {
+        margin-bottom: 5px;
     }
 }
 
@@ -361,6 +398,8 @@ body {
     .nav.active .nav__list {
         display: flex;
     }
+    
+
 }
 
 .footer,
