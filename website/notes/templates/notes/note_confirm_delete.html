@@ -6,7 +6,7 @@
       <p class="title">Are you sure you want to delete "{{ object }}"?</p>
       <div class="delete-btns">
         <input class="delete-note-btn btn-success" type="submit" value="Delete">
-        <a class="delete-note-btn btn-fail" href="{% url 'notes:index' %}">Cancel</a>
+        <a class="delete-note-btn btn-fail" href="{% url 'notes:read' note_id=object.uuid %}">Cancel</a>
       </div>
     </form>
 {% endblock %}
