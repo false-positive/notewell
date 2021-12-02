@@ -94,7 +94,6 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
 
 
 def read(request, note_id):
-    
     note: Note = get_accessible_note_or_404(request.user.pk, uuid=note_id)
 
     create_comment_form = CreateCommentForm()
@@ -108,7 +107,6 @@ def read(request, note_id):
             
             instance.note = note
             instance.author = request.user
-
 
             instance.save()
 
