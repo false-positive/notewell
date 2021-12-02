@@ -135,6 +135,7 @@ def edit(request, note_id):
         'title': note.title,
         'note': note,
         'token_pair': token_pair,
+        'open_dialog': request.GET.get('open_dialog', ''),
     })
 
 

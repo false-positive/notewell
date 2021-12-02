@@ -39,7 +39,7 @@
         <script type="module" src="http://localhost:3000/@vite/client"></script>
     {% endif %}
     <script type="application/json" id="nw-editor-initial-data">
-        {% render_initial_editor_data note=note token_pair=token_pair %}
+        {% render_initial_editor_data note=note token_pair=token_pair open_dialog=open_dialog %}
     </script>
 {% endblock script_head %}
 
