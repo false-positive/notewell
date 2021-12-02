@@ -9,13 +9,9 @@
 
 {% block nav_list %}
     <li class="nav__item"><a class="nav__link" href="{% url 'notes:index' %}">All</a></li>
-<<<<<<< HEAD
     {% if user.is_authenticated %}
-    <li class="nav__item"><a class="nav__link" href="{% url 'notes:my' %}">My</a></li>
+        <li class="nav__item"><a class="nav__link" href="{% url 'notes:my' %}">My</a></li>
     {% endif %}
-=======
-    <li class="nav__item"><a class="nav__link" href="{% url 'notes:my' %}">My</a></li>
->>>>>>> a2b1daa (Merge remote-tracking branch 'origin/development' into ai-dev)
     <li class="nav__item">
         <a class="nav__link" href="#">
             Subjects
@@ -31,11 +27,7 @@
                         {% endif %}
                     </a>
                     {% if not node.is_leaf_node %}
-<<<<<<< HEAD
                         <ul class="nav__sub-menu">
-=======
-                        <ul class="sub-menu">
->>>>>>> a2b1daa (Merge remote-tracking branch 'origin/development' into ai-dev)
                             {{ children }}
                         </ul>
                     {% endif %}
@@ -43,20 +35,10 @@
             {% endrecursetree %}
         </ul>
     </li>
-<<<<<<< HEAD
-=======
-    <li>
-        <form method="GET" action="{% url 'notes:index' %}">
-            <input type="search" placehoder="Search Notes" aria-label="Search" name="search_query">
-            <button>Search</button>
-        </form>
-    </li>
->>>>>>> a2b1daa (Merge remote-tracking branch 'origin/development' into ai-dev)
 {% endblock nav_list %}
 
 {% block content %}
     <h1 class="title">{{ title }}</h1>
-<<<<<<< HEAD
 
     {% if page.name == "my" %}
         <a href="{% url 'notes:create' %}" class="create-note-btn">Create a new note</a>
@@ -82,14 +64,6 @@
             </button>
         </label>
     </form>
-=======
-    <h1 class="title">
-        {% for page in page_count_range %}
-        <a href=".?p={{ page  }}">{{ page }}</a>
-        {% endfor %}
-    </h1>
-
->>>>>>> a2b1daa (Merge remote-tracking branch 'origin/development' into ai-dev)
 
     <section class="section-notes">
         {% for object in object_list %} 
@@ -97,7 +71,6 @@
         {% endfor %}
     </section>
 
-<<<<<<< HEAD
     {% if page.count > 1 %}
     <div class="nav-pages">
         <h3 class="mdc-typography--subtitle1 pagination-text">Page {{ page.current }} of {{ page.count }}</h3>
@@ -112,11 +85,4 @@
     {% endif %}
 
     <script src="{% static 'notes/js/search_bar.js' %}"></script>
-=======
-    <h1 class="title">
-        {% for page in page_count_range %}
-        <a href=".?p={{ page }}">{{ page }}</a>
-        {% endfor %}
-    </h1>
->>>>>>> a2b1daa (Merge remote-tracking branch 'origin/development' into ai-dev)
 {% endblock content %}
