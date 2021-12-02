@@ -3,6 +3,7 @@
     import { Delta, Editor } from 'typewriter-editor';
     import Dialog, { Title, Content } from '@smui/dialog';
     import CircularProgress from '@smui/circular-progress';
+    import Select, { Option } from '@smui/select';
     import Root from 'typewriter-editor/lib/Root.svelte';
     import Toolbar from 'typewriter-editor/lib/Toolbar.svelte';
     import { toDelta, fromDelta } from '@slite/quill-delta-markdown';
@@ -27,7 +28,7 @@
      */
     function save(event) {
         // @ts-ignore
-        if (!event?.changedLines.length) return;
+        if (!event?.changedLines?.length) return;
 
         // console.log('asd');
         const content = fromDelta(editor.getDelta().ops);
@@ -57,35 +58,53 @@
     }
 </script>
 
-<Toolbar {editor} let:commands>
+<Toolbar {editor} let:commands let:active>
     <div class="toolbar">
-        <IconButton class="material-icons" on:click={commands.header1}>
-            title
-        </IconButton>
-
-        <IconButton class="material-icons" on:click={commands.header2}>
-            title
-        </IconButton>
-
         <IconButton class="material-icons" on:click={commands.bold}>
             format_bold
         </IconButton>
-
         <IconButton class="material-icons" on:click={commands.italic}>
             format_italic
         </IconButton>
-
-        <IconButton class="material-icons" on:click={commands.undo}>
-            undo
+        <IconButton class="material-icons" on:click={commands.paragraph}>
+            format_size
         </IconButton>
 
-        <IconButton class="material-icons" on:click={commands.redo}>
-            redo
-        </IconButton>
+        <div class="toolbar-section">
+            <IconButton class="material-icons" on:click={commands.header1}>
+                looks_one
+            </IconButton>
+            <IconButton class="material-icons" on:click={commands.header2}>
+                looks_two
+            </IconButton>
+            <IconButton class="material-icons" on:click={commands.header3}>
+                looks_3
+            </IconButton>
+            <IconButton class="material-icons" on:click={commands.orderedList}>
+                format_list_numbered
+            </IconButton>
+            <IconButton class="material-icons" on:click={commands.bulletList}>
+                format_list_bulleted
+            </IconButton>
+            <IconButton class="material-icons" on:click={commands.blockquote}>
+                format_quote
+            </IconButton>
+            <IconButton
+                class="material-icons"
+                on:click={commands['code-block']}
+            >
+                code
+            </IconButton>
+        </div>
 
-        <IconButton class="material-icons" on:click={summarizeSelection}>
-            straighten
-        </IconButton>
+        <div class="toolbar-section">
+            <IconButton class="material-icons" on:click={commands.undo}>
+                undo
+            </IconButton>
+            <IconButton class="material-icons" on:click={commands.redo}>
+                redo
+            </IconButton>
+        </div>
     </div>
 </Toolbar>
 
@@ -113,13 +132,16 @@
 <style>
     .toolbar {
         position: sticky;
+        display: flex;
+        align-items: center;
+        padding: 0.3em 2em;
     }
     .asd {
         background: #e6eff3;
         padding: 0.3em;
         overflow-x: wrap;
         overflow-y: scroll;
-        height: 48.5em;
+        height: 66.5em;
     }
 
     .asd__sheet {
@@ -129,6 +151,13 @@
         padding: 1em 3em;
         margin: 1.5em auto 1.5em auto;
         font-family: Roboto;
+        font-size: 1.5em;
+    }
+
+    .toolbar-section {
+        padding-left: 0.75em;
+        margin-left: 0.75em;
+        border-left: 0.5px solid hsl(198, 35%, 76%);
     }
 
     :global(.focus) {
