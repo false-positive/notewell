@@ -154,7 +154,6 @@
         padding: 1em 3em;
         margin: 1.5em auto 1.5em auto;
         font-family: Roboto;
-        font-size: 1.5em;
     }
 
     .toolbar-section {
