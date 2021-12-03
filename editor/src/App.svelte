@@ -11,6 +11,8 @@
 
     export let initialData;
 
+    let hasQuizOpen = false;
+
     onMount(() => {
         const {
             definitely_not_token_pair: { access, refresh },
@@ -34,10 +36,14 @@
 {#if !$note}
     <h1>hehe i should be a loading spinner</h1>
 {:else}
-    <Header />
+    <Header on:quiz={() => (hasQuizOpen = !hasQuizOpen)} />
 
     <main>
-        <ContentEditor />
+        {#if !hasQuizOpen}
+            <ContentEditor />
+        {:else}
+            ...
+        {/if}
     </main>
 
     <MessageList />
