@@ -11,5 +11,6 @@ urlpatterns = [
     path('<uuid:note_id>/', views.read, name='read'),
     path('<uuid:note_id>/edit/', views.edit, name='edit'),
     path('<uuid:note_id>/delete/', views.NoteDeleteView.as_view(), name='delete'),
+    path('<uuid:note_id>/publish/', views.publish, name='publish'),
     path('<path:cat_path>/', views.index, name='category'),
 ]

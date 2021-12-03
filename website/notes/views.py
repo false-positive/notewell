@@ -139,6 +139,16 @@ def edit(request, note_id):
     })
 
 
+
+@login_required
+def publish(request, note_id):
+    note: Note = get_accessible_note_or_404(request.user.pk, uuid=note_id)
+    note.status = Note.PUBLIC
+    note.save()
+    read_url = reverse('notes:read', kwargs={'note_id': note_id})
+    return redirect(read_url)
+
+
 class NoteDeleteView(generic.DeleteView):
     model = Note
     success_url = reverse_lazy('notes:index')

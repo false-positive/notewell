@@ -64,6 +64,16 @@
                 </button>
             </a>
         </div>
+
+        <div class="btn">
+            <a href="{% url 'notes:publish' note.uuid %}">
+                <button class="mdc-icon-button material-icons">
+                <div class="mdc-icon-button__ripple"></div>
+                    publish
+                </button>
+            </a>
+        </div>
+
         <div class="btn">
             <a href="{% url 'notes:delete' note.uuid %}">
                 <button class="mdc-icon-button material-icons">
