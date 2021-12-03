@@ -90,9 +90,6 @@ ipython_config.py
 #   having no cross-platform support, pipenv may install dependencies that don't work, or not
 #   install all needed dependencies.
 #Pipfile.lock
-#
-# Questgen doesn't do well with Pipfile.lock
-questgen/Pipfile.lock
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow
 __pypackages__/
@@ -138,7 +135,7 @@ questgen/s2v_reddit_2015_md.tar.gz
 # JS library pain
 node_modules
 
-# ml models
+# ML models
 model_cache/
 /moderation_models/text_quality/
 /moderation_models/subject_classification/
