@@ -94,6 +94,12 @@
             </IconButton>
         </div>
 
+        <div>
+            <IconButton class="material-icons" on:click={summarizeSelection}>
+                summarize
+            </IconButton>
+        </div>
+
         <div class="toolbar-section">
             <IconButton class="material-icons" on:click={commands.undo}>
                 undo

@@ -282,11 +282,10 @@ def register(request):
 def summarize(request):
     if len(request.data['text']) < 50:
         return Response(
-            {'data': serializer.data, 'detail': 'User registered successfully'},
-            status=status.HTTP_201_CREATED,
+            {'message': 'Text too short for proper summarization'},
+            status=status.HTTP_406_NOT_ACCEPTABLE
         )
-
-    return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    return Response(sum_text(request.data['text']))
 
 
 class UserTokenPairView(TokenObtainPairView):
