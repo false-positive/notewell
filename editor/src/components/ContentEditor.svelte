@@ -134,6 +134,7 @@
 
 <style>
     .toolbar {
+        background: white;
         position: sticky;
         display: flex;
         align-items: center;
