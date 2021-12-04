@@ -8,6 +8,7 @@
     import MessageList from './components/MessageList.svelte';
     import { note } from './stores/note';
     import { isShareDialogOpen } from './stores/isShareDialogOpen';
+    import QuizMegacomponent from './components/QuizMegacomponent.svelte';
 
     export let initialData;
 
@@ -42,7 +43,7 @@
         {#if !hasQuizOpen}
             <ContentEditor />
         {:else}
-            ...
+            <QuizMegacomponent />
         {/if}
     </main>
 
