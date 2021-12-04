@@ -10,8 +10,8 @@ multi_qgen = nlp.QGen()
 @app.route('/generate_question', methods=('POST',))
 def generate_question():
     # input_ = request.json
-    question_type = request.json.get('type').lower()
-    input_text = request.json.get('input_text').lower()
+    question_type = request.json.get('type', '').lower()
+    input_text = request.json.get('input_text', '').lower()
 
     output = None
 
