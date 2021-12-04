@@ -9,15 +9,18 @@ multi_qgen = nlp.QGen()
 
 @app.route('/generate_question', methods=('POST',))
 def generate_question():
-    input_ = request.json
+    # input_ = request.json
+    question_type = request.json.get('type').lower()
+    input_text = request.json.get('input_text').lower()
+
     output = None
 
-    if input_['type'] == 'MCQ':
-        output = multi_qgen.predict_mcq({'input_text': input_['input_text']})
+    if question_type == 'mcq':
+        output = multi_qgen.predict_mcq({'input_text': input_text})
         output = output['questions']
-    elif input_['type'] == 'Bool':
-        output = bool_qgen.predict_boolq({'input_text': input_['input_text']})
-        output['Questions'] = output['Boolean Questions']
+    elif question_type == 'bool':
+        output = bool_qgen.predict_boolq({'input_text': input_text})
+        output['questions'] = output['Boolean Questions']
 
     if not output:
         return {
