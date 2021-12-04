@@ -294,7 +294,7 @@ class UserTokenPairView(TokenObtainPairView):
 
 @api_view(['POST'])
 def genquest(request):
-    return Response(gen_quest(request.data['text']))
+    return Response(gen_quest(request.data['text'], request.data['type']))
 
 
 @api_view(['POST'])
