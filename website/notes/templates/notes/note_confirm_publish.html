@@ -1,0 +1,18 @@
+{% extends 'notes/base.html' %}
+
+{% block content %}
+    <form method="POST">
+      {% csrf_token %}
+      <p class="title">Are you sure you want to publish "{{ object }}"?</p>
+      <p class="title-2">This will make "{{ object }}" visible for everyone.</p>
+      {% if not user.is_staff %}
+        <p class="title-2">
+            Keep in mind that this note will not be shown in the homepage until an administrator has approved it!
+        </p>
+      {% endif %}
+      <div class="delete-btns">
+        <input class="delete-note-btn btn-success" type="submit" value="Make Public">
+        <a class="delete-note-btn btn-fail" href="{% url 'notes:read' note_id=object.uuid %}">Cancel</a>
+      </div>
+    </form>
+{% endblock %}

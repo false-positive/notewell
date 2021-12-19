@@ -312,18 +312,15 @@ body {
     margin: 20px auto;
     cursor: pointer;
     text-align: center;
-    width: 15rem;
     text-decoration: none;
 }
 
 .btn-success {
     background-color: var(--red-0);
-
 }
 
 .btn-fail {
     background-color: #317dc5;
-
 }
 
 .empty {

@@ -143,10 +143,14 @@ def edit(request, note_id):
 @login_required
 def publish(request, note_id):
     note: Note = get_accessible_note_or_404(request.user.pk, uuid=note_id)
-    note.status = Note.PUBLIC
-    note.save()
-    read_url = reverse('notes:read', kwargs={'note_id': note_id})
-    return redirect(read_url)
+    if request.method == 'POST':
+        note.status = Note.PUBLIC
+        if request.user.is_staff:
+            note.verified = True
+        note.save()
+        read_url = reverse('notes:read', kwargs={'note_id': note_id})
+        return redirect(read_url)
+    return render(request, 'notes/note_confirm_publish.html', {'object': note})
 
 
 class NoteDeleteView(generic.DeleteView):
