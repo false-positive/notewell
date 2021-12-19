@@ -18,6 +18,9 @@ from django.urls import path, include, reverse_lazy
 from django.views.generic import RedirectView
 import debug_toolbar
 
+admin.site.site_header = 'Notewell Administration'
+admin.site.index_title = 'Admin'
+
 urlpatterns = [
     path('', RedirectView.as_view(url=reverse_lazy('notes:index')), name='index'),
     path('', include('accounts.urls')),

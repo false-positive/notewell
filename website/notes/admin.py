@@ -76,6 +76,7 @@ class SharedItemInline(admin.TabularInline):
 class NoteAdmin(admin.ModelAdmin):
     inlines = [CommentInline, SharedItemInline]
     list_display = ['title', 'author', 'uuid_link', 'creation_date', 'status', 'verified']
+    list_filter = ['status', 'verified']
     autocomplete_fields = ['author']
     actions = ['verify', 'unverify', 'share_with_admin']
     search_fields = ['title__icontains']
