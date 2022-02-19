@@ -1,6 +1,7 @@
 import { Button } from '@mui/material';
 import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import ShareDialog from './components/ShareDialog';
 
 const queryClient = new QueryClient();
@@ -18,6 +19,7 @@ const App = () => {
                 open={open}
                 onClose={() => setOpen(false)}
             />
+            <ReactQueryDevtools />
         </QueryClientProvider>
     );
 };
