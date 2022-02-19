@@ -6,7 +6,6 @@ type TokenPair = { access: string; refresh: string };
 
 type InitialData = {
     tokenPair: TokenPair;
-    fetchedAt: Date;
     note?: any;
     openDialog: string;
 };
@@ -19,7 +18,6 @@ type APIInitialData = {
 
 const fromAPIInitialData = (apiData: APIInitialData): InitialData => ({
     tokenPair: apiData.definitely_not_token_pair,
-    fetchedAt: new Date(),
     note: apiData.note,
     openDialog: apiData.open_dialog || '',
 });
