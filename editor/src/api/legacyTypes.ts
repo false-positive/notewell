@@ -15,19 +15,4 @@ type NoteData = {
     categories: string[];
 };
 
-/**
- * a.k.a. SharedItem in the Django source ;-;
- */
-type Permission = {
-    user: string;
-    perm_level: 'R' | 'W';
-};
-
-type User = {
-    username: string;
-    email: string;
-    first_name: string;
-    last_name: string;
-};
-
 export {};
