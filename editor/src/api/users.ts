@@ -7,6 +7,7 @@ type APIUser = {
     last_name: string;
 };
 
+// TODO: return actual users, so we can store them in react query
 export const searchUsers = async (username: string) => {
     const encUsername = encodeURI(username);
     const response = await makeRequest(
