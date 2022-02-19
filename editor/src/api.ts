@@ -10,33 +10,22 @@ const API_URL = '/api';
  * Must be set before any calls to the API are made
  * Must get refreshed withe the refresh token
  *
- * @type {string}
  */
-let accessToken = null;
+let accessToken: string = null;
 
 /**
  * The API refresh token of the current interaction.
  * Must be set before refresh calls to the API are made
  *
- * @type {string}
  */
-let refreshToken = null;
+let refreshToken: string = null;
 
-/**
- * @param {string} accessValue
- * @param {string} refreshValue
- */
-export function setTokenPair(accessValue, refreshValue) {
+export function setTokenPair(accessValue: string, refreshValue: string) {
     accessToken = accessValue;
     refreshToken = refreshValue;
 }
 
-/**
- * @param {string} url
- * @param {RequestInit} opts
- * @returns {Promise<Response>}
- */
-function makeRequest(url, opts) {
+function makeRequest(url: string, opts: RequestInit): Promise<Response> {
     return fetch(`${API_URL}/${url}`, {
         ...opts,
         headers: {
@@ -53,9 +42,8 @@ function makeRequest(url, opts) {
  * and sending requests with outdated, expired access tokens
  * while the new access token is being generated.
  *
- * @type {Promise<Response>}
  */
-let refreshTokenPairResponse = null;
+let refreshTokenPairResponse: Promise<Response> = null;
 
 async function refreshTokenPair() {
     refreshTokenPairResponse = makeRequest(`token/refresh/`, {
@@ -75,12 +63,10 @@ async function refreshTokenPair() {
     return false;
 }
 
-/**
- * @param {string} url
- * @param {RequestInit} opts
- * @returns {Promise<Response>}
- */
-async function makeAuthenticatedRequest(url, opts) {
+async function makeAuthenticatedRequest(
+    url: string,
+    opts: RequestInit
+): Promise<Response> {
     if (refreshTokenPairResponse) {
         await refreshTokenPairResponse;
     }
@@ -107,26 +93,17 @@ async function makeAuthenticatedRequest(url, opts) {
 /**
  * Map of all handlers registered to API events
  *
- * @type {Map<string, Set<Function>>}
  */
-const apiEventHandlers = new Map();
+const apiEventHandlers: Map<string, Set<Function>> = new Map();
 
-/**
- * @param {string} event
- * @param {Function} handler
- */
-export function apiOn(event, handler) {
+export function apiOn(event: string, handler: Function) {
     if (!apiEventHandlers.has(event)) {
         apiEventHandlers.set(event, new Set());
     }
     apiEventHandlers.get(event).add(handler);
 }
 
-/**
- * @param {string} event
- * @param {Function} handler
- */
-export function apiOff(event, handler) {
+export function apiOff(event: string, handler: Function) {
     if (!apiEventHandlers.get(event)?.has(handler)) return;
 
     apiEventHandlers.get(event).delete(handler);
@@ -135,11 +112,7 @@ export function apiOff(event, handler) {
     }
 }
 
-/**
- * @param {string} event
- * @param {any} details
- */
-function apiDispatch(event, details) {
+function apiDispatch(event: string, details: any) {
     if (!apiEventHandlers.has(event)) return;
 
     for (const handler of apiEventHandlers.get(event)) {
@@ -147,15 +120,11 @@ function apiDispatch(event, details) {
     }
 }
 
-/**
- * Perform a request and return the `data` field.
- *
- * By default, it is authenticated, unless the param is set to false
- * @param {string} url
- * @param {boolean} [authenticated=true]
- * @param {boolean} [isTopLevel=false] - whether the data is inside a data field of the json response, or it is just the top level. Temporary hack
- */
-async function getData(url, authenticated = true, isTopLevel = false) {
+async function getData(
+    url: string,
+    authenticated: boolean = true,
+    isTopLevel: boolean = false
+) {
     const func = authenticated ? makeAuthenticatedRequest : makeRequest;
     try {
         const response = await func(url, {
@@ -171,18 +140,12 @@ async function getData(url, authenticated = true, isTopLevel = false) {
     }
 }
 
-/**
- * @param {string} url
- * @param {NoteData} updatedData
- * @param {boolean} [isTopLevel=false] - whether the data is inside a data field of the json response, or it is just the top level. Temporary hack
- * @param {('PUT'|'PATCH')} [method='PATCH'] - whether to use PUT or PATCH
- */
 async function updateData(
-    url,
-    updatedData,
+    url: string,
+    updatedData: any,
     authenticated = true,
-    isTopLevel = false,
-    method = 'PATCH'
+    isTopLevel: boolean = false,
+    method: 'PUT' | 'PATCH' = 'PATCH'
 ) {
     const func = authenticated ? makeAuthenticatedRequest : makeRequest;
     try {
@@ -200,61 +163,53 @@ async function updateData(
     }
 }
 
-/**
- * @typedef {Object} Note
- * @property {boolean} isLocal - whether the Note is stored in the server or in mempoy
- * @property {string} uuid - the uuid of the Note used for updating. `null` if local.
- * @property {string} author
- * @property {string} title
- * @property {string} content - the content of the note in markdown
- * @property {string[]} categories - the categories that the nore is present in
- * @property {Date} creation_date
- */
+type Note = {
+    isLocal: true;
+    uuid: string;
+    author: string;
+    title: string;
+    content: string;
+    categories: string[];
+    creation_date: Date;
+};
 
 /**
  * Get the data of note with uuid.
  *
- * @param {string} uuid
- * @returns {Promise<Note>}
  */
-export async function getNote(uuid) {
+export async function getNote(uuid: string): Promise<Note> {
     const [data] = await getData(`notes/${uuid}/`);
     return data;
 }
 
-/**
- * The data required for modifying a Note
- *
- * @typedef {Object} NoteData
- * @property {string} [uuid]
- * @property {string} [title]
- * @property {string} [content]
- * @property {string[]} [categories]
- */
+type NoteData = {
+    uuid: string;
+    title: string;
+    content: string;
+    categories: string[];
+};
 
-/**
- * @param {string} uuid
- * @param {NoteData} noteData
- * @returns {Promise<Note>}
- */
-export async function updateNote(uuid, noteData) {
+export async function updateNote(
+    uuid: string,
+    noteData: NoteData
+): Promise<Note> {
     const [data] = await updateData(`notes/${uuid}/`, noteData);
     return data;
 }
 
 /**
- * @typedef {Object} Permission - a.k.a. SharedItem in the Django source ;-;
- * @property {string} user - the name of the user that receives the note
- * @property {('R'|'W')} perm_level - wether the user can edit or just view the note
+ * a.k.a. SharedItem in the Django source ;-;
  */
+type Permission = {
+    user: string;
+    perm_level: 'R' | 'W';
+};
 
 /**
  * Get Edit and View permissions of a Note
  *
- * @param {string} uuid - the uuid of the node to query
- * @returns {Promise<Permission[]>}
  */
-export async function getNotePermissions(uuid) {
+export async function getNotePermissions(uuid: string): Promise<Permission[]> {
     const [data] = await getData(
         `notes/${uuid}/permissions/`,
         /* authenticated = */ true,
@@ -266,11 +221,11 @@ export async function getNotePermissions(uuid) {
 /**
  * Update Edit and View permissions of a Note
  *
- * @param {string} uuid - the uuid of the node to query
- * @param {Permission[]} permissions - the new, updated list of permissions
- * @returns {Promise<Permission[]>}
  */
-export async function updateNotePermissions(uuid, permissions) {
+export async function updateNotePermissions(
+    uuid: string,
+    permissions: Permission[]
+): Promise<Permission[]> {
     const [data] = await updateData(
         `notes/${uuid}/permissions/`,
         permissions,
@@ -281,24 +236,20 @@ export async function updateNotePermissions(uuid, permissions) {
     return data;
 }
 
-/**
- *
- * @typedef {Object} User
- * @property {string} username
- * @property {string} email
- * @property {string} first_name
- * @property {string} last_name
- *
- */
+type User = {
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+};
 
 /**
  * Search users by username
  *
  * Used mainly for autocompletion.
  *
- * @param {string} username - The Username to search
  */
-export async function searchUsers(username) {
+export async function searchUsers(username: string): Promise<User[]> {
     const [data] = await getData(
         `user_search/?search_query=${encodeURIComponent(username)}`
     );
