@@ -10,28 +10,17 @@
     />
 {% endblock fonts %}
 
-{% block icons %}
-    <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/icon?family=Material+Icons"
-    />
-{% endblock icons %}
+{% block icons %}{% endblock icons %}
 
 {% block styles %}
-    <!-- Material Typography -->
-    <link
-        rel="stylesheet"
-        href="https://unpkg.com/@material/typography@11.0.0/dist/mdc.typography.css"
-    />
+    <style>
+     html,
+     body {
+         margin: 0;
+         height: 100%;
+     }
+    </style>
 
-    <!-- Material Elevation -->
-    <link
-        rel="stylesheet"
-        href="https://unpkg.com/@material/elevation@11.0.0/dist/mdc.elevation.css"
-    />
-
-    <!-- SMUI -->
-    <link rel="stylesheet" href="https://unpkg.com/svelte-material-ui/bare.css" />
 {% endblock styles %}
 
 {% block script_head %}

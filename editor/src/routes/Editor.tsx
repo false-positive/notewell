@@ -1,11 +1,12 @@
-import { Link } from 'react-router-dom';
+import { Box, Stack, Theme } from '@mui/material';
+import StatusBar from '../components/StatusBar';
 
 const Editor = () => {
     return (
-        <>
-            <p>Edit works yay!!!</p>
-            <Link to="../quiz/">Quiz</Link>
-        </>
+        <Stack sx={{ height: '100vh' }}>
+            <Box sx={{ height: '100%' }}>content</Box>
+            <StatusBar />
+        </Stack>
     );
 };
 
