@@ -13,10 +13,6 @@
             <title>Notewell</title>
         {% endif %}
 
-        <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
-        <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
         {% block fonts %}
             <link rel="preconnect" href="https://fonts.googleapis.com" />
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,14 +21,18 @@
 
         {% block icons %}
             <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet" />
+            <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         {% endblock icons %}
 
         {% block styles %}
             <link href="{% static 'notes/css/base.css' %}" rel="stylesheet" />
+            <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
         {% endblock styles %}
 
         {% block head %}{% endblock head %}
-        {% block script_head %}{% endblock script_head %}
+        {% block script_head %}
+            <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+        {% endblock script_head %}
     </head>
     <body>
         <div id="app">
