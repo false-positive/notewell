@@ -67,9 +67,9 @@ const refreshTokenPair = async () => {
     return false;
 };
 
-export const makeAuthenticatedRequest = async (
+export const makeAuthRequest = async (
     url: string,
-    opts: RequestInit
+    opts?: RequestInit
 ): Promise<Response> => {
     if (refreshTokenPairResponse) {
         await refreshTokenPairResponse;
@@ -78,7 +78,7 @@ export const makeAuthenticatedRequest = async (
     const requestOpts = () => ({
         ...opts,
         headers: {
-            ...opts.headers,
+            ...opts?.headers,
             Authorization: `Bearer ${accessToken}`,
         },
     });
