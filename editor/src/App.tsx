@@ -1,3 +1,4 @@
+import { Button } from '@mui/material';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 const queryClient = new QueryClient();
@@ -5,7 +6,7 @@ const queryClient = new QueryClient();
 const App = () => {
     return (
         <QueryClientProvider client={queryClient}>
-            <p>App works yay!!!</p>
+            <Button variant="contained">button</Button>
         </QueryClientProvider>
     );
 };
