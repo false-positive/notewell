@@ -1,24 +1,21 @@
 {
-  "name": "notewell_editor",
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview"
-  },
-  "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^1.0.0-next.11",
-    "@tsconfig/svelte": "^2.0.1",
-    "svelte": "^3.37.0",
-    "svelte-material-ui": "^5.0.0-beta.8",
-    "svelte-preprocess": "^4.9.8",
-    "tslib": "^2.3.1",
-    "typescript": "^4.4.4",
-    "vite": "^2.6.4"
-  },
-  "dependencies": {
-    "@slite/quill-delta-markdown": "file:../vendor/quill-delta-markdown",
-    "typewriter-editor": "file:../vendor/typewriter"
-  }
+    "name": "notewell_editor",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "serve": "vite preview"
+    },
+    "dependencies": {
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2"
+    },
+    "devDependencies": {
+        "@types/react": "^17.0.33",
+        "@types/react-dom": "^17.0.10",
+        "@vitejs/plugin-react": "^1.0.7",
+        "typescript": "^4.5.4",
+        "vite": "^2.8.0"
+    }
 }
