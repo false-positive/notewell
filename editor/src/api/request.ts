@@ -3,6 +3,8 @@
  *
  */
 
+import invariant from 'tiny-invariant';
+
 const API_URL = '/api';
 
 /**
@@ -72,9 +74,7 @@ export const makeAuthenticatedRequest = async (
     if (refreshTokenPairResponse) {
         await refreshTokenPairResponse;
     }
-    if (!accessToken) {
-        throw new Error('API Token is not set!!');
-    }
+    invariant(accessToken, 'API Token is not set');
     const requestOpts = () => ({
         ...opts,
         headers: {
