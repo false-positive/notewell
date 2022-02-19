@@ -37,6 +37,15 @@
 {% block script_head %}
     {% if debug %}
         <script type="module" src="http://localhost:3000/@vite/client"></script>
+        <script type="module">
+            import RefreshRuntime from 'http://localhost:3000/@react-refresh'
+            if (RefreshRuntime) {
+                RefreshRuntime.injectIntoGlobalHook(window)
+                window.$RefreshReg$ = () => { }
+                window.$RefreshSig$ = () => (type) => type
+                window.__vite_plugin_react_preamble_installed__ = true
+            }
+        </script>
     {% endif %}
     <script type="application/json" id="nw-editor-initial-data">
         {% render_initial_editor_data note=note token_pair=token_pair open_dialog=open_dialog %}
@@ -47,7 +56,7 @@
 
 {% block script %}
     {% if debug %}
-        <script type="module" src="http://localhost:3000/main.ts"></script>
+        <script type="module" src="http://localhost:3000/main.tsx"></script>
     {% else %}
         {% render_vite_bundle %}
     {% endif %}
