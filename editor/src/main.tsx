@@ -1,19 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { InitialDataContext, loadInitialData } from './api/initialData';
+import { loadInitialData } from './api/initialData';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 // HACK: clean the contents of #app
 const root = document.getElementById('app')!;
 root.innerHTML = '';
 
-const initialData = loadInitialData();
+loadInitialData();
 
 ReactDOM.render(
     <React.StrictMode>
-        <InitialDataContext.Provider value={initialData}>
-            <App />
-        </InitialDataContext.Provider>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/notes/:noteId/" element={<App />}>
+                    <Route path="edit/" element={<p>edit notes</p>} />
+                    <Route path="quiz/" element={<p>QUIZ!!1</p>} />
+                </Route>
+            </Routes>
+        </BrowserRouter>
     </React.StrictMode>,
     root
 );

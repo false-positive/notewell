@@ -37,5 +37,3 @@ export const loadInitialData = (): InitialData => {
     setTokenPair(initialData.tokenPair.access, initialData.tokenPair.refresh);
     return apiInitialData;
 };
-
-export const InitialDataContext = React.createContext<InitialData | null>(null);

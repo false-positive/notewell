@@ -123,7 +123,7 @@ def read(request, note_id):
 
 
 @login_required
-def edit(request, note_id):
+def editor(request, note_id):
     note: Note = get_accessible_note_or_404(request.user.pk, uuid=note_id)
     if not note.can_be_edited_by(request.user):
         read_url = reverse('notes:read', kwargs={'note_id': note_id})
