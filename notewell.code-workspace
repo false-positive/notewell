@@ -15,7 +15,7 @@
     "settings": {
         "prettier.singleQuote": true,
         "prettier.tabWidth": 4,
-        "editor.tabSize": 2,
+        "editor.tabSize": 4,
         "sqltools.connections": [
             {
                 "previewLimit": 50,
