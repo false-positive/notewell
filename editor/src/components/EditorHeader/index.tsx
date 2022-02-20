@@ -3,6 +3,7 @@ import { Avatar, Box, Paper, Skeleton, Stack, Typography } from '@mui/material';
 import EditorLogo from './EditorLogo';
 import { Note } from '../../api/notes';
 import NoteLinks from './NoteLinks';
+import NoteTitleCategories from './NoteTitleCategories';
 
 type Props = {
     note?: Note;
@@ -19,15 +20,7 @@ const EditorHeader: FC<Props> = ({ note }) => {
                 <Stack direction="row" spacing={2}>
                     <EditorLogo />
                     <Stack>
-                        {note ? (
-                            <Typography variant="h6">{note?.title}</Typography>
-                        ) : (
-                            <Skeleton animation="wave">
-                                <Typography variant="h6">
-                                    jdfghujsgfhoiwueroighuobjsdfklg
-                                </Typography>
-                            </Skeleton>
-                        )}
+                        <NoteTitleCategories note={note} />
                     </Stack>
                 </Stack>
                 <Stack direction="row" spacing={1.5} alignItems="center">
