@@ -26,9 +26,9 @@
 ## Built With
 
 -   [Django](https://djangoproject.com/)
--   [Svelte](https://svelte.dev)
+-   [React](https://reactjs.org)
 -   [Vite](https://vite.dev)
--   [Svelte Material UI](https://sveltematerialui.com)
+-   [MUI](https://mui.com)
 
 ## Getting Started
 
