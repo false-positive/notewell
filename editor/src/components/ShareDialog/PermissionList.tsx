@@ -7,12 +7,14 @@ type PL = PermissionLevel; // just to prevent prettier from wrapping
 
 type Props = {
     isLoading: boolean;
+    author: string | null;
     permissions: Permission[];
     onPermissionChange: (username: string) => (permLevel: PL) => void;
     onPermissionDelete: (username: string) => () => void;
 };
 
 const PermissionList: FC<Props> = ({
+    author,
     isLoading,
     permissions,
     onPermissionChange,
@@ -21,7 +23,7 @@ const PermissionList: FC<Props> = ({
     return (
         <List sx={{ marginTop: 3 }}>
             {isLoading && <LinearProgress />}
-            <PermissionListItem username="You (probably)" permLevel="author" />
+            <PermissionListItem username={author} permLevel="author" />
             {permissions.map(({ username, permLevel }) => (
                 <PermissionListItem
                     key={username}

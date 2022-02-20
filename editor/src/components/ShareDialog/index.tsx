@@ -13,6 +13,7 @@ import PermissionList from './PermissionList';
 import usePermissions from '../../hooks/usePermissions';
 import ConfirmationDialog from '../ConfirmationDialog';
 import useSavePermissions from '../../hooks/useSavePermissions';
+import useNote from '../../hooks/useNote';
 
 type Props = {
     noteID: string;
@@ -30,7 +31,10 @@ const ShareDialog: FC<Props> = ({ noteID, open, onClose }) => {
     const savePermissions = useSavePermissions(noteID);
     const [confirmationOpen, setConfirmationOpen] = useState(false);
 
-    const isLoading = permissions.isLoading || savePermissions.isLoading;
+    const note = useNote(noteID);
+
+    const isLoading =
+        note.isLoading || permissions.isLoading || savePermissions.isLoading;
 
     const getPerms = (inPermissions: Permission[] | null): Permission[] => {
         return inPermissions || permissions.data || [];
@@ -83,6 +87,7 @@ const ShareDialog: FC<Props> = ({ noteID, open, onClose }) => {
             <DialogContent>
                 <AddPermissionForm disabled={isLoading} onAdd={addPermission} />
                 <PermissionList
+                    author={note.data?.author ?? null}
                     isLoading={isLoading}
                     permissions={getPerms(newPermissions)}
                     onPermissionChange={handlePermissionChange}

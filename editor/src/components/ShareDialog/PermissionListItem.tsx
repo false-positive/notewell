@@ -10,6 +10,7 @@ import {
     ListItemText,
     Menu,
     MenuItem,
+    Skeleton,
 } from '@mui/material';
 import type { PermissionLevel } from '../../api/permissions';
 import ExpandMore from '@mui/icons-material/ExpandMore';
@@ -30,7 +31,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 //       permLevel: 'author';
 //     };
 type Props = {
-    username: string;
+    username: string | null;
     permLevel: PermissionLevel | 'author';
     disabled?: boolean;
     onChange?: (premLevel: PermissionLevel) => void;
@@ -71,7 +72,13 @@ const PermissionListItem: FC<Props> = ({
 
     return (
         <ListItem>
-            <ListItemText>{username}</ListItemText>
+            {username ? (
+                <ListItemText>{username}</ListItemText>
+            ) : (
+                <Skeleton animation="wave">
+                    <ListItemText>xhhsdf</ListItemText>
+                </Skeleton>
+            )}
             <ListItemSecondaryAction>
                 <Button
                     id={`${username}-permissions-button`}
