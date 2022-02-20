@@ -4,7 +4,6 @@ import {
     Paper,
     Stack,
     Typography,
-    Box,
     Divider,
 } from '@mui/material';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
