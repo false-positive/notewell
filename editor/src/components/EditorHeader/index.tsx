@@ -58,21 +58,25 @@ const EditorHeader: FC<Props> = ({ note }) => {
                         <QuizIcon />
                     </IconButton>
 
-                    <Box display="flex" alignItems="center">
-                        <Button
-                            variant="contained"
-                            startIcon={<PeopleIcon />}
-                            onClick={() => setShareOpen(true)}
-                        >
-                            Share
-                        </Button>
-                    </Box>
+                    {note && (
+                        <>
+                            <Box display="flex" alignItems="center">
+                                <Button
+                                    variant="contained"
+                                    startIcon={<PeopleIcon />}
+                                    onClick={() => setShareOpen(true)}
+                                >
+                                    Share
+                                </Button>
+                            </Box>
+                            <ShareDialog
+                                noteID={note.id}
+                                open={shareOpen}
+                                onClose={() => setShareOpen(false)}
+                            />
+                        </>
+                    )}
 
-                    <ShareDialog
-                        noteID="925e33e0-477a-4cca-b2cf-bff94c6d7ecc"
-                        open={shareOpen}
-                        onClose={() => setShareOpen(false)}
-                    />
                     <Box paddingX={2} marginLeft={1}>
                         <Avatar />
                     </Box>
