@@ -1,8 +1,10 @@
 import { Avatar, Box, Button, IconButton, Paper, Stack } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
+import CommentIcon from '@mui/icons-material/Comment';
 import QuizIcon from '@mui/icons-material/Quiz';
 import ShareDialog from '../ShareDialog';
 import { useState } from 'react';
+import RouterLinkComponent from '../RouterLinkComponent';
 
 const EditorHeader = () => {
     const [shareOpen, setShareOpen] = useState(false);
@@ -16,7 +18,14 @@ const EditorHeader = () => {
             >
                 <span>things</span>
                 <Stack direction="row" spacing={2}>
-                    <IconButton>
+                    <IconButton href="..">
+                        <CommentIcon />
+                    </IconButton>
+
+                    <IconButton
+                        href="../quiz/"
+                        LinkComponent={RouterLinkComponent}
+                    >
                         <QuizIcon />
                     </IconButton>
 
