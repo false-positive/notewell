@@ -5,6 +5,7 @@ import QuizIcon from '@mui/icons-material/Quiz';
 import ShareDialog from '../ShareDialog';
 import { useState } from 'react';
 import RouterLinkComponent from '../RouterLinkComponent';
+import EditorLogo from './EditorLogo';
 
 const EditorHeader = () => {
     const [shareOpen, setShareOpen] = useState(false);
@@ -16,8 +17,10 @@ const EditorHeader = () => {
                 justifyContent="space-between"
                 paddingY={1.5}
             >
-                <span>things</span>
                 <Stack direction="row" spacing={2}>
+                    <EditorLogo />
+                </Stack>
+                <Stack direction="row" spacing={2} alignItems="center">
                     <IconButton href="..">
                         <CommentIcon />
                     </IconButton>
