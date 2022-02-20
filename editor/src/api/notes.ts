@@ -4,19 +4,24 @@ import { makeAuthRequest } from './request';
 export type Note = {
     id: string;
     title: string;
+    author: string;
     content: string;
     categories: string[];
+    creationDate: Date;
 };
 
 type APINote = {
     uuid: string;
     title: string;
+    author: string;
     content: string;
     categories: string[];
+    creation_date: string;
 };
 
-const fromAPINote = ({ uuid, ...attrs }: APINote): Note => ({
+const fromAPINote = ({ uuid, creation_date, ...attrs }: APINote): Note => ({
     id: uuid,
+    creationDate: new Date(creation_date),
     ...attrs,
 });
 
