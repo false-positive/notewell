@@ -7,7 +7,7 @@ import {
     Box,
     Divider,
 } from '@mui/material';
-import FeedbackIcon from '@mui/icons-material/Feedback';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import EditorZoom from './EditorZoom';
 
 const StatusBar = () => {
@@ -46,8 +46,13 @@ const StatusBar = () => {
                 >
                     <span />
                     <EditorZoom />
-                    <IconButton size="small">
-                        <FeedbackIcon />
+                    <IconButton
+                        size="small"
+                        onClick={() =>
+                            document.documentElement.requestFullscreen()
+                        }
+                    >
+                        <FullscreenIcon />
                     </IconButton>
                 </Stack>
             </Stack>
