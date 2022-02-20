@@ -9,7 +9,7 @@ const EditorLogo = styled(({ ...props }) => (
     height: '3em',
     paddingLeft: '1em',
     paddingRight: '1em',
-    filter: 'invert(100%)',
+    // filter: 'invert(100%)',
     cursor: 'pointer',
 });
 
