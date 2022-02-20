@@ -8,6 +8,7 @@ import {
     Divider,
 } from '@mui/material';
 import FeedbackIcon from '@mui/icons-material/Feedback';
+import EditorZoom from './EditorZoom';
 
 const StatusBar = () => {
     return (
@@ -36,8 +37,15 @@ const StatusBar = () => {
                     </MuiLink>
                     <span />
                 </Stack>
-                <Stack direction="row">
-                    <Divider orientation="vertical" flexItem />
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    divider={<Divider orientation="vertical" flexItem />}
+                    paddingX={0.5}
+                    spacing={0.5}
+                >
+                    <span />
+                    <EditorZoom />
                     <IconButton size="small">
                         <FeedbackIcon />
                     </IconButton>

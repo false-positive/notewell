@@ -1,4 +1,4 @@
-import { Box, Stack, Theme } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import StatusBar from '../components/StatusBar';
 
 const Editor = () => {
