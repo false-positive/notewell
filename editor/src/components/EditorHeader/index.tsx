@@ -21,6 +21,7 @@ const EditorHeader: FC<Props> = ({ note }) => {
                     <EditorLogo />
                     <Stack>
                         <NoteTitleCategories note={note} />
+                        {/* TODO: menus */}
                     </Stack>
                 </Stack>
                 <Stack direction="row" spacing={1.5} alignItems="center">

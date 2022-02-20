@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import RouterLinkComponent from '../RouterLinkComponent';
+import HrefRouterLink from '../HrefRouterLink';
 import { Note } from '../../api/notes';
 import ShareDialog from '../ShareDialog';
 import PeopleIcon from '@mui/icons-material/People';
@@ -22,7 +22,7 @@ const NoteLinks: FC<Props> = ({ note }) => {
 
             <IconButton
                 href={`/notes/${note.id}/quiz/`}
-                LinkComponent={RouterLinkComponent}
+                LinkComponent={HrefRouterLink}
             >
                 <QuizIcon />
             </IconButton>
