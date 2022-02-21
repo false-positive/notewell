@@ -4,6 +4,7 @@ import EditorLogo from './EditorLogo';
 import { Note } from '../../api/notes';
 import NoteLinks from './NoteLinks';
 import NoteTitleCategories from './NoteTitleCategories';
+import HeaderMenus from './HeaderMenus';
 
 type Props = {
     note?: Note;
@@ -21,7 +22,7 @@ const EditorHeader: FC<Props> = ({ note }) => {
                     <EditorLogo />
                     <Stack>
                         <NoteTitleCategories note={note} />
-                        {/* TODO: menus */}
+                        <HeaderMenus />
                     </Stack>
                 </Stack>
                 <Stack direction="row" spacing={1.5} alignItems="center">
