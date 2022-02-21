@@ -1,4 +1,4 @@
-import { IconButton, Skeleton, Stack } from '@mui/material';
+import { IconButton, Skeleton, Stack, Tooltip } from '@mui/material';
 import { FC } from 'react';
 import { Note } from '../../api/notes';
 import NoteTitle from './NoteTitle';
@@ -18,9 +18,12 @@ const NoteTitleCategories: FC<Props> = ({ note }) => {
             ) : (
                 <>
                     <NoteTitle title={note.title} />
-                    <IconButton>
-                        <LibraryBooksOutlinedIcon />
-                    </IconButton>
+
+                    <Tooltip title="Select Note Categories">
+                        <IconButton>
+                            <LibraryBooksOutlinedIcon />
+                        </IconButton>
+                    </Tooltip>
                 </>
             )}
         </Stack>

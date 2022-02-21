@@ -5,6 +5,7 @@ import {
     Stack,
     Typography,
     Divider,
+    Tooltip,
 } from '@mui/material';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import EditorZoom from './EditorZoom';
@@ -45,14 +46,16 @@ const StatusBar = () => {
                 >
                     <span />
                     <EditorZoom />
-                    <IconButton
-                        size="small"
-                        onClick={() =>
-                            document.documentElement.requestFullscreen()
-                        }
-                    >
-                        <FullscreenIcon />
-                    </IconButton>
+                    <Tooltip title="Full Screen Mode">
+                        <IconButton
+                            size="small"
+                            onClick={() =>
+                                document.documentElement.requestFullscreen()
+                            }
+                        >
+                            <FullscreenIcon />
+                        </IconButton>
+                    </Tooltip>
                 </Stack>
             </Stack>
         </Paper>

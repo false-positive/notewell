@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import type { MouseEvent } from 'react';
-import { Button, IconButton, Menu, MenuItem, Stack } from '@mui/material';
+import {
+    Button,
+    IconButton,
+    Menu,
+    MenuItem,
+    Stack,
+    Tooltip,
+} from '@mui/material';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
@@ -18,9 +25,11 @@ const EditorZoom = () => {
 
     return (
         <Stack direction="row" spacing={0.5}>
-            <IconButton size="small">
-                <RemoveIcon />
-            </IconButton>
+            <Tooltip title="Zoom Out">
+                <IconButton size="small">
+                    <RemoveIcon />
+                </IconButton>
+            </Tooltip>
             <Menu
                 id="editor-zoom-menu"
                 open={menuOpen}
@@ -48,9 +57,11 @@ const EditorZoom = () => {
             >
                 100%
             </Button>
-            <IconButton size="small">
-                <AddIcon />
-            </IconButton>
+            <Tooltip title="Zoom In">
+                <IconButton size="small">
+                    <AddIcon />
+                </IconButton>
+            </Tooltip>
         </Stack>
     );
 };

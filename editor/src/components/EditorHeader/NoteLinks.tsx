@@ -5,7 +5,7 @@ import ShareDialog from '../ShareDialog';
 import PeopleIcon from '@mui/icons-material/People';
 import CommentIcon from '@mui/icons-material/Comment';
 import QuizIcon from '@mui/icons-material/Quiz';
-import { Box, Button, IconButton, Stack } from '@mui/material';
+import { Box, Button, IconButton, Stack, Tooltip } from '@mui/material';
 
 type Props = {
     note: Note;
@@ -16,16 +16,20 @@ const NoteLinks: FC<Props> = ({ note }) => {
 
     return (
         <Stack direction="row" spacing={1} alignItems="center">
-            <IconButton href={`/notes/${note.id}/`}>
-                <CommentIcon />
-            </IconButton>
+            <Tooltip title="View Comments">
+                <IconButton href={`/notes/${note.id}/`}>
+                    <CommentIcon />
+                </IconButton>
+            </Tooltip>
 
-            <IconButton
-                href={`/notes/${note.id}/quiz/`}
-                LinkComponent={HrefRouterLink}
-            >
-                <QuizIcon />
-            </IconButton>
+            <Tooltip title="View Note Quiz">
+                <IconButton
+                    href={`/notes/${note.id}/quiz/`}
+                    LinkComponent={HrefRouterLink}
+                >
+                    <QuizIcon />
+                </IconButton>
+            </Tooltip>
 
             <Box display="flex" alignItems="center">
                 <Button
