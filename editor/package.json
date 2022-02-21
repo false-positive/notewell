@@ -21,6 +21,7 @@
         "tiny-invariant": "^1.2.0"
     },
     "devDependencies": {
+        "nanoid": ">=3.1.31",
         "@types/lodash-es": "^4.17.6",
         "@types/react": "^17.0.33",
         "@types/react-dom": "^17.0.10",
