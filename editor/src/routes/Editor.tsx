@@ -1,6 +1,7 @@
 import { Box, Stack } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import invariant from 'tiny-invariant';
+import ContentEditor from '../components/ContentEditor';
 import EditorHeader from '../components/EditorHeader';
 import StatusBar from '../components/StatusBar';
 import useNote from '../hooks/useNote';
@@ -14,7 +15,9 @@ const Editor = () => {
             <EditorHeader
                 note={note.data} //
             />
-            <Box sx={{ height: '100%' }}>content</Box>
+            <Box sx={{ height: '100%' }}>
+                <ContentEditor />
+            </Box>
             <StatusBar />
         </Stack>
     );
