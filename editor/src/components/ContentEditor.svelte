@@ -10,6 +10,7 @@
     import TurndownService from 'turndown';
     import { Parser, HtmlRenderer } from 'commonmark';
     import asRoot from 'typewriter-editor/lib/asRoot';
+    import DOMPurify from 'dompurify';
 
     const editor = new Editor();
 
@@ -24,9 +25,10 @@
         // const ops = toDelta($note.content);
         // editor.setDelta(new Delta(ops));
         const reader = new Parser();
-        const writer = new HtmlRenderer();
+        const writer = new HtmlRenderer({ safe: true });
         const parsed = reader.parse($note.content);
-        initialText = writer.render(parsed);
+        const unsafeText = writer.render(parsed);
+        initialText = DOMPurify.sanitize(unsafeText);
     });
 
     /**
