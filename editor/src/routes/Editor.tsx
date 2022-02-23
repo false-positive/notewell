@@ -16,7 +16,7 @@ const Editor = () => {
                 note={note.data} //
             />
             <Box sx={{ height: '100%' }}>
-                <ContentEditor />
+                {note.data && <ContentEditor note={note.data} />}
             </Box>
             <StatusBar />
         </Stack>
