@@ -10,6 +10,8 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.11",
     "@tsconfig/svelte": "^2.0.1",
+    "@types/commonmark": "^0.27.5",
+    "@types/turndown": "^5.0.1",
     "svelte": "^3.37.0",
     "svelte-material-ui": "^5.0.0-beta.8",
     "svelte-preprocess": "^4.9.8",
@@ -18,7 +20,8 @@
     "vite": "^2.6.4"
   },
   "dependencies": {
-    "@slite/quill-delta-markdown": "file:../vendor/quill-delta-markdown",
+    "commonmark": "^0.30.0",
+    "turndown": "^7.1.1",
     "typewriter-editor": "file:../vendor/typewriter"
   }
 }

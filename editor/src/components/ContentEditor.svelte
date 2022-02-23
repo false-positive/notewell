@@ -1,14 +1,15 @@
 <script>
     import IconButton from '@smui/icon-button/IconButton.svelte';
-    import { Delta, Editor } from 'typewriter-editor';
+    import { Editor } from 'typewriter-editor';
     import Dialog, { Title, Content } from '@smui/dialog';
     import CircularProgress from '@smui/circular-progress';
-    import Root from 'typewriter-editor/lib/Root.svelte';
     import Toolbar from 'typewriter-editor/lib/Toolbar.svelte';
-    import { toDelta, fromDelta } from '@slite/quill-delta-markdown';
     import { note } from '../stores/note';
     import { onMount } from 'svelte';
     import { summarizeText } from '../api';
+    import TurndownService from 'turndown';
+    import { Parser, HtmlRenderer } from 'commonmark';
+    import asRoot from 'typewriter-editor/lib/asRoot';
 
     const editor = new Editor();
 
@@ -17,9 +18,15 @@
     let shorteningText = false;
     let lastSaveTimeout = null;
 
+    let initialText = '';
+
     onMount(() => {
-        const ops = toDelta($note.content);
-        editor.setDelta(new Delta(ops));
+        // const ops = toDelta($note.content);
+        // editor.setDelta(new Delta(ops));
+        const reader = new Parser();
+        const writer = new HtmlRenderer();
+        const parsed = reader.parse($note.content);
+        initialText = writer.render(parsed);
     });
 
     /**
@@ -29,7 +36,10 @@
         // @ts-ignore
         if (!event?.changedLines?.length) return;
 
-        const content = fromDelta(editor.getDelta().ops);
+        // const content = fromDelta(editor.getDelta().ops);
+        const tds = new TurndownService();
+        const content = tds.turndown(editor.root);
+
         note.update($note.uuid, { content });
     }
 
@@ -114,7 +124,8 @@
 <!-- TODO: change -->
 <div class="asd">
     <div class="mdc-elevation--z3 asd__sheet">
-        <Root {editor} />
+        <!-- <Root {editor} /> -->
+        <div use:asRoot={editor}>{@html initialText}</div>
     </div>
 </div>
 
