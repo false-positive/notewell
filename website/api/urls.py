@@ -14,10 +14,5 @@ urlpatterns = [
 
     path('register/', views.register, name='register'),
 
-    path('ai/summarize/', views.summarize, name='summarize'),
-    path('ai/questgen/', views.genquest, name='questgen'),
-    path('ai/quality/', views.quality, name='quality'),
-    path('ai/subject/', views.subject, name='subject'),
-
     path('', include('notes.urls.api')),
 ]
