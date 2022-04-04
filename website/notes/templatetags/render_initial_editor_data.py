@@ -4,7 +4,7 @@ from django import template
 from django.utils.safestring import mark_safe
 from rest_framework.renderers import JSONRenderer
 
-from api.serializers import NoteSerializer
+from notes.serializers import NoteSerializer
 
 register = template.Library()
 
