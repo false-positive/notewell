@@ -1,7 +1,6 @@
-from django.urls import path
+from django.urls import path, include
 from rest_framework_simplejwt.views import TokenRefreshView
 
-import notes.views.api
 from . import views
 
 urlpatterns = [
@@ -20,11 +19,5 @@ urlpatterns = [
     path('ai/quality/', views.quality, name='quality'),
     path('ai/subject/', views.subject, name='subject'),
 
-    path('notes/', notes.views.api.NoteList.as_view(), name='note_list'),
-    path('notes/<uuid:note_id>/', notes.views.api.NoteDetail.as_view(), name='note_detail'),
-    path('notes/<uuid:note_id>/permissions/',
-         notes.views.api.NoteSharedItemList.as_view(), name='note_shareditem_list'),
-
-    path('categories/', notes.views.api.view_categories, name='category_list'),
-    path('categories/<path:cat_path>/', notes.views.api.view_categories, name='category_detail'),
+    path('', include('notes.urls.api')),
 ]

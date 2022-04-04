@@ -24,7 +24,7 @@ admin.site.index_title = 'Admin'
 urlpatterns = [
     path('', RedirectView.as_view(url=reverse_lazy('notes:index')), name='index'),
     path('', include('accounts.urls')),
-    path('notes/', include('notes.urls')),
+    path('notes/', include('notes.urls.ui')),
     path('api/', include('api.urls')),
     path('__debug__/', include(debug_toolbar.urls)),
     path('admin/', admin.site.urls),
