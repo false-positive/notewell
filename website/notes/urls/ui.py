@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import ui as views
+from notes.views import ui as views
 
 
 app_name = 'notes'
