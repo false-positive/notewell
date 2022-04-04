@@ -34,6 +34,7 @@ class Category(MPTTModel):
         if not self.slug:
             raise ValueError('Name cannot be slugified')
 
+        # TODO: fix the undefined reference of `full_path` below !!!!!
         self.full_path = '/'.join(full_path[::-1])
 
         super().save(*args, **kwargs)
