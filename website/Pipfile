@@ -10,12 +10,6 @@ django-markdownify = "*"
 django-mptt = "*"
 djangorestframework = "*"
 djangorestframework-simplejwt = "*"
-requests = "*"
-spacy = "*"
-torch = "*"
-torchaudio = "*"
-torchvision = "*"
-transformers = "*"
 
 [dev-packages]
 pytest = "*"

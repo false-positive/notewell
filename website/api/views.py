@@ -8,8 +8,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .ai import sum_text, gen_quest, text_subject, text_quality
-
 from .serializers import (
     AuthUserSerializer,
     AuthUserTokenObtainPairSerializer,
@@ -76,30 +74,5 @@ def register(request):
     return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
-def summarize(request):
-    if len(request.data['text']) < 50:
-        return Response(
-            {'message': 'Text too short for proper summarization'},
-            status=status.HTTP_406_NOT_ACCEPTABLE
-        )
-    return Response(sum_text(request.data['text']))
-
-
 class UserTokenPairView(TokenObtainPairView):
     serializer_class = AuthUserTokenObtainPairSerializer
-
-
-@api_view(['POST'])
-def genquest(request):
-    return Response(gen_quest(request.data['text'], request.data['type']))
-
-
-@api_view(['POST'])
-def subject(request):
-    return Response(text_subject(request.data['text']))
-
-
-@api_view(['POST'])
-def quality(request):
-    return Response(text_quality(request.data['text']))
