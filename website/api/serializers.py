@@ -22,5 +22,3 @@ class AuthUserTokenObtainPairSerializer(TokenObtainPairSerializer):
         data = super().data
         data['user'] = UserSerializer(self.user).data
         return data
-
-
