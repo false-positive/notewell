@@ -1,6 +1,7 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 
+import notes.views
 from . import views
 
 urlpatterns = [
@@ -19,11 +20,11 @@ urlpatterns = [
     path('ai/quality/', views.quality, name='quality'),
     path('ai/subject/', views.subject, name='subject'),
 
-    path('notes/', views.NoteList.as_view(), name='note_list'),
-    path('notes/<uuid:note_id>/', views.NoteDetail.as_view(), name='note_detail'),
+    path('notes/', notes.views.NoteList.as_view(), name='note_list'),
+    path('notes/<uuid:note_id>/', notes.views.NoteDetail.as_view(), name='note_detail'),
     path('notes/<uuid:note_id>/permissions/',
-         views.NoteSharedItemList.as_view(), name='note_shareditem_list'),
+         notes.views.NoteSharedItemList.as_view(), name='note_shareditem_list'),
 
-    path('categories/', views.view_categories, name='category_list'),
-    path('categories/<path:cat_path>/', views.view_categories, name='category_detail'),
+    path('categories/', notes.views.view_categories, name='category_list'),
+    path('categories/<path:cat_path>/', notes.views.view_categories, name='category_detail'),
 ]
