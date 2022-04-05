@@ -7,20 +7,10 @@ import EditorHeader from '../components/EditorHeader';
 import StatusBar from '../components/StatusBar';
 import useMe from '../hooks/useMe';
 import useNote from '../hooks/useNote';
+import useURLNote from '../hooks/useURLNote';
 
 const Editor = () => {
-    const navigate = useNavigate();
-
-    const { noteId } = useParams<{ noteId: string }>();
-    invariant(noteId, 'noteId url param not present');
-    const note = useNote(noteId);
-    const me = useMe();
-
-    useEffect(() => {
-        if (me.data && me.data.username !== note.data?.author) {
-            navigate(`/notes/${noteId}/`);
-        }
-    }, [me.data, note]);
+    const note = useURLNote({ canEdit: true });
 
     return (
         <Stack sx={{ height: '100vh' }}>
