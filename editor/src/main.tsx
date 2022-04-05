@@ -11,14 +11,7 @@ root.innerHTML = '';
 
 ReactDOM.render(
     <React.StrictMode>
-        <BrowserRouter>
-            <Routes>
-                <Route path="/notes/:noteId/" element={<App />}>
-                    <Route path="edit/" element={<Editor />} />
-                    <Route path="quiz/" element={<Quiz />} />
-                </Route>
-            </Routes>
-        </BrowserRouter>
+        <App />
     </React.StrictMode>,
     root
 );

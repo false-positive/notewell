@@ -17,7 +17,12 @@ const useURLNote = ({ canEdit = false }: Options = {}) => {
     const me = useMe();
 
     useEffect(() => {
-        if (canEdit && me.data && me.data.username !== note.data?.author) {
+        if (
+            canEdit &&
+            me.data &&
+            note.data &&
+            me.data.username !== note.data?.author
+        ) {
             navigate(`/notes/${noteId}/`, { replace: true });
         }
     }, [canEdit, me.data, note]);
