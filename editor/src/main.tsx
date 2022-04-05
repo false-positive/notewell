@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Quiz from './routes/Quiz';
-import Editor from './routes/Editor';
+import QuizRoute from './routes/Quiz';
+import EditorRoute from './routes/Editor';
 
 // HACK: clean the contents of #app
 const root = document.getElementById('app')!;

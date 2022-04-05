@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import useURLNote from '../hooks/useURLNote';
 
-const Quiz = () => {
+const QuizRoute = () => {
     const note = useURLNote();
 
     return (
@@ -12,4 +12,4 @@ const Quiz = () => {
     );
 };
 
-export default Quiz;
+export default QuizRoute;

@@ -9,7 +9,7 @@ import useMe from '../hooks/useMe';
 import useNote from '../hooks/useNote';
 import useURLNote from '../hooks/useURLNote';
 
-const Editor = () => {
+const EditorRoute = () => {
     const note = useURLNote({ canEdit: true });
 
     return (
@@ -25,4 +25,4 @@ const Editor = () => {
     );
 };
 
-export default Editor;
+export default EditorRoute;
