@@ -31,3 +31,10 @@ export const getNote = async (noteId: string): Promise<Note> => {
     const { data } = await response.json();
     return fromAPINote(data as APINote);
 };
+
+export const getNotes = async (): Promise<Note[]> => {
+    const response = await makeAuthRequest('notes/');
+    invariant(response.status === 200, 'notes request failed');
+    const { data } = await response.json();
+    return data.map(fromAPINote);
+};
