@@ -14,7 +14,7 @@ const useURLNote = ({ canEdit = false }: Options = {}) => {
     const { noteId } = useParams<{ noteId: string }>();
     invariant(noteId, 'noteId url param not present');
     const note = useNote(noteId);
-    const me = useMe();
+    const me = useMe({ redirect: canEdit });
 
     useEffect(() => {
         if (

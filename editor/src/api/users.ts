@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant';
 import { makeAuthRequest, makeRequest } from './request';
 
 type APIUser = {
@@ -20,5 +21,6 @@ export const searchUsers = async (username: string) => {
 export const getMe = async () => {
     const response = await makeAuthRequest('user/');
     const data = await response.json();
+    invariant(response.status === 200, 'me request failed');
     return data as APIUser;
 };
