@@ -1,4 +1,4 @@
-import { makeRequest } from './request';
+import { makeAuthRequest, makeRequest } from './request';
 
 type APIUser = {
     username: string;
@@ -15,4 +15,10 @@ export const searchUsers = async (username: string) => {
     );
     const { data } = await response.json();
     return (data as APIUser[]).map(({ username }) => username);
+};
+
+export const getMe = async () => {
+    const response = await makeAuthRequest('user/');
+    const data = await response.json();
+    return data as APIUser;
 };
