@@ -20,7 +20,8 @@ export const searchUsers = async (username: string) => {
 
 export const getMe = async () => {
     const response = await makeAuthRequest('user/');
-    const data = await response.json();
-    invariant(response.status === 200, 'me request failed');
-    return data as APIUser;
+    // invariant(response.status === 200, 'me request failed');
+    return response.status === 200
+        ? ((await response.json()) as APIUser)
+        : null;
 };
