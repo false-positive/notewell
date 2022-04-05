@@ -36,9 +36,11 @@
             }
         </script>
     {% endif %}
+    {% comment %}
     <script type="application/json" id="nw-editor-initial-data">
         {% render_initial_editor_data note=note token_pair=token_pair open_dialog=open_dialog %}
     </script>
+    {% endcomment %}
 {% endblock script_head %}
 
 {% block header %}{% endblock header %}
