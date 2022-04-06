@@ -1,6 +1,4 @@
-import { AccountCircle } from '@mui/icons-material';
 import { Avatar, IconButton, Menu, MenuItem, Skeleton } from '@mui/material';
-import { Box } from '@mui/system';
 import { useState } from 'react';
 import useMe from '../../hooks/useMe';
 
