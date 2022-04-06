@@ -3,15 +3,18 @@ import {
     Box,
     Button,
     IconButton,
+    Skeleton,
     Stack,
     Toolbar,
     Typography,
 } from '@mui/material';
-import { FC } from 'react';
+import { log } from 'console';
+import { FC, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import useMe from '../../hooks/useMe';
 import AppBar from './AppBar';
 import AvatarMenu from './AvatarMenu';
+import HeaderContext from './HeaderContext';
 
 type Props = {
     open: boolean;
@@ -20,6 +23,7 @@ type Props = {
 };
 
 const Header: FC<Props> = ({ open, onDrawerOpen, drawerWidth }) => {
+    const { title, contentRef } = useContext(HeaderContext);
     const me = useMe();
     const location = useLocation();
 
@@ -36,8 +40,9 @@ const Header: FC<Props> = ({ open, onDrawerOpen, drawerWidth }) => {
                     <MenuIcon />
                 </IconButton>
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    Persistent drawer
+                    {title !== null ? title : <Skeleton />}
                 </Typography>
+                <Box mx={2} sx={{ flexGrow: 1 }} ref={contentRef} />
                 <Box paddingX={2}>
                     {!me.data || me.data?.user ? (
                         <AvatarMenu />

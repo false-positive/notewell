@@ -12,9 +12,10 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { styled, useTheme } from '@mui/material/styles';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from '../Header';
+import HeaderContext from '../Header/HeaderContext';
 
 const drawerWidth = 240;
 
@@ -46,9 +47,11 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     justifyContent: 'flex-end',
 }));
 
-export default function PersistentDrawerLeft() {
+const NoteLayout = () => {
     const theme = useTheme();
     const [open, setOpen] = useState(false);
+    const [title, setTitle] = useState<string | null>(null);
+    const contentRef = useRef<Element>();
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -59,39 +62,56 @@ export default function PersistentDrawerLeft() {
     };
 
     return (
-        <Box sx={{ display: 'flex' }}>
-            <CssBaseline />
-            <Header
-                open={open}
-                onDrawerOpen={handleDrawerOpen}
-                drawerWidth={drawerWidth}
-            />
-            <Drawer
-                sx={{
-                    width: drawerWidth,
-                    flexShrink: 0,
-                    '& .MuiDrawer-paper': {
+        <HeaderContext.Provider value={{ title, setTitle, contentRef }}>
+            <Box sx={{ display: 'flex' }}>
+                <CssBaseline />
+                <Header
+                    open={open}
+                    onDrawerOpen={handleDrawerOpen}
+                    drawerWidth={drawerWidth}
+                />
+                <Drawer
+                    sx={{
                         width: drawerWidth,
-                        boxSizing: 'border-box',
-                    },
-                }}
-                variant="persistent"
-                anchor="left"
-                open={open}
-            >
-                <DrawerHeader>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'ltr' ? (
-                            <ChevronLeftIcon />
-                        ) : (
-                            <ChevronRightIcon />
+                        flexShrink: 0,
+                        '& .MuiDrawer-paper': {
+                            width: drawerWidth,
+                            boxSizing: 'border-box',
+                        },
+                    }}
+                    variant="persistent"
+                    anchor="left"
+                    open={open}
+                >
+                    <DrawerHeader>
+                        <IconButton onClick={handleDrawerClose}>
+                            {theme.direction === 'ltr' ? (
+                                <ChevronLeftIcon />
+                            ) : (
+                                <ChevronRightIcon />
+                            )}
+                        </IconButton>
+                    </DrawerHeader>
+                    <Divider />
+                    <List>
+                        {['Inbox', 'Starred', 'Send email', 'Drafts'].map(
+                            (text, index) => (
+                                <ListItem button key={text}>
+                                    <ListItemIcon>
+                                        {index % 2 === 0 ? (
+                                            <InboxIcon />
+                                        ) : (
+                                            <MailIcon />
+                                        )}
+                                    </ListItemIcon>
+                                    <ListItemText primary={text} />
+                                </ListItem>
+                            )
                         )}
-                    </IconButton>
-                </DrawerHeader>
-                <Divider />
-                <List>
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map(
-                        (text, index) => (
+                    </List>
+                    <Divider />
+                    <List>
+                        {['All mail', 'Trash', 'Spam'].map((text, index) => (
                             <ListItem button key={text}>
                                 <ListItemIcon>
                                     {index % 2 === 0 ? (
@@ -102,25 +122,16 @@ export default function PersistentDrawerLeft() {
                                 </ListItemIcon>
                                 <ListItemText primary={text} />
                             </ListItem>
-                        )
-                    )}
-                </List>
-                <Divider />
-                <List>
-                    {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                        <ListItem button key={text}>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                    ))}
-                </List>
-            </Drawer>
-            <Main open={open}>
-                <DrawerHeader />
-                <Outlet />
-            </Main>
-        </Box>
+                        ))}
+                    </List>
+                </Drawer>
+                <Main open={open}>
+                    <DrawerHeader />
+                    <Outlet />
+                </Main>
+            </Box>
+        </HeaderContext.Provider>
     );
-}
+};
+
+export default NoteLayout;
