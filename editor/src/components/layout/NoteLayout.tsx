@@ -12,7 +12,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { styled, useTheme } from '@mui/material/styles';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from '../Header';
 import HeaderContext from '../Header/HeaderContext';
@@ -52,6 +52,10 @@ const NoteLayout = () => {
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState<string | null>(null);
     const contentRef = useRef<Element>();
+
+    useEffect(() => {
+        document.title = `${title ?? 'Loading...'} // Notewell`;
+    }, [title]);
 
     const handleDrawerOpen = () => {
         setOpen(true);
