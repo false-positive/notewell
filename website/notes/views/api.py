@@ -106,9 +106,13 @@ class NoteDetail(APIView):
                 {'detail': 'Note not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
-        quiz_data = request.data.pop('quiz', None)
-        if quiz_data != None:
+        quiz_data = {}
+        quiz_data['content'] = request.data.pop('quiz', None)
+        if quiz_data['content'] != None:
+            quiz_data['note'] = note.pk
             quiz_serializer = QuizSerializer(instance=note.quiz_set.first(), data=quiz_data)
+            if quiz_serializer.is_valid():
+                quiz_serializer.save()
         serializer = NotePatchSerializer(instance=note, data=request.data)
 
         # TODO maybe make category not optional or smth

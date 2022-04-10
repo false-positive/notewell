@@ -39,10 +39,11 @@ class NoteSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField(required=False)
     categories = MyStringRelatedField(
         many=True, allow_null=True, required=False)
+    quiz = serializers.JSONField(required=False)
 
     class Meta:
         model = Note
-        fields = ('uuid', 'title', 'content', 'categories', 'author', 'creation_date')
+        fields = ('uuid', 'title', 'content', 'categories', 'author', 'creation_date', 'quiz')
 
 
 class NoteViewSerializer(NoteSerializer):

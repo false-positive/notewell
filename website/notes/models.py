@@ -212,7 +212,7 @@ class Comment(models.Model):
 #         Choice, on_delete=models.CASCADE, blank=True, null=True)
 
 class Quiz(models.Model):
-    creation_date = models.DateField(null=True)
+    creation_date = models.DateField(null=True, auto_now_add=True)
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
     content = models.JSONField(null=True)
 
