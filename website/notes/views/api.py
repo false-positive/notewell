@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from notes.models import Category, Note, SharedItem
+from notes.models import Category, Note, SharedItem, Quiz
 from notes.serializers import NoteViewSerializer, NoteSerializer, NotePatchSerializer, SharedItemSerializer, \
     CategorySerializer, QuizSerializer
 from notes.shortcuts import get_accessible_note_or_404
@@ -106,11 +106,13 @@ class NoteDetail(APIView):
                 {'detail': 'Note not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
-        quiz_data = {}
-        quiz_data['content'] = request.data.pop('quiz', None)
-        if quiz_data['content'] != None:
+
+        quiz_data = {'content': request.data.pop('quiz_content', None)}
+        if quiz_data['content'] is not None:
             quiz_data['note'] = note.pk
-            quiz_serializer = QuizSerializer(instance=note.quiz_set.first(), data=quiz_data)
+            if not Quiz.objects.filter(note_id=note.pk).exists():
+                Quiz.objects.create(note_id=note.pk)
+            quiz_serializer = QuizSerializer(instance=note.quiz, data=quiz_data)
             if quiz_serializer.is_valid():
                 quiz_serializer.save()
         serializer = NotePatchSerializer(instance=note, data=request.data)

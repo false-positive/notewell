@@ -4,7 +4,7 @@ from django.forms import Textarea
 from django.db import models
 from django.utils.html import format_html
 
-from .models import Comment, Note, Category, SharedItem
+from .models import Comment, Note, Category, SharedItem, Quiz
 
 
 class CommentInline(admin.TabularInline):
@@ -72,9 +72,13 @@ class SharedItemInline(admin.TabularInline):
     extra = 0
 
 
+class QuizInline(admin.TabularInline):
+    model = Quiz
+
+
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
-    inlines = [CommentInline, SharedItemInline]
+    inlines = [CommentInline, SharedItemInline, QuizInline]
     list_display = ['title', 'author', 'uuid_link', 'creation_date', 'status', 'verified']
     list_filter = ['status', 'verified']
     autocomplete_fields = ['author']

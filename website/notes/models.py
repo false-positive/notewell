@@ -214,7 +214,7 @@ class Comment(models.Model):
 
 class Quiz(models.Model):
     creation_date = models.DateField(null=True, auto_now_add=True)
-    note = models.ForeignKey(Note, on_delete=models.CASCADE)
+    note = models.OneToOneField(Note, on_delete=models.CASCADE)
     content = models.JSONField(null=True)
 
     def __str__(self):

@@ -35,15 +35,22 @@ class UsernameField(serializers.RelatedField):
             raise serializers.ValidationError({'username': f'User "{username}" not found'}) from err
 
 
+class QuizSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Quiz
+        fields = ('creation_date', 'content')
+
+
 class NoteSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField(required=False)
     categories = MyStringRelatedField(
         many=True, allow_null=True, required=False)
-    quiz = serializers.JSONField(required=False)
+    quiz_content = serializers.JSONField(required=False)
+    quiz = QuizSerializer(read_only=True)
 
     class Meta:
         model = Note
-        fields = ('uuid', 'title', 'content', 'categories', 'author', 'creation_date', 'quiz')
+        fields = ('uuid', 'title', 'content', 'categories', 'author', 'creation_date', 'quiz_content', 'quiz')
 
 
 class NoteViewSerializer(NoteSerializer):
@@ -85,8 +92,3 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = super().get_fields()
         fields['children'] = CategorySerializer(many=True)
         return fields
-
-class QuizSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Quiz
-        fields = ('note', 'creation_date', 'content')
