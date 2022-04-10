@@ -3,7 +3,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-from notes.models import Category, Note, SharedItem
+from notes.models import Category, Note, SharedItem, Quiz
 
 
 class MyStringRelatedField(serializers.StringRelatedField):
@@ -84,3 +84,8 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = super().get_fields()
         fields['children'] = CategorySerializer(many=True)
         return fields
+
+class QuizSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Quiz
+        fields = ('note', 'creation_date', 'content')

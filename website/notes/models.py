@@ -210,3 +210,11 @@ class Comment(models.Model):
 #     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
 #     correct_answer = models.OneToOneField(
 #         Choice, on_delete=models.CASCADE, blank=True, null=True)
+
+class Quiz(models.Model):
+    creation_date = models.DateField(null=True)
+    note = models.ForeignKey(Note, on_delete=models.CASCADE)
+    content = models.JSONField(null=True)
+
+    def __str__(self):
+        return self.note.title + "'s Quiz"
